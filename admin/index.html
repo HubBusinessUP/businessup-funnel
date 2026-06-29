@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business UP - Admin Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+    }
+
+    .login-box h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #0d9e88;
+    }
+
+    .login-box p {
+      font-size: 12px;
+      color: #666666;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #999999;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      background: #0a0a0a;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0d9e88;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: #0d9e88;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-login:hover {
+      background: #0cc084;
+    }
+
+    .error {
+      color: #ff4444;
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .dashboard {
+      display: none;
+      min-height: 100vh;
+      background: #0a0a0a;
+    }
+
+    .dashboard.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      color: #0d9e88;
+    }
+
+    .btn-logout {
+      background: #333333;
+      color: #ffffff;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #444444;
+    }
+
+    .main {
+      padding: 40px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .kpi-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .kpi-card h3 {
+      font-size: 12px;
+      color: #666666;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .kpi-card .value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #0d9e88;
+    }
+
+    .kpi-card .subtext {
+      font-size: 12px;
+      color: #999999;
+      margin-top: 8px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: #2a2a2a;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: #0d9e88;
+      color: #0a0a0a;
+      font-weight: 600;
+    }
+
+    .filter-btn:hover {
+      background: #3a3a3a;
+    }
+
+    .filter-btn.active:hover {
+      background: #0cc084;
+    }
+
+    .table-container {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: #0a0a0a;
+      padding: 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #999999;
+      border-bottom: 1px solid #2a2a2a;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #2a2a2a;
+      color: #cccccc;
+    }
+
+    tr:hover {
+      background: #252525;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge.nuovo {
+      background: #2a2a4a;
+      color: #6688ff;
+    }
+
+    .badge.qualificato {
+      background: #2a4a2a;
+      color: #66ff88;
+    }
+
+    .badge.squalificato {
+      background: #4a2a2a;
+      color: #ff6666;
+    }
+
+    .badge.contattato {
+      background: #4a3a2a;
+      color: #ffaa66;
+    }
+
+    .badge.cliente {
+      background: #2a4a4a;
+      color: #66ffaa;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      background: #0d9e88;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-sm:hover {
+      background: #0cc084;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666666;
+      font-size: 14px;
+    }
+
+    .broadcast-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 10, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .broadcast-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #0d9e88;
+    }
+
+    .modal-content textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      background: #0a0a0a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 14px;
+      font-family: inherit;
+      margin-bottom: 16px;
+    }
+
+    .modal-content textarea:focus {
+      outline: none;
+      border-color: #0d9e88;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .btn-send {
+      background: #0d9e88;
+      color: #0a0a0a;
+    }
+
+    .btn-send:hover {
+      background: #0cc084;
+    }
+
+    .btn-cancel {
+      background: #2a2a2a;
+      color: #ffffff;
+    }
+
+    .btn-cancel:hover {
+      background: #3a3a3a;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: #666666;
+    }
+
+    .loading.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h1>Business UP</h1>
+      <p>Admin Dashboard</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Chiave admin</label>
+          <input type="password" id="passwordInput" placeholder="Inserisci la chiave admin" required />
+        </div>
+        <button type="submit" class="btn-login">Accedi</button>
+        <div class="error" id="loginError"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard" id="dashboard">
+    <div class="header">
+      <h1>📊 Business UP Admin</h1>
+      <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="main">
+      <div id="loadingSpinner" class="loading show">
+        <p>Caricamento dati...</p>
+      </div>
+
+      <div id="dashboardContent" style="display: none">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <h3>Totale Lead</h3>
+            <div class="value" id="kpiTotal">0</div>
+            <div class="subtext">Tutti i contatti</div>
+          </div>
+          <div class="kpi-card">
+            <h3>Qualificati</h3>
+            <div class="value" id="kpiQualified">0</div>
+            <div class="subtext">Pronti per il prodotto</div>
+          </div>
+          <div class="kpi-card">
+            <h3>Squalificati</h3>
+            <div class="value" id="kpiDisqualified">0</div>
+            <div class="subtext">Non profilo</div>
+          </div>
+          <div class="kpi-card">
+            <h3>Clienti</h3>
+            <div class="value" id="kpiClients">0</div>
+            <div class="subtext">Conversioni</div>
+          </div>
+          <div class="kpi-card">
+            <h3>Tasso Qualifica</h3>
+            <div class="value" id="kpiRate">0%</div>
+            <div class="subtext">Qualified/Total</div>
+          </div>
+        </div>
+
+        <!-- Funnel -->
+        <div style="margin-bottom: 40px">
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Funnel & Drop-off</h2>
+          <div id="funnelSteps" class="table-container" style="padding: 8px 0"></div>
+          <div id="tutorialBreakdown" style="margin-top: 16px; font-size: 13px; color: #999999"></div>
+        </div>
+
+        <!-- Filters & Actions -->
+        <div>
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Lead Database</h2>
+
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">
+              Tutti
+            </button>
+            <button class="filter-btn" data-filter="nuovo">
+              Nuovi
+            </button>
+            <button class="filter-btn" data-filter="qualificato">
+              Qualificati
+            </button>
+            <button class="filter-btn" data-filter="squalificato">
+              Squalificati
+            </button>
+            <button class="filter-btn" data-filter="contattato">
+              Contattati
+            </button>
+            <button class="filter-btn" data-filter="cliente">
+              Clienti
+            </button>
+          </div>
+
+          <!-- Broadcast Buttons -->
+          <div class="filters">
+            <button class="btn-sm" style="background: #ff6666; margin-top: 8px" id="broadcastAll">
+              📤 Broadcast Tutti
+            </button>
+            <button class="btn-sm" style="background: #66ff88; color: #000; margin-top: 8px" id="broadcastQualified">
+              📤 Broadcast Qualificati
+            </button>
+            <button class="btn-sm" style="background: #ff6666; margin-top: 8px" id="broadcastDisqualified">
+              📤 Broadcast Squalificati
+            </button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Nome</th>
+                <th>Stage</th>
+                <th>Data Ingresso</th>
+                <th>Sondaggio</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTable">
+              <tr>
+                <td colspan="6" class="empty">
+                  Caricamento lead...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Broadcast Modal -->
+  <div class="broadcast-modal" id="broadcastModal">
+    <div class="modal-content">
+      <h2 id="broadcastTitle">Broadcast</h2>
+      <textarea
+        id="broadcastText"
+        placeholder="Scrivi il messaggio da inviare..."
+      ></textarea>
+      <div class="modal-buttons">
+        <button class="btn-send" id="sendBtn">Invia</button>
+        <button class="btn-cancel" id="cancelBtn">Annulla</button>
+      </div>
+      <div class="error" id="broadcastError"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
+    // La chiave NON è nel codice: si inserisce al login e resta nella sessione del browser.
+    let AUTH_HEADERS = { "Content-Type": "application/json" };
+
+    let allLeads = [];
+    let currentFilter = "all";
+    let broadcastStage = null;
+
+    // ============= LOGIN =============
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const errorEl = document.getElementById("loginError");
+      errorEl.classList.remove("show");
+      const key = document.getElementById("passwordInput").value.trim();
+      AUTH_HEADERS = { "Content-Type": "application/json", "x-admin-key": key };
+
+      try {
+        const r = await fetch(`${API_BASE}/stats`, { headers: AUTH_HEADERS });
+        if (!r.ok) throw new Error("unauthorized");
+        sessionStorage.setItem("bu_key", key);
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("dashboard").classList.add("active");
+        loadDashboard();
+      } catch (err) {
+        errorEl.textContent = "Chiave errata";
+        errorEl.classList.add("show");
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      document.getElementById("dashboard").classList.remove("active");
+      document.getElementById("loginScreen").style.display = "flex";
+      document.getElementById("passwordInput").value = "";
+      document.getElementById("loginError").classList.remove("show");
+      sessionStorage.removeItem("bu_key");
+    });
+
+    // ============= LOAD DASHBOARD =============
+    async function loadDashboard() {
+      try {
+        const response = await fetch(`${API_BASE}/stats`, { headers: AUTH_HEADERS });
+        if (!response.ok) throw new Error("Failed to fetch stats");
+
+        const stats = await response.json();
+        updateKPI(stats);
+
+        const mRes = await fetch(`${API_BASE}/metrics`, { headers: AUTH_HEADERS });
+        if (mRes.ok) renderFunnel(await mRes.json());
+
+        await loadLeads();
+
+        document.getElementById("loadingSpinner").classList.remove("show");
+        document.getElementById("dashboardContent").style.display = "block";
+      } catch (error) {
+        console.error("Load error:", error);
+        alert("Errore nel caricamento dei dati");
+      }
+    }
+
+    function renderFunnel(m) {
+      const c = m.conversioni || {};
+      const steps = [
+        ["Entrati (/start)", m.entrati, ""],
+        ["Sondaggio aperto", m.sondaggio_aperto, c.start_to_aperto],
+        ["Sondaggio completato", m.sondaggio_completato, c.aperto_to_completato],
+        ["Qualificati", m.qualificati, ""],
+        ["Tutorial visti", m.tutorial_utenti, c.qualificati_to_tutorial],
+        ["Interessati", m.interessati, c.tutorial_to_interesse],
+        ["Clienti", m.clienti, c.interesse_to_cliente],
+      ];
+      const max = Math.max(1, m.entrati || 1);
+      document.getElementById("funnelSteps").innerHTML = steps
+        .map((s) => {
+          const w = Math.round(((s[1] || 0) / max) * 100);
+          return `<div style="display:flex;align-items:center;gap:12px;padding:6px 16px">
+            <div style="width:160px;font-size:12px;color:#999">${s[0]}</div>
+            <div style="flex:1;background:#0a0a0a;border-radius:4px;overflow:hidden">
+              <div style="width:${w}%;min-width:2px;background:#0d9e88;height:22px"></div>
+            </div>
+            <div style="width:120px;text-align:right;font-size:13px">
+              <b>${s[1] || 0}</b> ${s[2] ? `<span style="color:#666">(${s[2]})</span>` : ""}
+            </div>
+          </div>`;
+        })
+        .join("");
+
+      const tb = m.tutorial_breakdown || {};
+      const names = { bvb: "Broker vs Broker", prop: "Prop vs Broker", bonus: "Bonus ADM", swap: "BvB Swap" };
+      const parts = Object.keys(tb).map((k) => `${names[k] || k}: <b style="color:#0d9e88">${tb[k]}</b>`);
+      document.getElementById("tutorialBreakdown").innerHTML =
+        `Click tutorial totali: <b style="color:#0d9e88">${m.tutorial_click_totali || 0}</b>` +
+        (parts.length ? " — " + parts.join(" · ") : "") +
+        `<br>Conversione totale start → cliente: <b style="color:#0d9e88">${c.start_to_cliente || "0%"}</b>`;
+    }
+
+    function updateKPI(stats) {
+      document.getElementById("kpiTotal").textContent = stats.totale || 0;
+      document.getElementById("kpiQualified").textContent = stats.qualificati || 0;
+      document.getElementById("kpiDisqualified").textContent = stats.squalificati || 0;
+      document.getElementById("kpiClients").textContent = stats.clienti || 0;
+      document.getElementById("kpiRate").textContent = stats.tassoQualifica || "0%";
+    }
+
+    async function loadLeads() {
+      try {
+        const response = await fetch(`${API_BASE}/leads`, { headers: AUTH_HEADERS });
+        if (!response.ok) throw new Error("Failed to fetch leads");
+
+        allLeads = await response.json();
+        renderLeads();
+      } catch (error) {
+        console.error("Load leads error:", error);
+        alert("Errore nel caricamento dei lead");
+      }
+    }
+
+    function renderLeads() {
+      const tbody = document.getElementById("leadsTable");
+      let filtered = allLeads;
+
+      if (currentFilter !== "all") {
+        filtered = allLeads.filter((l) => l.pipeline_stage === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="6" class="empty">Nessun lead trovato</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map(
+          (lead) =>
+            `<tr>
+          <td>@${lead.username || lead.telegram_id}</td>
+          <td>${lead.nome || "N/A"}</td>
+          <td>
+            <span class="badge ${lead.pipeline_stage}">
+              ${lead.pipeline_stage.toUpperCase()}
+            </span>
+          </td>
+          <td>${new Date(lead.created_at).toLocaleDateString("it-IT")}</td>
+          <td>${lead.sondaggio_completato ? "✅" : "❌"}</td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-sm" onclick="editStage('${lead.telegram_id}', '${lead.nome}')">
+                Stage
+              </button>
+              <button class="btn-sm" style="background:#66ffaa;color:#000" onclick="markCliente('${lead.telegram_id}','${(lead.username || lead.telegram_id)}')">
+                Cliente
+              </button>
+            </div>
+          </td>
+        </tr>`
+        )
+        .join("");
+    }
+
+    // ============= FILTERS =============
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach((b) => {
+          b.classList.remove("active");
+        });
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderLeads();
+      });
+    });
+
+    // ============= BROADCAST =============
+    document.getElementById("broadcastAll").addEventListener("click", () => {
+      broadcastStage = "all";
+      openBroadcastModal("Broadcast a Tutti");
+    });
+
+    document.getElementById("broadcastQualified").addEventListener("click", () => {
+      broadcastStage = "qualificato";
+      openBroadcastModal("Broadcast a Qualificati");
+    });
+
+    document.getElementById("broadcastDisqualified").addEventListener("click", () => {
+      broadcastStage = "squalificato";
+      openBroadcastModal("Broadcast a Squalificati");
+    });
+
+    function openBroadcastModal(title) {
+      document.getElementById("broadcastTitle").textContent = title;
+      document.getElementById("broadcastText").value = "";
+      document.getElementById("broadcastError").classList.remove("show");
+      document.getElementById("broadcastModal").classList.add("active");
+    }
+
+    document.getElementById("cancelBtn").addEventListener("click", () => {
+      document.getElementById("broadcastModal").classList.remove("active");
+    });
+
+    document.getElementById("sendBtn").addEventListener("click", async () => {
+      const text = document.getElementById("broadcastText").value.trim();
+      if (!text) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/broadcast`, {
+          method: "POST",
+          headers: AUTH_HEADERS,
+          body: JSON.stringify({
+            stage: broadcastStage,
+            text,
+          }),
+        });
+
+        if (!response.ok) throw new Error("Broadcast failed");
+
+        alert("✅ Broadcast inviato");
+        document.getElementById("broadcastModal").classList.remove("active");
+      } catch (error) {
+        const errorEl = document.getElementById("broadcastError");
+        errorEl.textContent = "Errore nell'invio: " + error.message;
+        errorEl.classList.add("show");
+      }
+    });
+
+    function editStage(telegramId, nome) {
+      const newStage = prompt("Nuovo stage (nuovo/qualificato/squalificato/contattato/cliente):", "");
+      if (!newStage) return;
+
+      const validStages = ["nuovo", "qualificato", "squalificato", "contattato", "cliente"];
+      if (!validStages.includes(newStage)) {
+        alert("Stage non valido");
+        return;
+      }
+
+      fetch(`${API_BASE}/set-stage`, {
+        method: "POST",
+        headers: AUTH_HEADERS,
+        body: JSON.stringify({ telegram_id: parseInt(telegramId), stage: newStage }),
+      })
+        .then((r) => r.json())
+        .then(() => {
+          alert("✅ Stage aggiornato");
+          loadDashboard();
+        })
+        .catch((e) => alert("Errore: " + e.message));
+    }
+
+    function markCliente(telegramId, label) {
+      if (!confirm(`Segnare @${label} come CLIENTE (iscritto ai servizi)?`)) return;
+      fetch(`${API_BASE}/set-stage`, {
+        method: "POST",
+        headers: AUTH_HEADERS,
+        body: JSON.stringify({ telegram_id: parseInt(telegramId), stage: "cliente" }),
+      })
+        .then((r) => r.json())
+        .then(() => {
+          alert("✅ Segnato come cliente");
+          loadDashboard();
+        })
+        .catch((e) => alert("Errore: " + e.message));
+    }
+
+    // Initial load
+    window.addEventListener("load", () => {
+      const saved = sessionStorage.getItem("bu_key");
+      if (saved) document.getElementById("passwordInput").value = saved;
+      document.getElementById("passwordInput").focus();
+    });
+  </script>
+</body>
+</html>
