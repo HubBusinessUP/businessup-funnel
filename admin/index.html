@@ -939,6 +939,11 @@
         .map((e) => `<div style="font-size:12px;color:#999;padding:1px 0">${fmtDate(e.created_at)} — ${esc(e.tipo)}${e.dettaglio ? " (" + esc(e.dettaglio) + ")" : ""}</div>`)
         .join("") || '<div style="color:#666">—</div>';
 
+      const tutHtml = (card.tutorial || []).length
+        ? (card.tutorial || [])
+            .map((t) => `${esc(t.nome)} <span style="color:${t.completato ? "#0d9e88" : "#999"}">${t.completato ? "(completato)" : "(step " + ((t.ultimo_step || 0) + 1) + ")"}</span>`)
+            .join(" · ")
+        : '<span style="color:#666">Nessun tutorial aperto</span>';
       document.getElementById("schedaBody").innerHTML = `
         <h2 style="color:#0d9e88;margin-bottom:4px">${esc(l.nome || "N/A")} ${badge}</h2>
         <div style="color:#999;font-size:13px;margin-bottom:16px">@${esc(l.username || l.telegram_id)} · ID ${l.telegram_id}</div>
@@ -955,6 +960,8 @@
           </select>
           <button class="btn-sm" onclick="addSchedaServizio(${l.telegram_id})">Assegna</button>
         </div>
+        <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Tutorial seguiti</h3>
+        <div style="font-size:13px">${tutHtml}</div>
         <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Note CRM</h3>
         ${note}
         <div style="display:flex;gap:8px;margin-top:8px">
