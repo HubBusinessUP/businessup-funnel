@@ -721,6 +721,9 @@
           <td>${lead.sondaggio_completato ? "✅" : "❌"}</td>
           <td>
             <div class="action-buttons">
+              <button class="btn-sm" style="background:#229ed9;color:#fff" onclick="scriviLead('${lead.username || ""}','${lead.telegram_id}')">
+                Scrivi
+              </button>
               <button class="btn-sm" onclick="openScheda('${lead.telegram_id}')">
                 Scheda
               </button>
@@ -970,7 +973,8 @@
         </div>
         <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Attività</h3>
         <div style="max-height:120px;overflow:auto">${eventi}</div>
-        <div style="margin-top:16px">
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button class="btn-sm" style="background:#229ed9;color:#fff" onclick="scriviLead('${esc(l.username || "")}','${l.telegram_id}')">Scrivi su Telegram</button>
           <button class="btn-sm" style="background:#66ffaa;color:#000" onclick="markCliente('${l.telegram_id}','${esc(l.username || l.telegram_id)}')">Segna come cliente</button>
         </div>`;
     }
@@ -1007,6 +1011,15 @@
     document.getElementById("schedaClose").addEventListener("click", () => {
       document.getElementById("schedaModal").classList.remove("active");
     });
+
+    function scriviLead(username, tid) {
+      if (username && username !== "null" && username !== "") {
+        window.open("https://t.me/" + username, "_blank");
+      } else {
+        // nessun username: prova ad aprire per ID nell'app Telegram
+        window.open("tg://user?id=" + tid, "_blank");
+      }
+    }
 
     function markCliente(telegramId, label) {
       if (!confirm(`Segnare @${label} come CLIENTE (iscritto ai servizi)?`)) return;
