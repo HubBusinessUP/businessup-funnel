@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broker vs Broker - Business UP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 48px;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0d9e88;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #999999;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      margin-top: 24px;
+      color: #ffffff;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 14px;
+    }
+
+    .section ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    .section ul li {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .section ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #0d9e88;
+      font-weight: bold;
+    }
+
+    .highlight {
+      color: #0d9e88;
+      font-weight: 500;
+    }
+
+    .callout {
+      background: #1a1a1a;
+      border-left: 3px solid #0d9e88;
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 4px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #0d9e88;
+      color: #0a0a0a;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+
+    .cta-button:hover {
+      background: #0cc084;
+    }
+
+    .footer {
+      border-top: 1px solid #2a2a2a;
+      margin-top: 60px;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: #666666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Broker vs Broker</h1>
+      <p>Sfrutta le differenze tra broker per ridurre il rischio</p>
+    </div>
+
+    <div class="section">
+      <h2>Cos'è il Broker vs Broker?</h2>
+      <p>
+        Il Broker vs Broker (BvB) è una strategia di trading che sfrutta le differenze di
+        quotazione tra due broker diversi sullo stesso strumento finanziario.
+      </p>
+      <p>
+        Mentre un broker quoterà l'EUR/USD a 1.0850/1.0852, un altro potrebbe quotarlo a
+        1.0848/1.0851. Queste piccole discrepanze creano <span class="highlight">opportunità di
+        arbitraggio</span>.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Come funziona</h2>
+      <ul>
+        <li>Apri un conto su due broker diversi</li>
+        <li>Compra su uno, vendi sull'altro, sullo stesso strumento, nello stesso momento</li>
+        <li>Lo spread differenziale è il tuo guadagno</li>
+        <li>Chiudi entrambe le posizioni quando lo spread favorisce il closing</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Importante:</span> Il BvB funziona solo se disponi di capitale
+        sufficiente (minimo €2.000) e se conosci bene il meccanismo. Non è "soldi facili".
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Vantaggi del BvB</h2>
+      <ul>
+        <li>Rischio teorico più basso rispetto al trading direzionale</li>
+        <li>Non dipende dalla direzione del mercato</li>
+        <li>Sfrutta inefficienze di mercato reali</li>
+        <li>Scalabile con capitale e esperienza</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Requisiti minimi</h2>
+      <ul>
+        <li>Capitale: almeno €2.000 distribuiti tra i broker</li>
+        <li>Connessione internet stabile</li>
+        <li>Conoscenza di come aprire e gestire conti broker</li>
+        <li>Disciplina nel seguire regole di risk management</li>
+        <li>Tempo: circa 1-2 ore al giorno per monitorare opportunità</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>I broker più utilizzati nel BvB</h2>
+      <p>Non tutti i broker permettono il BvB. Alcuni operano in modo da contrastarlo.</p>
+      <ul>
+        <li>Broker ECN/STP con spread bassi</li>
+        <li>Broker che permettono EA (per automatizzazione)</li>
+        <li>Broker senza limitazioni su strategie arbitrage</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Il fattore critico: la liquidità</h2>
+      <p>
+        Più è alta la liquidità dello strumento, più facile è entrare e uscire dalle posizioni
+        contemporaneamente. Le coppie forex major (EUR/USD, GBP/USD, etc.) sono le più liquide.
+      </p>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Reality check:</span> Il BvB non è un "metodo passivo". Richiede
+        attenzione costante, gestione attiva del rischio e aggiustamenti continui. Se cerchi
+        denaro passivo, questo non è il metodo.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Prossimi passi</h2>
+      <p>Se sei interessato al BvB:</p>
+      <ul>
+        <li>
+          Leggi la documentazione completa nel nostro hub privato (dopo l'approvazione)
+        </li>
+        <li>Guarda i backtest e i risultati reali dei nostri trader</li>
+        <li>Accedi al gruppo privato Telegram per confrontarti con chi lo pratica</li>
+        <li>Fai una demo su carta prima di mettere capitale vero</li>
+      </ul>
+    </div>
+
+    <div style="text-align: center">
+      <a href="https://t.me/BotBusinessUP_bot" class="cta-button">
+        Torna al Bot
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Business UP — Nessun guru. Nessun filtro.<br />
+        Disclaimer: Il trading comporta rischi. Consulta un consulente finanziario prima di
+        investire.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

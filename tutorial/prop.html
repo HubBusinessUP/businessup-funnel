@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prop vs Broker - Business UP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 48px;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0d9e88;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #999999;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      margin-top: 24px;
+      color: #ffffff;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 14px;
+    }
+
+    .section ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    .section ul li {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .section ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #0d9e88;
+      font-weight: bold;
+    }
+
+    .highlight {
+      color: #0d9e88;
+      font-weight: 500;
+    }
+
+    .callout {
+      background: #1a1a1a;
+      border-left: 3px solid #0d9e88;
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 4px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .comp-item {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 6px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .comp-item h4 {
+      color: #0d9e88;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .comp-item p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #0d9e88;
+      color: #0a0a0a;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+
+    .cta-button:hover {
+      background: #0cc084;
+    }
+
+    .footer {
+      border-top: 1px solid #2a2a2a;
+      margin-top: 60px;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: #666666;
+    }
+
+    @media (max-width: 600px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Prop vs Broker</h1>
+      <p>Trader proprietario contro broker tradizionale: quale scegliere?</p>
+    </div>
+
+    <div class="section">
+      <h2>La scelta fondamentale</h2>
+      <p>
+        Quando inizi nel trading, una domanda chiave è: faccio trading come cliente di un broker
+        tradizionale, oppure provo a diventare prop trader?
+      </p>
+      <p>
+        Questa guida confronta i due approcci, i pro, i contro e come Business UP può aiutarti.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Trader Broker Tradizionale</h2>
+      <p>
+        Apri un conto, depositi soldi, fai trading sulle tue scappatelle. Il broker guadagna con
+        gli spread, tu cerchi di guadagnare con la tua strategia.
+      </p>
+
+      <h3>Vantaggi</h3>
+      <ul>
+        <li>Massima libertà su quando, come, e quanto tradare</li>
+        <li>Nessun limite di profitto (i tuoi guadagni sono tuoi)</li>
+        <li>Nessuna challenge, nessun evaluation, nessun filtro artificiale</li>
+        <li>Controllo totale del tuo capitale</li>
+      </ul>
+
+      <h3>Svantaggi</h3>
+      <ul>
+        <li>Devi avere il capitale iniziale</li>
+        <li>Tutto il rischio è su di te</li>
+        <li>Se sbagli, perdi soldi tuoi</li>
+        <li>Nessuna supervisione o feedback strutturato</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Prop Trader</h2>
+      <p>
+        Superi una challenge (solitamente con un account demo fornito), dimostri una strategia
+        profittevole, poi ricevi un conto finanziato da una prop firm con capitale proprio.
+      </p>
+
+      <h3>Vantaggi</h3>
+      <ul>
+        <li>Non rischi capitale proprio per accedere al conto finanziato</li>
+        <li>Fai trading con il denaro della firma</li>
+        <li>Guadagni una percentuale del profitto (split, solitamente 70-80% a te)</li>
+        <li>Feedback e metriche strutturate sulla tua performance</li>
+        <li>Opportunità di scalare il conto se performi bene</li>
+      </ul>
+
+      <h3>Svantaggi</h3>
+      <ul>
+        <li>Challenge iniziale da superare (skill barrier reale)</li>
+        <li>Regole e limiti su drawdown, gestione rischio, etc.</li>
+        <li>Se perdi oltre il limite, il conto viene chiuso</li>
+        <li>La prop firm prende una % del profitto (commissione)</li>
+        <li>Stress e pressione psicologica maggiore</li>
+      </ul>
+    </div>
+
+    <div class="comparison">
+      <div class="comp-item">
+        <h4>🎯 Broker Tradizionale</h4>
+        <p>Perfetto se: hai capitale, vuoi libertà totale, sei disciplinato nel risk management.</p>
+      </div>
+      <div class="comp-item">
+        <h4>⚡ Prop Trading</h4>
+        <p>
+          Perfetto se: non hai capitale sufficiente, vuoi struttura, accetti regole e metriche.
+        </p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">La realtà:</span> Non è "uno o l'altro". Molti trader professionali
+        combinano entrambi. Iniziano con prop per imparare sotto pressione, poi scalano con
+        broker tradizionali quando hanno capitale.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Cosa ti serve per scegliere?</h2>
+      <ul>
+        <li>
+          <strong>Capitale disponibile:</strong> Se ne hai €5.000+, broker è l'opzione naturale.
+          Se no, prop ha senso.
+        </li>
+        <li>
+          <strong>Skill level:</strong> Se sei ancora un principiante, prop ti forza a imparare
+          bene. Se sei intermedio/avanzato, broker è meno stressante.
+        </li>
+        <li>
+          <strong>Tolleranza allo stress:</strong> Prop è psicologicamente più dura. Se soffri di
+          ansia durante il trading, broker potrebbe essere meglio.
+        </li>
+        <li>
+          <strong>Obiettivi:</strong> Se vuoi reddito passivo veloce, prop è più promettente. Se
+          vuoi building a lungo termine, broker è più flessibile.
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Come Business UP ti aiuta</h2>
+      <p>
+        Non offriamo solo materiale generico. Offriamo <span class="highlight">strategie testate
+        nel mondo reale</span> che funzionano con entrambi gli approcci.
+      </p>
+      <ul>
+        <li>
+          Strategie specifiche per broker (BvB, Bonus ADM) con capitale ridotto
+        </li>
+        <li>
+          Guida sulla scelta della prop firm giusta (e quali evitare)
+        </li>
+        <li>
+          Metriche di risk management per non superare i drawdown limits
+        </li>
+        <li>
+          Accesso a trader che hanno già scelto e stanno guadagnando
+        </li>
+      </ul>
+    </div>
+
+    <div style="text-align: center">
+      <a href="https://t.me/BotBusinessUP_bot" class="cta-button">
+        Torna al Bot
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Business UP — Nessun guru. Nessun filtro.<br />
+        Disclaimer: Il trading comporta rischi. Consulta un consulente finanziario prima di
+        investire.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

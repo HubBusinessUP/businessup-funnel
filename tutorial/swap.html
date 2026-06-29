@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BvB Swap - Business UP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 48px;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0d9e88;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #999999;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      margin-top: 24px;
+      color: #ffffff;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 14px;
+    }
+
+    .section ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    .section ul li {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .section ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #0d9e88;
+      font-weight: bold;
+    }
+
+    .highlight {
+      color: #0d9e88;
+      font-weight: 500;
+    }
+
+    .callout {
+      background: #1a1a1a;
+      border-left: 3px solid #0d9e88;
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 4px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      padding: 16px;
+      border-radius: 6px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #0d9e88;
+      color: #0a0a0a;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+
+    .cta-button:hover {
+      background: #0cc084;
+    }
+
+    .footer {
+      border-top: 1px solid #2a2a2a;
+      margin-top: 60px;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: #666666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>BvB Swap</h1>
+      <p>Una variante del Broker vs Broker che sfrutta gli swap overnight</p>
+    </div>
+
+    <div class="section">
+      <h2>Cos'è il BvB Swap?</h2>
+      <p>
+        Il BvB Swap è una variante più sofisticata della strategia Broker vs Broker. Invece di
+        cercare spread differenziali intraday, sfrutta le differenze negli <span
+          class="highlight"
+          >swap (interessi overnight)</span
+        >
+        tra i broker.
+      </p>
+      <p>
+        Quando tieni una posizione forex aperta nel weekend (Friday close to Monday open), il
+        broker ti applica uno swap. Su diversi broker, questo swap è <strong>diverso</strong>.
+      </p>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Lo swap semplificato:</span> Se compri EUR/USD e lo tieni da
+        venerdì a lunedì, paghi (o ricevi) i tassi d'interesse tra la BCE e la FED. Broker
+        diversi applicano questo importo diversamente.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Meccanismo del BvB Swap</h2>
+      <p>Scenario reale:</p>
+      <ul>
+        <li>
+          Broker A: applica +€10 di swap positivo se tieni long EUR/USD
+        </li>
+        <li>
+          Broker B: applica +€2 di swap positivo sulla stessa coppia
+        </li>
+        <li>
+          Differenza: €8 per lot per night
+        </li>
+      </ul>
+
+      <p>La strategia:</p>
+      <ul>
+        <li>Apri una posizione LONG su Broker A (ricevi €10 di swap overnight)</li>
+        <li>Apri una posizione SHORT su Broker B (paghi €2 di swap overnight)</li>
+        <li>Il netto è +€8 per night (guadagni mentre dormi)</li>
+        <li>Tieni la posizione ogni weekend, raccogli lo swap differenziale</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Perché funziona?</h2>
+      <p>
+        Non tutti i broker applicano gli stessi swap. Perché? Perché:
+      </p>
+      <ul>
+        <li>
+          Broker diversi hanno accordi diversi con le banche di liquidità
+        </li>
+        <li>
+          Alcuni broker prendono un markup sullo swap (guadagnano anche loro)
+        </li>
+        <li>
+          I tassi swap variano nei giorni di "triplo roll" (venerdì su mercoledì dei 3 giorni)
+        </li>
+      </ul>
+
+      <p>
+        Queste inefficienze <strong>reali</strong> creano opportunità di arbitraggio puro.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Vantaggio principale del BvB Swap rispetto al BvB normale</h2>
+      <ul>
+        <li>
+          <strong>Meno attivo:</strong> Non devi monitorare every tick. Apri, tieni, guadagni
+          overnight.
+        </li>
+        <li>
+          <strong>Rischio direzionale zero:</strong> Se tieni long + short, il prezzo non
+          importa.
+        </li>
+        <li>
+          <strong>Prevedibile:</strong> Sai esattamente quanto guadagnerai (approx) prima di aprire.
+        </li>
+        <li>
+          <strong>Scalabile:</strong> Più lot apri, più swap guadagni.
+        </li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Il limite principale:</span> Il capital lock. Se tieni 10 lot su
+        entrambi i broker, immobilizzi capitale significativo per guadagnare
+        <strong>€8 per night</strong>. ROI basso se paragonato al capitale esposto.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Calcolo del ROI</h2>
+      <p>Esempio:</p>
+      <div class="code-block">
+Capital totale: €10.000<br/>
+Posizione: 2 lot su EUR/USD (aprox €200k esposti)<br/>
+Swap differenziale: +€5 per night<br/>
+Giorni di swap/anno: ~250 (escluso weekends)<br/>
+Guadagno annuale: 250 × €5 = €1.250<br/>
+ROI: €1.250 / €10.000 = 12.5% annuo<br/>
+      </div>
+      <p>
+        Non è male, ma non è nemmeno "ricchezza istantanea". È reddito passivo reale, se fatto
+        bene.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Rischi reali del BvB Swap</h2>
+      <ul>
+        <li>
+          <strong>Slippage in apertura:</strong> Aprire entrambe le posizioni nello stesso momento
+          è critico.
+        </li>
+        <li>
+          <strong>Cambio di swap nei broker:</strong> Un broker potrebbe cambiare la sua politica
+          di swap.
+        </li>
+        <li>
+          <strong>Chiusura di conto:</strong> Alcuni broker banneranno l'arbitrage se lo scoprono.
+        </li>
+        <li>
+          <strong>Leva e margine:</strong> Devi avere margine sufficiente su entrambi i broker
+          per la notte.
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Come Business UP supporta il BvB Swap</h2>
+      <ul>
+        <li>
+          Database costantemente aggiornato di swap per ogni broker / coppia
+        </li>
+        <li>
+          Calculator automatico per identificare opportunità di swap arbitrage
+        </li>
+        <li>
+          Guida su quali broker permettono realmente l'arbitrage (spoiler: pochi)
+        </li>
+        <li>
+          Risk management per proteggere il conto dai rischi di execution
+        </li>
+        <li>
+          Accesso a trader che fanno swap arbitrage con risultati tracciabili
+        </li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Reality check:</span> Il BvB Swap è una strategia sofisticata per
+        chi ha almeno €5.000+ e sa come muoversi tra broker. Non è per principianti. Se non
+        conosci ancora i termini swap/leva/margin, inizia da BvB normale o Bonus ADM.
+      </p>
+    </div>
+
+    <div style="text-align: center">
+      <a href="https://t.me/BotBusinessUP_bot" class="cta-button">
+        Torna al Bot
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Business UP — Nessun guru. Nessun filtro.<br />
+        Disclaimer: Il trading comporta rischi. Consulta un consulente finanziario prima di
+        investire.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business UP - Sondaggio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #999999;
+    }
+
+    .form-group {
+      margin-bottom: 32px;
+      display: none;
+    }
+
+    .form-group.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      background: #1a1a1a;
+      color: #ffffff;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #0d9e88;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-top: 4px;
+      accent-color: #0d9e88;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .option-label input {
+      margin: 0;
+      margin-top: 2px;
+    }
+
+    .progress-bar {
+      height: 3px;
+      background: #2a2a2a;
+      margin-bottom: 32px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #0d9e88;
+      transition: width 0.3s ease;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-prev {
+      background: #2a2a2a;
+      color: #ffffff;
+    }
+
+    .btn-prev:hover {
+      background: #3a3a3a;
+    }
+
+    .btn-next,
+    .btn-submit {
+      background: #0d9e88;
+      color: #0a0a0a;
+      font-weight: 600;
+    }
+
+    .btn-next:hover,
+    .btn-submit:hover {
+      background: #0cc084;
+    }
+
+    .btn-next:disabled,
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .success-screen {
+      text-align: center;
+      display: none;
+    }
+
+    .success-screen.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .success-screen h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #0d9e88;
+    }
+
+    .success-screen p {
+      color: #999999;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .btn-cta {
+      background: #0d9e88;
+      color: #0a0a0a;
+      padding: 14px 24px;
+      display: inline-block;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-cta:hover {
+      background: #0cc084;
+    }
+
+    .error {
+      color: #ff4444;
+      font-size: 12px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .step-counter {
+      font-size: 12px;
+      color: #666666;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Business UP</h1>
+      <p>Facciamo un sondaggio veloce</p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+
+    <form id="sondaggioForm">
+      <!-- Username (nascosto inizialmente) -->
+      <div class="form-group active" data-step="0">
+        <div class="step-counter">Passo 1 di 8</div>
+        <label>Username Telegram *</label>
+        <input
+          type="text"
+          id="telegram_username"
+          placeholder="Es: @tuousername (senza @)"
+          required
+        />
+        <div class="error" id="error-username"></div>
+      </div>
+
+      <!-- Nome -->
+      <div class="form-group" data-step="1">
+        <div class="step-counter">Passo 2 di 8</div>
+        <label>Nome *</label>
+        <input type="text" id="nome" placeholder="Scrivi il tuo nome" required />
+        <div class="error" id="error-nome"></div>
+      </div>
+
+      <!-- Livello trading -->
+      <div class="form-group" data-step="2">
+        <div class="step-counter">Passo 3 di 8</div>
+        <label>Livello di trading *</label>
+        <div class="options">
+          <div class="option-group">
+            <input type="radio" id="level-principiante" name="livello_trading" value="Principiante" />
+            <label for="level-principiante" class="option-label">
+              Principiante (non uso EA, faccio trading manuale)
+            </label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="level-intermedio" name="livello_trading" value="Intermedio" />
+            <label for="level-intermedio" class="option-label">
+              Intermedio (uso EA o prop trader)
+            </label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="level-avanzato" name="livello_trading" value="Avanzato" />
+            <label for="level-avanzato" class="option-label">
+              Avanzato (strategie testate, gestione rischio)
+            </label>
+          </div>
+        </div>
+        <div class="error" id="error-livello"></div>
+      </div>
+
+      <!-- Esperienza broker -->
+      <div class="form-group" data-step="3">
+        <div class="step-counter">Passo 4 di 8</div>
+        <label>Hai già operato con broker reali? *</label>
+        <div class="options">
+          <div class="option-group">
+            <input type="radio" id="exp-no" name="esperienza_broker" value="No mai" />
+            <label for="exp-no" class="option-label">
+              No, mai
+            </label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="exp-si-poco" name="esperienza_broker" value="Sì da meno di 6 mesi" />
+            <label for="exp-si-poco" class="option-label">
+              Sì, da meno di 6 mesi
+            </label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="exp-si-tanto" name="esperienza_broker" value="Sì da più di 6 mesi" />
+            <label for="exp-si-tanto" class="option-label">
+              Sì, da più di 6 mesi
+            </label>
+          </div>
+        </div>
+        <div class="error" id="error-esperienza"></div>
+      </div>
+
+      <!-- Capitale -->
+      <div class="form-group" data-step="4">
+        <div class="step-counter">Passo 5 di 8</div>
+        <label>Quanto capitale dedicheesti al trading? *</label>
+        <div class="options">
+          <div class="option-group">
+            <input type="radio" id="cap-bajo" name="capitale" value="Meno di €500" />
+            <label for="cap-bajo" class="option-label">Meno di €500</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="cap-medio" name="capitale" value="€500-€2.000" />
+            <label for="cap-medio" class="option-label">€500 - €2.000</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="cap-buono" name="capitale" value="€2.000-€10.000" />
+            <label for="cap-buono" class="option-label">€2.000 - €10.000</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="cap-alto" name="capitale" value="€10.000+" />
+            <label for="cap-alto" class="option-label">€10.000+</label>
+          </div>
+        </div>
+        <div class="error" id="error-capitale"></div>
+      </div>
+
+      <!-- Prodotto preferito -->
+      <div class="form-group" data-step="5">
+        <div class="step-counter">Passo 6 di 8</div>
+        <label>Quale metodo t'interessa? *</label>
+        <div class="options">
+          <div class="option-group">
+            <input type="radio" id="prod-bvb" name="prodotto_preferito" value="Broker vs Broker" />
+            <label for="prod-bvb" class="option-label">Broker vs Broker (BvB)</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="prod-prop" name="prodotto_preferito" value="Prop vs Broker" />
+            <label for="prod-prop" class="option-label">Prop vs Broker</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="prod-bonus" name="prodotto_preferito" value="Bonus ADM" />
+            <label for="prod-bonus" class="option-label">Bonus ADM</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="prod-capire" name="prodotto_preferito" value="Voglio capire prima" />
+            <label for="prod-capire" class="option-label">Voglio capire prima di scegliere</label>
+          </div>
+        </div>
+        <div class="error" id="error-prodotto"></div>
+      </div>
+
+      <!-- Budget mentale -->
+      <div class="form-group" data-step="6">
+        <div class="step-counter">Passo 7 di 8</div>
+        <label>Disposto a pagare per un metodo testato? *</label>
+        <div class="options">
+          <div class="option-group">
+            <input type="radio" id="budget-gratis" name="willingness_to_pay" value="Solo se gratis" />
+            <label for="budget-gratis" class="option-label">Solo se gratis</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="budget-una" name="willingness_to_pay" value="Una tantum €50-€200" />
+            <label for="budget-una" class="option-label">Una tantum €50 - €200</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="budget-medio" name="willingness_to_pay" value="Una tantum €200-€500" />
+            <label for="budget-medio" class="option-label">Una tantum €200 - €500</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="budget-abb" name="willingness_to_pay" value="Abbonamento" />
+            <label for="budget-abb" class="option-label">Abbonamento mensile</label>
+          </div>
+          <div class="option-group">
+            <input type="radio" id="budget-profit" name="willingness_to_pay" value="Profit share" />
+            <label for="budget-profit" class="option-label">Profit share</label>
+          </div>
+        </div>
+        <div class="error" id="error-budget"></div>
+      </div>
+
+      <!-- Note libere -->
+      <div class="form-group" data-step="7">
+        <div class="step-counter">Passo 8 di 8</div>
+        <label>Domande, dubbi, aspettative? (opzionale)</label>
+        <textarea id="note_libere" placeholder="Scrivi quello che pensi..."></textarea>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="btn-prev" id="btnPrev" style="display: none">
+          Indietro
+        </button>
+        <button type="button" class="btn-next" id="btnNext">Avanti</button>
+      </div>
+    </form>
+
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <h2>Profilo registrato</h2>
+      <p>Analizziamo le tue risposte e ti contatteremo al più presto.</p>
+      <a href="https://t.me/BotBusinessUP_bot" class="btn-cta">
+        Avvia il Bot
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("sondaggioForm");
+    const allSteps = document.querySelectorAll(".form-group");
+    const btnNext = document.getElementById("btnNext");
+    const btnPrev = document.getElementById("btnPrev");
+    const progressFill = document.querySelector(".progress-fill");
+    const successScreen = document.getElementById("successScreen");
+
+    let currentStep = 0;
+    const totalSteps = allSteps.length;
+
+    function updateUI() {
+      allSteps.forEach((step, i) => {
+        step.classList.toggle("active", i === currentStep);
+      });
+
+      progressFill.style.width = `${((currentStep + 1) / totalSteps) * 100}%`;
+
+      btnPrev.style.display = currentStep === 0 ? "none" : "block";
+      btnNext.textContent = currentStep === totalSteps - 1 ? "Invia" : "Avanti";
+      btnNext.classList.toggle("btn-submit", currentStep === totalSteps - 1);
+    }
+
+    function validateStep(step) {
+      let isValid = true;
+
+      if (step === 0) {
+        const username = document.getElementById("telegram_username").value.trim();
+        if (!username) {
+          showError("error-username", "Username obbligatorio");
+          isValid = false;
+        }
+      } else if (step === 1) {
+        const nome = document.getElementById("nome").value.trim();
+        if (!nome) {
+          showError("error-nome", "Nome obbligatorio");
+          isValid = false;
+        }
+      } else if (step === 2) {
+        if (!document.querySelector('input[name="livello_trading"]:checked')) {
+          showError("error-livello", "Seleziona un livello");
+          isValid = false;
+        }
+      } else if (step === 3) {
+        if (!document.querySelector('input[name="esperienza_broker"]:checked')) {
+          showError("error-esperienza", "Seleziona un'opzione");
+          isValid = false;
+        }
+      } else if (step === 4) {
+        if (!document.querySelector('input[name="capitale"]:checked')) {
+          showError("error-capitale", "Seleziona un importo");
+          isValid = false;
+        }
+      } else if (step === 5) {
+        if (!document.querySelector('input[name="prodotto_preferito"]:checked')) {
+          showError("error-prodotto", "Seleziona un prodotto");
+          isValid = false;
+        }
+      } else if (step === 6) {
+        if (!document.querySelector('input[name="willingness_to_pay"]:checked')) {
+          showError("error-budget", "Seleziona un'opzione");
+          isValid = false;
+        }
+      }
+
+      return isValid;
+    }
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add("show");
+    }
+
+    function clearErrors() {
+      document.querySelectorAll(".error").forEach((e) => {
+        e.classList.remove("show");
+      });
+    }
+
+    btnNext.addEventListener("click", async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      if (!validateStep(currentStep)) return;
+
+      if (currentStep === totalSteps - 1) {
+        await submitForm();
+        return;
+      }
+
+      currentStep++;
+      updateUI();
+      window.scrollTo(0, 0);
+    });
+
+    btnPrev.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearErrors();
+      currentStep--;
+      updateUI();
+      window.scrollTo(0, 0);
+    });
+
+    const WEBHOOK_URL =
+      "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot/sondaggio";
+
+    async function submitForm() {
+      const telegram_username = document.getElementById("telegram_username").value.trim();
+      const risposte = {
+        nome: document.getElementById("nome").value.trim(),
+        livello_trading: document.querySelector('input[name="livello_trading"]:checked')?.value,
+        esperienza_broker: document.querySelector('input[name="esperienza_broker"]:checked')?.value,
+        capitale: document.querySelector('input[name="capitale"]:checked')?.value,
+        prodotto_preferito: document.querySelector('input[name="prodotto_preferito"]:checked')?.value,
+        willingness_to_pay: document.querySelector('input[name="willingness_to_pay"]:checked')?.value,
+        note_libere: document.getElementById("note_libere").value.trim(),
+      };
+
+      btnNext.disabled = true;
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ telegram_username, risposte }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (data.success) {
+          form.style.display = "none";
+          successScreen.classList.add("active");
+        } else if (data.error === "lead_not_found") {
+          btnNext.disabled = false;
+          alert(
+            "Non ti trovo nel sistema. Prima avvia il bot @BotBusinessUP_bot su Telegram con /start, poi rifai il sondaggio con lo stesso username."
+          );
+        } else {
+          btnNext.disabled = false;
+          alert("Errore nell'invio. Controlla l'username e riprova.");
+        }
+      } catch (error) {
+        console.error("Submit error:", error);
+        btnNext.disabled = false;
+        alert("Errore di connessione. Riprova.");
+      }
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>
