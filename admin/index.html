@@ -474,6 +474,15 @@
           <div id="tutorialBreakdown" style="margin-top: 16px; font-size: 13px; color: #999999"></div>
         </div>
 
+        <!-- Servizi -->
+        <div style="margin-bottom: 40px">
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">
+            Servizi
+            <button class="btn-sm" id="addServizioBtn" style="margin-left: 12px">+ Aggiungi servizio</button>
+          </h2>
+          <div id="serviziList" class="table-container" style="padding: 8px 0"></div>
+        </div>
+
         <!-- Filters & Actions -->
         <div>
           <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Lead Database</h2>
@@ -555,6 +564,16 @@
     </div>
   </div>
 
+  <!-- Scheda Cliente Modal -->
+  <div class="broadcast-modal" id="schedaModal">
+    <div class="modal-content" style="max-width: 680px">
+      <div id="schedaBody"></div>
+      <div class="modal-buttons" style="margin-top: 20px">
+        <button class="btn-cancel" id="schedaClose">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API_BASE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
     // La chiave NON è nel codice: si inserisce al login e resta nella sessione del browser.
@@ -605,6 +624,7 @@
         const mRes = await fetch(`${API_BASE}/metrics`, { headers: AUTH_HEADERS });
         if (mRes.ok) renderFunnel(await mRes.json());
 
+        await loadServizi();
         await loadLeads();
 
         document.getElementById("loadingSpinner").classList.remove("show");
@@ -701,7 +721,10 @@
           <td>${lead.sondaggio_completato ? "✅" : "❌"}</td>
           <td>
             <div class="action-buttons">
-              <button class="btn-sm" onclick="editStage('${lead.telegram_id}', '${lead.nome}')">
+              <button class="btn-sm" onclick="openScheda('${lead.telegram_id}')">
+                Scheda
+              </button>
+              <button class="btn-sm" style="background:#2a2a2a;color:#fff" onclick="editStage('${lead.telegram_id}', '${lead.nome}')">
                 Stage
               </button>
               <button class="btn-sm" style="background:#66ffaa;color:#000" onclick="markCliente('${lead.telegram_id}','${(lead.username || lead.telegram_id)}')">
@@ -800,6 +823,183 @@
         })
         .catch((e) => alert("Errore: " + e.message));
     }
+
+    // ============= SERVIZI =============
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+    function fmtDate(d) {
+      return d ? new Date(d).toLocaleString("it-IT") : "—";
+    }
+
+    async function loadServizi() {
+      const r = await fetch(`${API_BASE}/servizi`, { headers: AUTH_HEADERS });
+      if (!r.ok) return;
+      const servizi = await r.json();
+      window.SERVIZI = servizi;
+      const el = document.getElementById("serviziList");
+      if (!servizi.length) {
+        el.innerHTML = '<div style="padding:12px 16px;color:#666">Nessun servizio. Aggiungine uno.</div>';
+        return;
+      }
+      el.innerHTML = servizi
+        .map(
+          (s) => `<div style="display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid #2a2a2a">
+            <div style="flex:1">
+              <b style="color:${s.attivo ? "#0d9e88" : "#666"}">${esc(s.nome)}</b>
+              <span style="color:#666;font-size:12px"> — ${esc(s.descrizione || "")}${s.prezzo ? " · " + esc(s.prezzo) : ""}</span>
+            </div>
+            <button class="btn-sm" style="background:#2a2a2a;color:#fff" onclick="editServizio(${s.id})">Modifica</button>
+            <button class="btn-sm" style="background:#2a2a2a;color:#fff" onclick="toggleServizio(${s.id})">${s.attivo ? "Disattiva" : "Attiva"}</button>
+            <button class="btn-sm" style="background:#ff6666" onclick="delServizio(${s.id})">Elimina</button>
+          </div>`
+        )
+        .join("");
+    }
+
+    function saveServizio(payload) {
+      return fetch(`${API_BASE}/servizi`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify(payload) }).then(() => loadServizi());
+    }
+    function editServizio(id) {
+      const s = window.SERVIZI.find((x) => x.id === id);
+      const nome = prompt("Nome servizio:", s.nome);
+      if (!nome) return;
+      const descrizione = prompt("Descrizione:", s.descrizione || "") || "";
+      const prezzo = prompt("Prezzo:", s.prezzo || "") || "";
+      saveServizio({ id, nome, descrizione, prezzo, attivo: s.attivo });
+    }
+    function toggleServizio(id) {
+      const s = window.SERVIZI.find((x) => x.id === id);
+      saveServizio({ id, nome: s.nome, descrizione: s.descrizione, prezzo: s.prezzo, attivo: !s.attivo });
+    }
+    function delServizio(id) {
+      if (!confirm("Eliminare il servizio?")) return;
+      fetch(`${API_BASE}/servizi-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) }).then(() => loadServizi());
+    }
+
+    // ============= SCHEDA CLIENTE =============
+    async function openScheda(tid) {
+      const r = await fetch(`${API_BASE}/lead?telegram_id=${tid}`, { headers: AUTH_HEADERS });
+      if (!r.ok) return alert("Errore caricamento scheda");
+      renderScheda(await r.json());
+      document.getElementById("schedaModal").classList.add("active");
+    }
+
+    function renderScheda(card) {
+      const l = card.lead || {};
+      const s = card.sondaggio || {};
+      const badge = `<span class="badge ${l.pipeline_stage}">${(l.pipeline_stage || "").toUpperCase()}</span>`;
+      const timeline = [
+        ["Entrato", l.primo_start_at],
+        ["Sondaggio aperto", l.sondaggio_aperto_at],
+        ["Sondaggio completato", l.sondaggio_completato_at],
+        ["Ultimo tutorial", l.ultimo_tutorial_at],
+        ["Interesse", l.interesse_at],
+        ["Cliente dal", l.convertito_at],
+      ]
+        .map((t) => `<div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0"><span style="color:#999">${t[0]}</span><span>${fmtDate(t[1])}</span></div>`)
+        .join("");
+
+      const survey = s && s.id
+        ? [
+            ["Livello", s.livello_trading],
+            ["Esperienza broker", s.broker_usati],
+            ["Capitale", s.capitale],
+            ["Prodotto", s.prodotto_preferito],
+            ["Disposto a pagare", s.willingness_to_pay],
+            ["Note libere", s.note_libere],
+          ]
+            .map((x) => `<div style="font-size:13px;padding:2px 0"><span style="color:#999">${x[0]}:</span> ${esc(x[1] || "—")}</div>`)
+            .join("")
+        : '<div style="color:#666;font-size:13px">Nessun sondaggio compilato</div>';
+
+      const servizi = (card.servizi || [])
+        .map(
+          (sv) => `<div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:3px 0">
+            <span style="flex:1">${esc(sv.nome)} — <span style="color:#0d9e88">${esc(sv.stato)}</span>${sv.note ? ` <span style="color:#666">(${esc(sv.note)})</span>` : ""}</span>
+            <button class="btn-sm" style="background:#ff6666" onclick="delSchedaServizio(${sv.id}, ${l.telegram_id})">X</button>
+          </div>`
+        )
+        .join("") || '<div style="color:#666;font-size:13px">Nessun servizio assegnato</div>';
+
+      const svcOptions = (window.SERVIZI || []).map((x) => `<option value="${x.id}">${esc(x.nome)}</option>`).join("");
+
+      const note = (card.note || [])
+        .map(
+          (n) => `<div style="display:flex;gap:8px;font-size:13px;padding:4px 0;border-bottom:1px solid #2a2a2a">
+            <div style="flex:1">${esc(n.testo)}<div style="color:#666;font-size:11px">${fmtDate(n.created_at)}</div></div>
+            <button class="btn-sm" style="background:#ff6666" onclick="delSchedaNota(${n.id}, ${l.telegram_id})">X</button>
+          </div>`
+        )
+        .join("") || '<div style="color:#666;font-size:13px">Nessuna nota</div>';
+
+      const eventi = (card.eventi || [])
+        .slice(0, 15)
+        .map((e) => `<div style="font-size:12px;color:#999;padding:1px 0">${fmtDate(e.created_at)} — ${esc(e.tipo)}${e.dettaglio ? " (" + esc(e.dettaglio) + ")" : ""}</div>`)
+        .join("") || '<div style="color:#666">—</div>';
+
+      document.getElementById("schedaBody").innerHTML = `
+        <h2 style="color:#0d9e88;margin-bottom:4px">${esc(l.nome || "N/A")} ${badge}</h2>
+        <div style="color:#999;font-size:13px;margin-bottom:16px">@${esc(l.username || l.telegram_id)} · ID ${l.telegram_id}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div><h3 style="font-size:13px;color:#fff;margin-bottom:8px">Timeline</h3>${timeline}</div>
+          <div><h3 style="font-size:13px;color:#fff;margin-bottom:8px">Sondaggio</h3>${survey}</div>
+        </div>
+        <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Servizi del cliente</h3>
+        ${servizi}
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <select id="schedaSvc" style="flex:1;padding:8px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:6px;color:#fff">${svcOptions}</select>
+          <select id="schedaStato" style="padding:8px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:6px;color:#fff">
+            <option value="interessato">interessato</option><option value="attivo">attivo</option><option value="sospeso">sospeso</option><option value="concluso">concluso</option>
+          </select>
+          <button class="btn-sm" onclick="addSchedaServizio(${l.telegram_id})">Assegna</button>
+        </div>
+        <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Note CRM</h3>
+        ${note}
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="schedaNota" placeholder="Aggiungi una nota..." style="flex:1;padding:8px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:6px;color:#fff"/>
+          <button class="btn-sm" onclick="addSchedaNota(${l.telegram_id})">Aggiungi</button>
+        </div>
+        <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Attività</h3>
+        <div style="max-height:120px;overflow:auto">${eventi}</div>
+        <div style="margin-top:16px">
+          <button class="btn-sm" style="background:#66ffaa;color:#000" onclick="markCliente('${l.telegram_id}','${esc(l.username || l.telegram_id)}')">Segna come cliente</button>
+        </div>`;
+    }
+
+    async function addSchedaServizio(tid) {
+      const sid = document.getElementById("schedaSvc").value;
+      const stato = document.getElementById("schedaStato").value;
+      if (!sid) return;
+      await fetch(`${API_BASE}/lead-servizio`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ telegram_id: parseInt(tid), servizio_id: parseInt(sid), stato }) });
+      openScheda(tid);
+    }
+    async function delSchedaServizio(id, tid) {
+      await fetch(`${API_BASE}/lead-servizio-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) });
+      openScheda(tid);
+    }
+    async function addSchedaNota(tid) {
+      const t = document.getElementById("schedaNota").value.trim();
+      if (!t) return;
+      await fetch(`${API_BASE}/nota`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ telegram_id: parseInt(tid), testo: t }) });
+      openScheda(tid);
+    }
+    async function delSchedaNota(id, tid) {
+      await fetch(`${API_BASE}/nota-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) });
+      openScheda(tid);
+    }
+
+    document.getElementById("addServizioBtn").addEventListener("click", () => {
+      const nome = prompt("Nome servizio:");
+      if (!nome) return;
+      const descrizione = prompt("Descrizione:", "") || "";
+      const prezzo = prompt("Prezzo:", "") || "";
+      saveServizio({ nome, descrizione, prezzo, attivo: true });
+    });
+    document.getElementById("schedaClose").addEventListener("click", () => {
+      document.getElementById("schedaModal").classList.remove("active");
+    });
 
     function markCliente(telegramId, label) {
       if (!confirm(`Segnare @${label} come CLIENTE (iscritto ai servizi)?`)) return;
