@@ -533,6 +533,9 @@
 
       if (!validateStep(currentStep)) return;
 
+      // Traccia "sondaggio aperto" appena l'utente passa lo step username
+      if (currentStep === 0) pingOpen();
+
       if (currentStep === totalSteps - 1) {
         await submitForm();
         return;
@@ -551,8 +554,20 @@
       window.scrollTo(0, 0);
     });
 
-    const WEBHOOK_URL =
-      "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot/sondaggio";
+    const EDGE_BASE =
+      "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
+    const WEBHOOK_URL = `${EDGE_BASE}/sondaggio`;
+
+    function pingOpen() {
+      const u = document.getElementById("telegram_username").value.trim();
+      if (!u) return;
+      fetch(`${EDGE_BASE}/track`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegram_username: u, event: "sondaggio_aperto" }),
+        keepalive: true,
+      }).catch(() => {});
+    }
 
     async function submitForm() {
       const telegram_username = document.getElementById("telegram_username").value.trim();
