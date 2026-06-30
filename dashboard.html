@@ -49,10 +49,13 @@
         d = await r.json();
         if (!r.ok) throw 0;
       } catch { app.innerHTML = '<div class="err">Errore. Riapri dal bot.</div>'; return; }
-      render(d);
+      let aff = {};
+      try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
+      render(d, aff);
     }
 
-    function render(d) {
+    function render(d, aff) {
+      aff = aff || {};
       const l = d.lead || {};
       const s = d.sondaggio;
       const tutDone = (d.tutorial || []).filter(t => t.completato).length;
@@ -78,6 +81,21 @@
         <div class="card">${profilo}</div>
         <div class="sect">I tuoi servizi</div>
         <div class="card">${serviziHtml}</div>
+        <div class="sect">Affiliazione</div>
+        <div class="card">
+          <div class="ptext" style="margin-bottom:8px">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
+          <div style="word-break:break-all;font-size:13px;color:var(--accent);margin-bottom:8px">${aff.ref_url || "-"}</div>
+          <button class="btn btn-ghost" id="copyRef">Copia link</button>
+        </div>
+        <div class="card">
+          <div class="ptext" style="margin-bottom:8px">Diventa affiliato di un servizio (serve essere attivo; valutiamo la richiesta):</div>
+          <select id="affServ" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px">
+            ${(aff.servizi || []).map(s => `<option value="${s.id}">${s.nome}</option>`).join("")}
+          </select>
+          <input id="affLink" placeholder="Incolla il tuo ref link" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px" />
+          <button class="btn btn-accent" id="affSend">Invia richiesta</button>
+          <div id="affList" style="margin-top:10px">${(aff.links || []).map(l => `<div class="row"><span>${l.nome}</span><b style="color:${l.approvato ? "var(--accent)" : "var(--muted)"}">${l.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>
+        </div>
         <div class="sect">Menu</div>
         <div class="item" id="privacyItem"><b>🔒 Privacy e dati</b><span class="ch">›</span></div>
         <div id="privacyPanel" class="card hidden">
@@ -101,6 +119,26 @@
         app.innerHTML = '<div class="err">Dati cancellati. Scrivi /start al bot per ricominciare.</div>';
       });
       document.getElementById("back").addEventListener("click", close);
+
+      const copyBtn = document.getElementById("copyRef");
+      if (copyBtn) copyBtn.addEventListener("click", () => {
+        const url = aff.ref_url || "";
+        if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
+        copyBtn.textContent = "Copiato ✓";
+        setTimeout(() => copyBtn.textContent = "Copia link", 1500);
+      });
+      const affSend = document.getElementById("affSend");
+      if (affSend) affSend.addEventListener("click", async () => {
+        const sid = document.getElementById("affServ").value;
+        const link = document.getElementById("affLink").value.trim();
+        if (!sid || !link) return;
+        affSend.disabled = true; affSend.textContent = "Invio...";
+        try {
+          await fetch(EDGE + "/affiliate-request", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: parseInt(sid), ref_link: link }) });
+          affSend.textContent = "✓ Richiesta inviata";
+          if (TG && TG.showAlert) TG.showAlert("Richiesta inviata. Ti avviso quando viene approvata.");
+        } catch { affSend.disabled = false; affSend.textContent = "Invia richiesta"; }
+      });
     }
     load();
   </script>

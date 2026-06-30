@@ -126,8 +126,11 @@
       try {
         const r = await fetch(EDGE + "/attiva", { method:"POST", headers:{ "Content-Type":"application/json", "x-telegram-init-data": INIT }, body: JSON.stringify({ servizio_id: current.id }) });
         if (!r.ok) throw 0;
+        const data = await r.json().catch(() => ({}));
+        const refBtn = data.ref_link ? `<button class="cta" id="goServ" style="margin-top:14px">Vai al servizio / Iscriviti</button>` : "";
         document.getElementById("attivaView").innerHTML =
-          '<div class="ok"><div class="big">✅</div><b>Attivazione richiesta!</b><span>Ti contattiamo a breve coi passi operativi e il supporto.</span><button class="ghost" id="done2" style="margin-top:18px">Chiudi</button></div>';
+          `<div class="ok"><div class="big">✅</div><b>Attivazione richiesta!</b><span>Ti contattiamo a breve coi passi operativi.${data.ref_link ? " Intanto iscriviti qui:" : ""}</span>${refBtn}<button class="ghost" id="done2" style="margin-top:10px">Chiudi</button></div>`;
+        if (data.ref_link) document.getElementById("goServ").addEventListener("click", () => openLink(data.ref_link));
         document.getElementById("done2").addEventListener("click", () => document.getElementById("sheet").classList.remove("open"));
         if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
       } catch {

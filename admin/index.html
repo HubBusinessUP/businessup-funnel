@@ -483,6 +483,12 @@
           <div id="serviziList" class="table-container" style="padding: 8px 0"></div>
         </div>
 
+        <!-- Affiliazione -->
+        <div style="margin-bottom: 40px">
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Affiliazione — richieste</h2>
+          <div id="affList" class="table-container" style="padding: 8px 0"></div>
+        </div>
+
         <!-- Filters & Actions -->
         <div>
           <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Lead Database</h2>
@@ -625,6 +631,7 @@
         if (mRes.ok) renderFunnel(await mRes.json());
 
         await loadServizi();
+        await loadAffiliati();
         await loadLeads();
 
         document.getElementById("loadingSpinner").classList.remove("show");
@@ -870,7 +877,33 @@
       if (!nome) return;
       const descrizione = prompt("Descrizione:", s.descrizione || "") || "";
       const prezzo = prompt("Prezzo:", s.prezzo || "") || "";
-      saveServizio({ id, nome, descrizione, prezzo, attivo: s.attivo });
+      const categoria = prompt("Categoria:", s.categoria || "") || "";
+      const link_principale = prompt("Link affiliato PRINCIPALE (il tuo, fallback):", s.link_principale || "") || "";
+      saveServizio({ id, nome, descrizione, prezzo, categoria, link_principale, attivo: s.attivo });
+    }
+
+    async function loadAffiliati() {
+      const el = document.getElementById("affList");
+      const r = await fetch(`${API_BASE}/affiliate-pending`, { headers: AUTH_HEADERS });
+      if (!r.ok) { el.innerHTML = '<div style="padding:12px 16px;color:#666">-</div>'; return; }
+      const rows = await r.json();
+      if (!rows.length) { el.innerHTML = '<div style="padding:12px 16px;color:#666">Nessuna richiesta.</div>'; return; }
+      el.innerHTML = rows.map((a) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #2a2a2a">
+          <div style="flex:1">
+            <b style="color:${a.approvato ? "#0d9e88" : "#ffaa66"}">@${esc(a.username || a.telegram_id)}</b>
+            <span style="color:#999;font-size:12px"> — ${esc(a.servizio)} · ${a.approvato ? "APPROVATO" : "in attesa"}</span>
+            <div style="font-size:11px;color:#666;word-break:break-all">${esc(a.ref_link || "")}</div>
+          </div>
+          ${a.approvato
+            ? `<button class="btn-sm" style="background:#2a2a2a;color:#fff" onclick="approveAff(${a.id},false)">Revoca</button>`
+            : `<button class="btn-sm" style="background:#66ffaa;color:#000" onclick="approveAff(${a.id},true)">Approva</button>`}
+        </div>`).join("");
+    }
+    function approveAff(id, approvato) {
+      fetch(`${API_BASE}/affiliate-approve`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id, approvato }) })
+        .then(() => loadAffiliati())
+        .catch((e) => alert("Errore: " + e.message));
     }
     function toggleServizio(id) {
       const s = window.SERVIZI.find((x) => x.id === id);
