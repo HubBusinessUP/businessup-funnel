@@ -15,21 +15,25 @@
     .cat { font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:18px 0 8px; }
     .svc { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:12px; padding:15px 16px; margin-bottom:8px; cursor:pointer; }
     .svc .ic { width:38px; height:38px; border-radius:10px; background:rgba(13,158,136,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-    .svc .t { flex:1; }
-    .svc .t b { font-size:15px; display:block; }
-    .svc .t span { font-size:12px; color:var(--muted); }
+    .svc .t { flex:1; } .svc .t b { font-size:15px; display:block; } .svc .t span { font-size:12px; color:var(--muted); }
     .svc .ch { color:var(--muted); }
     .back { width:100%; margin-top:22px; padding:14px; border:none; border-radius:12px; background:var(--card); color:var(--text); font-weight:600; font-size:15px; cursor:pointer; }
-    /* sheet */
     .sheet { position:fixed; inset:0; background:var(--bg); padding:18px 16px 30px; overflow-y:auto; transform:translateY(100%); transition:transform .25s; }
     .sheet.open { transform:translateY(0); }
-    .sheet .x { font-size:14px; color:var(--muted); cursor:pointer; margin-bottom:10px; display:inline-block; }
-    .sheet h2 { font-size:22px; font-weight:700; }
-    .sheet .meta { font-size:13px; color:var(--muted); margin:4px 0 14px; }
-    .sheet .desc { font-size:15px; margin-bottom:16px; }
+    .x { font-size:14px; color:var(--muted); cursor:pointer; margin-bottom:10px; display:inline-block; }
+    h2 { font-size:22px; font-weight:700; }
+    .meta { font-size:13px; color:var(--muted); margin:4px 0 14px; }
+    .desc { font-size:15px; margin-bottom:16px; }
     .res { display:block; background:var(--card); border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:14px; color:var(--accent); cursor:pointer; }
     .cta { width:100%; padding:15px; border:none; border-radius:12px; background:var(--accent); color:#042; font-weight:700; font-size:16px; cursor:pointer; margin-top:18px; }
-    .note { font-size:12px; color:var(--muted); text-align:center; margin-top:10px; }
+    .ghost { width:100%; padding:13px; border:none; border-radius:12px; background:var(--card); color:var(--text); font-weight:600; font-size:14px; cursor:pointer; margin-top:8px; }
+    .step { background:var(--card); border-radius:12px; padding:16px; margin-bottom:10px; }
+    .step .n { font-size:11px; color:var(--accent); font-weight:600; text-transform:uppercase; }
+    .step .st { font-size:16px; font-weight:600; margin:3px 0; }
+    .step .sb { font-size:14px; color:var(--muted); }
+    .hidden { display:none; }
+    .ok { text-align:center; padding:30px 10px; }
+    .ok .big { font-size:40px; } .ok b { display:block; font-size:18px; margin:10px 0 6px; } .ok span { color:var(--muted); font-size:14px; }
   </style>
 </head>
 <body>
@@ -40,21 +44,37 @@
 
   <div class="sheet" id="sheet">
     <span class="x" id="closeSheet">‹ Indietro</span>
-    <h2 id="sName"></h2>
-    <div class="meta" id="sMeta"></div>
-    <div class="desc" id="sDesc"></div>
-    <div id="sRes"></div>
-    <button class="cta" id="attiva">Attiva servizio</button>
-    <div class="note">Premendo attivi la richiesta: ti ricontattiamo coi passi di attivazione.</div>
+    <div id="infoView">
+      <h2 id="sName"></h2>
+      <div class="meta" id="sMeta"></div>
+      <div class="desc" id="sDesc"></div>
+      <div id="sRes"></div>
+      <button class="cta" id="startAttiva">Attiva servizio</button>
+    </div>
+    <div id="attivaView" class="hidden">
+      <h2>Attivazione</h2>
+      <div class="meta" id="aServ"></div>
+      <div id="aSteps"></div>
+      <button class="cta" id="confirm">Conferma attivazione</button>
+      <button class="ghost" id="backInfo">Torna alla scheda</button>
+    </div>
   </div>
 
   <script>
     const TG = window.Telegram ? window.Telegram.WebApp : null;
     if (TG) { TG.ready(); TG.expand(); }
     const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
+    const INIT = TG ? TG.initData : "";
     const ICONS = { "Broker vs Broker":"🔁","Prop vs Broker":"🏦","Bonus ADM":"🎁","BvB Swap":"🔄" };
     let current = null;
     function openLink(u){ if(TG&&TG.openLink) TG.openLink(u); else window.open(u,"_blank"); }
+
+    // Passi di attivazione (generici per ora, poi personalizzati per servizio)
+    const STEPS = [
+      ["Requisiti", "Controlla di avere capitale ed esperienza adatti a questo metodo (vedi la scheda)."],
+      ["Apri i conti", "Apri o collega i conti broker necessari. Ti guidiamo passo-passo."],
+      ["Conferma", "Premi 'Conferma attivazione': ti contattiamo coi passi operativi e il supporto dedicato."],
+    ];
 
     async function load() {
       let d;
@@ -75,6 +95,7 @@
     function openSheet(id) {
       const s = window.SERVIZI[id]; if (!s) return;
       current = s;
+      showInfo();
       document.getElementById("sName").textContent = s.nome;
       document.getElementById("sMeta").textContent = (s.categoria || "") + (s.prezzo ? " · " + s.prezzo : "");
       document.getElementById("sDesc").textContent = s.descrizione || "";
@@ -83,20 +104,37 @@
       document.querySelectorAll("#sRes .res").forEach(e => e.addEventListener("click", () => openLink(e.dataset.u)));
       document.getElementById("sheet").classList.add("open");
     }
+    function showInfo() { document.getElementById("infoView").classList.remove("hidden"); document.getElementById("attivaView").classList.add("hidden"); }
+    function showAttiva() {
+      document.getElementById("infoView").classList.add("hidden");
+      document.getElementById("attivaView").classList.remove("hidden");
+      document.getElementById("aServ").textContent = current ? current.nome : "";
+      document.getElementById("aSteps").innerHTML = STEPS.map((s,i)=>`<div class="step"><div class="n">Passo ${i+1}</div><div class="st">${s[0]}</div><div class="sb">${s[1]}</div></div>`).join("");
+      document.getElementById("confirm").disabled = false;
+      document.getElementById("confirm").textContent = "Conferma attivazione";
+    }
+
+    document.getElementById("startAttiva").addEventListener("click", showAttiva);
+    document.getElementById("backInfo").addEventListener("click", showInfo);
     document.getElementById("closeSheet").addEventListener("click", () => document.getElementById("sheet").classList.remove("open"));
     document.getElementById("back").addEventListener("click", () => { if (TG) TG.close(); });
 
-    document.getElementById("attiva").addEventListener("click", async () => {
+    document.getElementById("confirm").addEventListener("click", async () => {
       if (!current) return;
-      if (!TG || !TG.initData) { alert("Apri dal bot Telegram."); return; }
-      const btn = document.getElementById("attiva");
+      const btn = document.getElementById("confirm");
       btn.disabled = true; btn.textContent = "Invio...";
       try {
-        await fetch(EDGE + "/attiva", { method:"POST", headers:{ "Content-Type":"application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: current.id }) });
-        btn.textContent = "✓ Richiesta inviata";
-        document.querySelector(".note").textContent = "Fatto! Ti ricontattiamo a breve per l'attivazione.";
-        if (TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
-      } catch { btn.disabled = false; btn.textContent = "Attiva servizio"; }
+        const r = await fetch(EDGE + "/attiva", { method:"POST", headers:{ "Content-Type":"application/json", "x-telegram-init-data": INIT }, body: JSON.stringify({ servizio_id: current.id }) });
+        if (!r.ok) throw 0;
+        document.getElementById("attivaView").innerHTML =
+          '<div class="ok"><div class="big">✅</div><b>Attivazione richiesta!</b><span>Ti contattiamo a breve coi passi operativi e il supporto.</span><button class="ghost" id="done2" style="margin-top:18px">Chiudi</button></div>';
+        document.getElementById("done2").addEventListener("click", () => document.getElementById("sheet").classList.remove("open"));
+        if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
+      } catch {
+        btn.disabled = false; btn.textContent = "Conferma attivazione";
+        if (TG && TG.showAlert) TG.showAlert("Apri questa pagina dal bot (bottone Business List) per confermare.");
+        else alert("Apri dal bot per confermare.");
+      }
     });
 
     load();
