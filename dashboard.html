@@ -16,6 +16,22 @@
     .row { display:flex; justify-content:space-between; padding:6px 0; font-size:14px; }
     .row span { color:var(--muted); }
     .badge { display:inline-block; background:rgba(13,158,136,.18); color:var(--accent); font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; }
+    .status { display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; }
+    .status .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+    .status.on { color:#3ddc97; }
+    .status.on .dot { background:#3ddc97; animation:pulseGreen 2.2s ease-out infinite; }
+    .status.off { color:#ff5a5a; }
+    .status.off .dot { background:#ff5a5a; animation:pulseRed 1.2s ease-out infinite; }
+    @keyframes pulseGreen {
+      0% { box-shadow:0 0 0 0 rgba(61,220,151,.5); }
+      70% { box-shadow:0 0 0 7px rgba(61,220,151,0); }
+      100% { box-shadow:0 0 0 0 rgba(61,220,151,0); }
+    }
+    @keyframes pulseRed {
+      0% { box-shadow:0 0 0 0 rgba(255,90,90,.6); transform:scale(1); }
+      70% { box-shadow:0 0 0 8px rgba(255,90,90,0); transform:scale(1.08); }
+      100% { box-shadow:0 0 0 0 rgba(255,90,90,0); transform:scale(1); }
+    }
     .sect { font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:18px 0 8px; }
     .item { display:flex; justify-content:space-between; align-items:center; background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:8px; cursor:pointer; }
     .item b { font-size:15px; }
@@ -60,6 +76,7 @@
       const s = d.sondaggio;
       const tutDone = (d.tutorial || []).filter(t => t.completato).length;
       const servizi = d.servizi || [];
+      const attivo = servizi.some(x => String(x.stato || "").toLowerCase() === "attivo");
       let profilo = '<div class="ptext">Sondaggio non ancora fatto.</div>';
       if (s) profilo = `
         <div class="row"><span>Livello</span><b>${s.livello_trading || "-"}</b></div>
@@ -74,7 +91,8 @@
         <h1>Ciao ${l.nome || ""}</h1>
         <div class="sub">La tua dashboard personale</div>
         <div class="card">
-          <div class="row"><span>Stato</span><span class="badge">${STAGE[l.pipeline_stage] || l.pipeline_stage || "-"}</span></div>
+          <div class="row"><span>Stato</span><span class="status ${attivo ? "on" : "off"}"><span class="dot"></span>${attivo ? "Attivo" : "Non attivo"}</span></div>
+          <div class="row"><span>Fase</span><span class="badge">${STAGE[l.pipeline_stage] || l.pipeline_stage || "-"}</span></div>
           <div class="row"><span>Tutorial completati</span><b>${tutDone}/4</b></div>
         </div>
         <div class="sect">Il tuo profilo</div>
