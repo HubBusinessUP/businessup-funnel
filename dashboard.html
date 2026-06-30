@@ -84,8 +84,25 @@
 
     function close() { if (TG) TG.close(); }
 
+    // Su alcuni client initData non è pronto nell'istante in cui parte la pagina:
+    // aspettiamo che arrivi (fino a ~2,5s) prima di mostrare l'errore.
+    function waitInitData(timeoutMs) {
+      return new Promise(resolve => {
+        if (TG && TG.initData) return resolve(true);
+        const start = Date.now();
+        const iv = setInterval(() => {
+          if (TG && TG.initData) { clearInterval(iv); resolve(true); }
+          else if (Date.now() - start > timeoutMs) { clearInterval(iv); resolve(false); }
+        }, 150);
+      });
+    }
+
     async function load() {
-      if (!TG || !TG.initData) { app.innerHTML = '<div class="err">Apri questa pagina dal bot Telegram.</div>'; return; }
+      const ready = await waitInitData(2500);
+      if (!ready) {
+        app.innerHTML = '<div class="err">Non riesco a leggere i tuoi dati Telegram.<br><br>Chiudi questa finestra (×) e riapri la <b>Dashboard</b> dal menu del bot.<br>Evita "Reload Page": apri sempre dal pulsante.<br><br><button class="btn btn-ghost" style="max-width:200px;margin:18px auto 0" onclick="location.reload()">Riprova</button></div>';
+        return;
+      }
       let d;
       try {
         const r = await fetch(EDGE + "/me", { headers: { "x-telegram-init-data": TG.initData } });
