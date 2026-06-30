@@ -82,10 +82,11 @@
         caratteristiche: [
           "Arbitraggio sullo stesso strumento tra due broker",
           "Rischio direzionale molto basso",
+          "Servono 2 conti broker (€1.000 ciascuno) + una VPS",
           "Gestione attiva: 1-2 ore al giorno",
-          "Servono 2 conti broker ECN/STP con EA permessi",
         ],
-        costi: [["Capitale minimo", "€2.000"], ["Impegno", "1-2 ore/giorno"], ["Tipo", "Gestione attiva"]],
+        costi: [["Budget minimo", "€2.000 (€1.000 × 2 broker)"], ["VPS", "A parte — vedi tutorial"], ["Profit split", "50% a ciclo"], ["Impegno", "1-2 ore/giorno"]],
+        nota: "Lo split del 50% si salda a fine ciclo. Senza saldare, il ciclo successivo non parte.",
       },
       prop: {
         caratteristiche: [
@@ -191,10 +192,11 @@
 
       const costi = Array.isArray(content.costi) ? content.costi : [];
       const costiRows = costi.slice();
-      if (svc.prezzo) costiRows.unshift(["Prezzo servizio", svc.prezzo]);
+      if (svc.prezzo && !/da definire/i.test(svc.prezzo)) costiRows.unshift(["Prezzo servizio", svc.prezzo]);
       const costiHtml = costiRows.length
         ? `<div class="lbl">Costi e info</div><div class="group">${costiRows.map(r => `<div class="li"><span class="k">${r[0]}</span><span class="lk">${r[1]}</span></div>`).join("")}</div>`
         : "";
+      const notaHtml = content.nota ? `<div class="group pad" style="margin-top:6px"><div class="ptext">ℹ️ ${content.nota}</div></div>` : "";
 
       const newsRow = attivo
         ? `<div class="li tap" data-go="news.html"><span class="k">News del servizio<small>Aggiornamenti dedicati</small></span><span class="ch">›</span></div>`
@@ -236,6 +238,8 @@
         ${caratteristicheHtml}
 
         ${costiHtml}
+
+        ${notaHtml}
 
         ${approfondisciHtml}
 
