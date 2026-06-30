@@ -67,53 +67,89 @@
       } catch { app.innerHTML = '<div class="err">Errore. Riapri dal bot.</div>'; return; }
       let aff = {};
       try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
-      render(d, aff);
+      let totServizi = 0;
+      try { const rc = await fetch(EDGE + "/catalogo"); if (rc.ok) { const c = await rc.json(); totServizi = (c.categorie || []).reduce((n, cat) => n + ((cat.servizi || []).length), 0); } } catch {}
+      render(d, aff, totServizi);
     }
 
-    function render(d, aff) {
+    // Fase del funnel in cui si trova l'utente.
+    function faseLabel(l, sondDone, tutDone, attivo) {
+      const st = l.pipeline_stage;
+      if (st === "cliente" || attivo) return "Cliente";
+      if (st === "squalificato") return "Non idoneo";
+      if (!sondDone) return "Sondaggio";
+      if (tutDone < 4) return "Tutorial";
+      return "Valutazione";
+    }
+    // Idoneità in base al sondaggio (verrà approfondita con il nuovo sondaggio).
+    function idoneita(l, attivo) {
+      const st = l.pipeline_stage;
+      if (st === "cliente" || attivo) return { txt: "Cliente attivo", col: "var(--accent)" };
+      if (st === "qualificato") return { txt: "Idoneo", col: "var(--accent)" };
+      if (st === "squalificato") return { txt: "Non idoneo ora", col: "#ff5a5a" };
+      return { txt: "Da valutare", col: "var(--muted)" };
+    }
+    // Livello sintetico dal sondaggio.
+    function livelloLabel(s) {
+      const v = String((s && s.livello_trading) || "").toLowerCase();
+      if (v.includes("avanz") || v.includes("espert")) return "Esperto";
+      if (v.includes("interm")) return "Intermedio";
+      if (v.includes("princ") || v.includes("base")) return "Base";
+      return (s && s.livello_trading) || "-";
+    }
+
+    function render(d, aff, totServizi) {
       aff = aff || {};
+      totServizi = totServizi || 0;
       const l = d.lead || {};
       const s = d.sondaggio;
       const tutDone = (d.tutorial || []).filter(t => t.completato).length;
       const servizi = d.servizi || [];
-      const attivo = servizi.some(x => String(x.stato || "").toLowerCase() === "attivo");
+      const serviziAttivi = servizi.filter(x => String(x.stato || "").toLowerCase() === "attivo");
+      const attivo = serviziAttivi.length > 0;
+      const sondDone = !!s || !!l.sondaggio_completato;
+      const fase = faseLabel(l, sondDone, tutDone, attivo);
+      const idon = idoneita(l, attivo);
       let profilo = '<div class="ptext">Sondaggio non ancora fatto.</div>';
       if (s) profilo = `
-        <div class="row"><span>Livello</span><b>${s.livello_trading || "-"}</b></div>
+        <div class="row"><span>Idoneità</span><b style="color:${idon.col}">${idon.txt}</b></div>
+        <div class="row"><span>Livello</span><b>${livelloLabel(s)}</b></div>
         <div class="row"><span>Esperienza</span><b>${s.broker_usati || "-"}</b></div>
         <div class="row"><span>Capitale</span><b>${s.capitale || "-"}</b></div>
         <div class="row"><span>Interesse</span><b>${s.prodotto_preferito || "-"}</b></div>`;
-      const serviziHtml = servizi.length
-        ? servizi.map(x => `<div class="row"><span>${x.nome}</span><b>${x.stato}</b></div>`).join("")
-        : '<div class="ptext">Nessun servizio attivo.</div>';
+      const serviziHtml = serviziAttivi.length
+        ? serviziAttivi.map(x => `<div class="item serv-item" data-nome="${(x.nome || "").replace(/"/g, "&quot;")}"><b>${x.nome}</b><span class="ch">›</span></div>`).join("")
+        : '<div class="ptext">Nessun servizio attivo. Vai su Business List per attivarne uno.</div>';
+
+      // Sezione affiliazione: attivo → ref link + condividi; non attivo → richiesta.
+      const affHtml = attivo
+        ? `<div class="ptext" style="margin-bottom:8px">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
+           <div style="word-break:break-all;font-size:13px;color:var(--accent);margin-bottom:10px">${aff.ref_url || "-"}</div>
+           <button class="btn btn-accent" id="shareRef">Condividi</button>
+           <button class="btn btn-ghost" id="copyRef">Copia link</button>
+           <div id="affList" style="margin-top:10px">${(aff.links || []).map(x => `<div class="row"><span>${x.nome}</span><b style="color:${x.approvato ? "var(--accent)" : "var(--muted)"}">${x.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>`
+        : `<div class="ptext" style="margin-bottom:8px">Diventa affiliato di un servizio. Manda la richiesta col tuo ref link: la valutiamo e ti avvisiamo.</div>
+           <select id="affServ" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px">
+             ${(aff.servizi || []).map(x => `<option value="${x.id}">${x.nome}</option>`).join("")}
+           </select>
+           <input id="affLink" placeholder="Incolla il tuo ref link" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px" />
+           <button class="btn btn-accent" id="affSend">Invia richiesta</button>
+           <div id="affList" style="margin-top:10px">${(aff.links || []).map(x => `<div class="row"><span>${x.nome}</span><b style="color:${x.approvato ? "var(--accent)" : "var(--muted)"}">${x.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>`;
 
       app.innerHTML = `
         <h1>Ciao ${l.nome || ""}</h1>
         <div class="sub">La tua dashboard personale</div>
         <div class="card">
           <div class="row"><span>Stato</span><span class="status ${attivo ? "on" : "off"}"><span class="dot"></span>${attivo ? "Attivo" : "Non attivo"}</span></div>
-          <div class="row"><span>Fase</span><span class="badge">${STAGE[l.pipeline_stage] || l.pipeline_stage || "-"}</span></div>
-          <div class="row"><span>Tutorial completati</span><b>${tutDone}/4</b></div>
+          <div class="row"><span>Fase</span><span class="badge">${fase}</span></div>
+          <div class="row"><span>Servizi attivi</span><b>${serviziAttivi.length}/${totServizi || "-"}</b></div>
         </div>
         <div class="sect">Il tuo profilo</div>
         <div class="card">${profilo}</div>
         <div class="sect">I tuoi servizi</div>
         <div class="card">${serviziHtml}</div>
         <div class="sect">Affiliazione</div>
-        <div class="card">
-          <div class="ptext" style="margin-bottom:8px">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
-          <div style="word-break:break-all;font-size:13px;color:var(--accent);margin-bottom:8px">${aff.ref_url || "-"}</div>
-          <button class="btn btn-ghost" id="copyRef">Copia link</button>
-        </div>
-        <div class="card">
-          <div class="ptext" style="margin-bottom:8px">Diventa affiliato di un servizio (serve essere attivo; valutiamo la richiesta):</div>
-          <select id="affServ" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px">
-            ${(aff.servizi || []).map(s => `<option value="${s.id}">${s.nome}</option>`).join("")}
-          </select>
-          <input id="affLink" placeholder="Incolla il tuo ref link" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px" />
-          <button class="btn btn-accent" id="affSend">Invia richiesta</button>
-          <div id="affList" style="margin-top:10px">${(aff.links || []).map(l => `<div class="row"><span>${l.nome}</span><b style="color:${l.approvato ? "var(--accent)" : "var(--muted)"}">${l.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>
-        </div>
+        <div class="card">${affHtml}</div>
         <div class="sect">Menu</div>
         <div class="item" id="privacyItem"><b>🔒 Privacy e dati</b><span class="ch">›</span></div>
         <div id="privacyPanel" class="card hidden">
@@ -137,6 +173,23 @@
         app.innerHTML = '<div class="err">Dati cancellati. Scrivi /start al bot per ricominciare.</div>';
       });
       document.getElementById("back").addEventListener("click", close);
+
+      // Servizi attivi → dashboard del servizio (in arrivo)
+      document.querySelectorAll(".serv-item").forEach(el => el.addEventListener("click", () => {
+        const nome = el.getAttribute("data-nome") || "";
+        if (TG && TG.showAlert) TG.showAlert("Dashboard di \"" + nome + "\" in arrivo.");
+      }));
+
+      // Condividi ref link
+      const shareBtn = document.getElementById("shareRef");
+      if (shareBtn) shareBtn.addEventListener("click", () => {
+        const url = aff.ref_url || "";
+        if (!url) return;
+        const msg = "Entra in Business UP. Nessun guru, nessun filtro: dati e logica.";
+        if (TG && TG.openTelegramLink) TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(msg));
+        else if (navigator.share) navigator.share({ url, text: msg }).catch(() => {});
+        else if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
+      });
 
       const copyBtn = document.getElementById("copyRef");
       if (copyBtn) copyBtn.addEventListener("click", () => {
