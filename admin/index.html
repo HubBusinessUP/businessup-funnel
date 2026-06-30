@@ -483,6 +483,12 @@
           <div id="serviziList" class="table-container" style="padding: 8px 0"></div>
         </div>
 
+        <!-- Fatturato -->
+        <div style="margin-bottom: 40px">
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Fatturato</h2>
+          <div id="fatturato" class="table-container" style="padding: 14px 16px"></div>
+        </div>
+
         <!-- Affiliazione -->
         <div style="margin-bottom: 40px">
           <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Affiliazione — richieste</h2>
@@ -524,6 +530,9 @@
             </button>
             <button class="btn-sm" style="background: #ff6666; margin-top: 8px" id="broadcastDisqualified">
               📤 Broadcast Squalificati
+            </button>
+            <button class="btn-sm" style="background: #2a2a2a; color: #fff; margin-top: 8px" onclick="exportCSV()">
+              ⬇ Export CSV
             </button>
           </div>
         </div>
@@ -632,6 +641,7 @@
 
         await loadServizi();
         await loadAffiliati();
+        await loadFatturato();
         await loadLeads();
 
         document.getElementById("loadingSpinner").classList.remove("show");
@@ -905,6 +915,51 @@
         .then(() => loadAffiliati())
         .catch((e) => alert("Errore: " + e.message));
     }
+
+    async function loadFatturato() {
+      const el = document.getElementById("fatturato");
+      const r = await fetch(`${API_BASE}/fatturato`, { headers: AUTH_HEADERS });
+      if (!r.ok) { el.innerHTML = '<span style="color:#666">-</span>'; return; }
+      const f = await r.json();
+      const eur = (n) => "€" + (Number(n) || 0).toLocaleString("it-IT");
+      const perServ = Object.entries(f.perServizio || {}).map(([k, v]) => `${esc(k)}: <b style="color:#0d9e88">${eur(v)}</b>`).join(" · ") || "-";
+      const perMese = Object.entries(f.perMese || {}).sort().map(([k, v]) => `${k}: ${eur(v)}`).join(" · ") || "-";
+      el.innerHTML = `
+        <div style="font-size:28px;font-weight:700;color:#0d9e88">${eur(f.totale)}</div>
+        <div style="font-size:12px;color:#666;margin-bottom:10px">${f.pagamenti} pagamenti</div>
+        <div style="font-size:13px;margin-bottom:4px"><span style="color:#999">Per servizio:</span> ${perServ}</div>
+        <div style="font-size:13px"><span style="color:#999">Per mese:</span> ${perMese}</div>`;
+    }
+    function addPagamento(tid) {
+      const importo = parseFloat((prompt("Importo incassato (in euro):") || "").replace(",", "."));
+      if (!importo) return;
+      let servizio_id = null;
+      const svc = window.SERVIZI || [];
+      if (svc.length) {
+        const sid = prompt("ID servizio (vuoto = nessuno):\n" + svc.map((s) => `${s.id} = ${s.nome}`).join("\n"), "");
+        if (sid) servizio_id = parseInt(sid);
+      }
+      const nota = prompt("Nota (opzionale):", "") || "";
+      fetch(`${API_BASE}/pagamento`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ telegram_id: parseInt(tid), servizio_id, importo, nota }) })
+        .then(() => { loadFatturato(); openScheda(tid); })
+        .catch((e) => alert("Errore: " + e.message));
+    }
+    function delPagamento(id, tid) {
+      fetch(`${API_BASE}/pagamento-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) })
+        .then(() => { loadFatturato(); openScheda(tid); })
+        .catch((e) => alert("Errore: " + e.message));
+    }
+    function exportCSV() {
+      const cols = ["telegram_id", "username", "nome", "pipeline_stage", "sondaggio_completato", "created_at"];
+      const head = cols.join(",");
+      const rows = (allLeads || []).map((l) => cols.map((c) => `"${String(l[c] == null ? "" : l[c]).replace(/"/g, '""')}"`).join(","));
+      const csv = [head, ...rows].join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "businessup-lead.csv";
+      a.click();
+    }
     function toggleServizio(id) {
       const s = window.SERVIZI.find((x) => x.id === id);
       saveServizio({ id, nome: s.nome, descrizione: s.descrizione, prezzo: s.prezzo, attivo: !s.attivo });
@@ -975,6 +1030,9 @@
         .map((e) => `<div style="font-size:12px;color:#999;padding:1px 0">${fmtDate(e.created_at)} — ${esc(e.tipo)}${e.dettaglio ? " (" + esc(e.dettaglio) + ")" : ""}</div>`)
         .join("") || '<div style="color:#666">—</div>';
 
+      const pagHtml = (card.pagamenti || []).length
+        ? (card.pagamenti || []).map((p) => `<div class="row"><span>€${(Number(p.importo)||0).toLocaleString("it-IT")} ${p.nomeServ ? "· " + esc(p.nomeServ) : ""} ${p.nota ? "· " + esc(p.nota) : ""}</span><button class="btn-sm" style="background:#ff6666" onclick="delPagamento(${p.id}, ${card.lead.telegram_id})">X</button></div>`).join("")
+        : '<div style="color:#666;font-size:13px">Nessun pagamento</div>';
       const tutHtml = (card.tutorial || []).length
         ? (card.tutorial || [])
             .map((t) => `${esc(t.nome)} <span style="color:${t.completato ? "#0d9e88" : "#999"}">${t.completato ? "(completato)" : "(step " + ((t.ultimo_step || 0) + 1) + ")"}</span>`)
@@ -996,6 +1054,9 @@
           </select>
           <button class="btn-sm" onclick="addSchedaServizio(${l.telegram_id})">Assegna</button>
         </div>
+        <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Pagamenti / incassi</h3>
+        ${pagHtml}
+        <button class="btn-sm" style="margin-top:8px" onclick="addPagamento(${l.telegram_id})">+ Aggiungi pagamento</button>
         <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Tutorial seguiti</h3>
         <div style="font-size:13px">${tutHtml}</div>
         <h3 style="font-size:13px;color:#fff;margin:18px 0 8px">Note CRM</h3>
