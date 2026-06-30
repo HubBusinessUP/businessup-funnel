@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Servizio - Business UP</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0b0c0e; --surface:#15171a; --surface2:#1d2024; --line:rgba(255,255,255,.07);
+      --text:#eceef0; --muted:#8b9096; --accent:#0d9e88; --accent2:#19cdac; --danger:#ff5d5d;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.45; -webkit-font-smoothing:antialiased; padding:10px 14px calc(34px + env(safe-area-inset-bottom)); }
+    .wrap { max-width:520px; margin:0 auto; }
+
+    .appbar { display:flex; align-items:center; gap:12px; padding:8px 2px 18px; }
+    .nav { width:38px; height:38px; border-radius:11px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center; font-size:20px; color:var(--text); cursor:pointer; flex:none; }
+    .ic { width:42px; height:42px; border-radius:13px; background:rgba(13,158,136,.16); display:grid; place-items:center; font-size:20px; flex:none; }
+    .appbar .t { font-size:12px; color:var(--muted); font-weight:600; }
+    .appbar .n { font-size:18px; font-weight:700; letter-spacing:-.2px; line-height:1.2; }
+
+    .hero { background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; margin-bottom:18px; }
+    .hero .name { font-size:21px; font-weight:800; letter-spacing:-.3px; }
+    .hero .meta { font-size:13px; color:var(--muted); margin-top:4px; }
+    .hero .statwrap { margin-top:14px; }
+    .status { display:inline-flex; align-items:center; gap:9px; font-size:15px; font-weight:700; padding:7px 13px; border-radius:999px; background:var(--surface2); border:1px solid var(--line); }
+    .status .dot { width:9px; height:9px; border-radius:50%; }
+    .status.on { color:var(--accent2); } .status.on .dot { background:var(--accent2); animation:pulse 2.2s ease-out infinite; }
+    .status.mid { color:#e9b949; } .status.mid .dot { background:#e9b949; }
+    .status.off { color:var(--muted); } .status.off .dot { background:var(--muted); }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(25,205,172,.45);} 70%{box-shadow:0 0 0 7px rgba(25,205,172,0);} 100%{box-shadow:0 0 0 0 rgba(25,205,172,0);} }
+
+    .lbl { font-size:12px; color:var(--muted); font-weight:600; margin:20px 6px 8px; }
+    .group { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-bottom:6px; }
+    .group.pad { padding:16px; }
+    .li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px 16px; border-top:1px solid var(--line); font-size:15px; }
+    .li:first-child { border-top:none; }
+    .li .k { color:var(--text); font-weight:500; }
+    .li .k small { display:block; color:var(--muted); font-weight:400; font-size:12px; margin-top:2px; }
+    .li.tap { cursor:pointer; transition:background .12s ease; }
+    .li.tap:active { background:var(--surface2); }
+    .li .ch { color:var(--muted); font-size:19px; }
+    .li .lk { color:var(--accent2); font-weight:600; }
+    .ptext { font-size:14px; color:var(--muted); line-height:1.6; white-space:pre-line; }
+
+    .btn { width:100%; padding:15px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; margin-top:10px; transition:transform .1s ease, filter .1s ease; }
+    .btn:active { transform:scale(.99); filter:brightness(.95); }
+    .btn-accent { background:var(--accent); color:#04221c; }
+    .btn-ghost { background:var(--surface2); color:var(--text); border:1px solid var(--line); }
+    .err { text-align:center; color:var(--muted); padding:60px 20px; font-size:14px; }
+    .hidden { display:none; }
+    .okbox { text-align:center; padding:8px 4px; }
+    .okbox .big { font-size:38px; } .okbox b { display:block; font-size:17px; margin:8px 0 6px; } .okbox span { color:var(--muted); font-size:14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="app"><div class="err">Caricamento…</div></div>
+  </div>
+
+  <script>
+    const TG = window.Telegram ? window.Telegram.WebApp : null;
+    if (TG) { TG.ready(); TG.expand(); }
+    const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
+    const app = document.getElementById("app");
+    const ICONS = { "Broker vs Broker":"🔁", "Prop vs Broker":"🏦", "Bonus ADM":"🎁", "BvB Swap":"🔄" };
+
+    function qid() { const m = new URLSearchParams(location.search).get("id"); return m ? parseInt(m) : null; }
+    function openLink(u) { if (!u) return; if (TG && TG.openLink) TG.openLink(u); else window.open(u, "_blank"); }
+    function goBack() { history.length > 1 ? history.back() : (location.href = "dashboard.html"); }
+
+    // Mappa servizio -> tutorial Mini App
+    function tutKey(s) {
+      const v = ((s.tipo || "") + " " + (s.nome || "")).toLowerCase();
+      if (v.includes("swap")) return "swap";
+      if (v.includes("prop")) return "prop";
+      if (v.includes("bonus")) return "bonus";
+      if (v.includes("broker")) return "bvb";
+      return null;
+    }
+
+    function waitInitData(timeoutMs) {
+      return new Promise(resolve => {
+        if (TG && TG.initData) return resolve(true);
+        const start = Date.now();
+        const iv = setInterval(() => {
+          if (TG && TG.initData) { clearInterval(iv); resolve(true); }
+          else if (Date.now() - start > timeoutMs) { clearInterval(iv); resolve(false); }
+        }, 150);
+      });
+    }
+
+    async function load() {
+      const id = qid();
+      if (!id) { app.innerHTML = '<div class="err">Servizio non specificato.</div>'; return; }
+
+      // Catalogo (pubblico)
+      let svc = null;
+      try {
+        const c = await (await fetch(EDGE + "/catalogo")).json();
+        for (const cat of (c.categorie || [])) for (const s of (cat.servizi || [])) if (s.id === id) svc = s;
+      } catch {}
+      if (!svc) { app.innerHTML = '<div class="err">Servizio non trovato.</div>'; return; }
+
+      // Stato dell'utente per questo servizio (richiede initData)
+      let stato = null;
+      const ready = await waitInitData(2000);
+      if (ready) {
+        try {
+          const me = await (await fetch(EDGE + "/me", { headers: { "x-telegram-init-data": TG.initData } })).json();
+          const mine = (me.servizi || []).find(x => x.nome === svc.nome);
+          if (mine) stato = String(mine.stato || "").toLowerCase();
+        } catch {}
+      }
+      render(svc, stato);
+    }
+
+    function render(svc, stato) {
+      const icon = ICONS[svc.nome] || "📊";
+      const meta = [svc.categoria, svc.prezzo].filter(Boolean).join(" · ");
+      const attivo = stato === "attivo";
+      const interessato = stato === "interessato";
+      const statoCls = attivo ? "on" : interessato ? "mid" : "off";
+      const statoTxt = attivo ? "Attivo" : interessato ? "In attivazione" : "Non attivo";
+
+      const key = tutKey(svc);
+      const risorse = Array.isArray(svc.risorse) ? svc.risorse : [];
+
+      const tutRow = key
+        ? `<div class="li tap" data-go="tutorial/${key}.html"><span class="k">Come funziona<small>Guida al metodo, passo per passo</small></span><span class="ch">›</span></div>`
+        : "";
+      const newsRow = attivo
+        ? `<div class="li tap" data-go="news.html"><span class="k">News del servizio<small>Aggiornamenti dedicati</small></span><span class="ch">›</span></div>`
+        : "";
+
+      const risorseHtml = risorse.length
+        ? `<div class="lbl">Risorse</div><div class="group">${risorse.map(r => `<div class="li tap" data-link="${r.url}"><span class="lk">${r.label || r.url}</span><span class="ch">↗</span></div>`).join("")}</div>`
+        : "";
+
+      const cta = attivo
+        ? (key ? `<button class="btn btn-accent" id="openMethod">Apri il metodo</button>` : "")
+        : interessato
+          ? `<div class="group pad"><div class="ptext">Hai richiesto l'attivazione. Ti contattiamo a breve coi passi operativi.</div></div>`
+          : `<button class="btn btn-accent" id="attiva">Attiva questo servizio</button>`;
+
+      app.innerHTML = `
+        <div class="appbar">
+          <div class="nav" id="back">‹</div>
+          <div class="ic">${icon}</div>
+          <div>
+            <div class="t">Servizio</div>
+            <div class="n">${svc.nome}</div>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="name">${svc.nome}</div>
+          ${meta ? `<div class="meta">${meta}</div>` : ""}
+          <div class="statwrap"><span class="status ${statoCls}"><span class="dot"></span>${statoTxt}</span></div>
+        </div>
+
+        ${svc.descrizione ? `<div class="lbl">Cos'è</div><div class="group pad"><div class="ptext">${svc.descrizione}</div></div>` : ""}
+
+        ${(tutRow || newsRow) ? `<div class="lbl">Approfondisci</div><div class="group">${tutRow}${newsRow}</div>` : ""}
+
+        ${risorseHtml}
+
+        <div style="margin-top:18px">${cta}</div>
+        <button class="btn btn-ghost" id="back2" style="margin-top:10px">Torna alla dashboard</button>
+
+        <div id="result" class="hidden" style="margin-top:14px"></div>`;
+
+      document.getElementById("back").addEventListener("click", goBack);
+      document.getElementById("back2").addEventListener("click", goBack);
+
+      document.querySelectorAll("[data-go]").forEach(el => el.addEventListener("click", () => { location.href = el.getAttribute("data-go"); }));
+      document.querySelectorAll("[data-link]").forEach(el => el.addEventListener("click", () => openLink(el.getAttribute("data-link"))));
+
+      const openMethod = document.getElementById("openMethod");
+      if (openMethod) openMethod.addEventListener("click", () => { if (key) location.href = "tutorial/" + key + ".html"; });
+
+      const attivaBtn = document.getElementById("attiva");
+      if (attivaBtn) attivaBtn.addEventListener("click", async () => {
+        if (!TG || !TG.initData) { if (TG && TG.showAlert) TG.showAlert("Apri dal bot per attivare."); return; }
+        attivaBtn.disabled = true; attivaBtn.textContent = "Invio…";
+        try {
+          const r = await fetch(EDGE + "/attiva", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: svc.id }) });
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok) throw 0;
+          const res = document.getElementById("result");
+          res.className = "group pad";
+          res.innerHTML = `<div class="okbox"><div class="big">✅</div><b>Attivazione richiesta</b><span>Ti contattiamo a breve coi passi operativi.${data.ref_link ? " Intanto iscriviti qui:" : ""}</span></div>${data.ref_link ? `<button class="btn btn-accent" id="goServ" style="margin-top:12px">Vai al servizio / Iscriviti</button>` : ""}`;
+          attivaBtn.classList.add("hidden");
+          if (data.ref_link) document.getElementById("goServ").addEventListener("click", () => openLink(data.ref_link));
+          if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
+        } catch {
+          attivaBtn.disabled = false; attivaBtn.textContent = "Attiva questo servizio";
+          if (TG && TG.showAlert) TG.showAlert("Errore. Riprova dal bot.");
+        }
+      });
+    }
+
+    load();
+  </script>
+</body>
+</html>
