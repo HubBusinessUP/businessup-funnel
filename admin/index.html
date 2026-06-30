@@ -495,6 +495,19 @@
           <div id="affList" class="table-container" style="padding: 8px 0"></div>
         </div>
 
+        <!-- News -->
+        <div style="margin-bottom: 40px">
+          <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">News / Aggiornamenti</h2>
+          <div class="table-container" style="padding: 14px 16px; display:flex; flex-direction:column; gap:8px">
+            <input id="newsTitolo" placeholder="Titolo (opzionale)" style="padding:10px;border-radius:8px;background:#0a0a0a;color:#fff;border:1px solid #2a2a2a" />
+            <textarea id="newsTesto" placeholder="Testo della news..." style="padding:10px;border-radius:8px;background:#0a0a0a;color:#fff;border:1px solid #2a2a2a;min-height:70px;font-family:inherit"></textarea>
+            <select id="newsServ" style="padding:10px;border-radius:8px;background:#0a0a0a;color:#fff;border:1px solid #2a2a2a"></select>
+            <input id="newsImg" placeholder="URL immagine (opzionale)" style="padding:10px;border-radius:8px;background:#0a0a0a;color:#fff;border:1px solid #2a2a2a" />
+            <button class="btn-sm" style="background:#0d9e88;color:#042" onclick="postNews()">Pubblica news</button>
+          </div>
+          <div id="newsList" class="table-container" style="padding: 8px 0; margin-top: 12px"></div>
+        </div>
+
         <!-- Filters & Actions -->
         <div>
           <h2 style="font-size: 18px; margin-bottom: 16px; color: #ffffff">Lead Database</h2>
@@ -642,6 +655,7 @@
         await loadServizi();
         await loadAffiliati();
         await loadFatturato();
+        await loadNews();
         await loadLeads();
 
         document.getElementById("loadingSpinner").classList.remove("show");
@@ -948,6 +962,37 @@
       fetch(`${API_BASE}/pagamento-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) })
         .then(() => { loadFatturato(); openScheda(tid); })
         .catch((e) => alert("Errore: " + e.message));
+    }
+    async function loadNews() {
+      const sel = document.getElementById("newsServ");
+      if (sel) sel.innerHTML = '<option value="">Generale (tutti)</option>' + (window.SERVIZI || []).map((s) => `<option value="${s.id}">${esc(s.nome)}</option>`).join("");
+      const el = document.getElementById("newsList");
+      const r = await fetch(`${API_BASE}/news-admin`, { headers: AUTH_HEADERS });
+      if (!r.ok) { el.innerHTML = ""; return; }
+      const rows = await r.json();
+      el.innerHTML = rows.length ? rows.map((n) => `
+        <div style="display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid #2a2a2a">
+          <div style="flex:1">
+            <span style="font-size:11px;color:#0d9e88;font-weight:600">${esc(n.servizio || "Generale")}</span>
+            <span style="font-size:11px;color:#666"> · ${new Date(n.data).toLocaleDateString("it-IT")}</span>
+            <div style="font-size:14px">${n.titolo ? "<b>" + esc(n.titolo) + "</b> — " : ""}${esc((n.testo || "").slice(0, 120))}</div>
+          </div>
+          <button class="btn-sm" style="background:#ff6666" onclick="delNews(${n.id})">X</button>
+        </div>`).join("") : '<div style="padding:12px 16px;color:#666">Nessuna news.</div>';
+    }
+    function postNews() {
+      const titolo = document.getElementById("newsTitolo").value.trim();
+      const testo = document.getElementById("newsTesto").value.trim();
+      const servizio_id = document.getElementById("newsServ").value || null;
+      const immagine = document.getElementById("newsImg").value.trim() || null;
+      if (!testo && !titolo) return alert("Scrivi almeno un testo.");
+      fetch(`${API_BASE}/news-post`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ titolo, testo, servizio_id: servizio_id ? parseInt(servizio_id) : null, immagine }) })
+        .then(() => { document.getElementById("newsTitolo").value = ""; document.getElementById("newsTesto").value = ""; document.getElementById("newsImg").value = ""; loadNews(); })
+        .catch((e) => alert("Errore: " + e.message));
+    }
+    function delNews(id) {
+      if (!confirm("Eliminare la news?")) return;
+      fetch(`${API_BASE}/news-del`, { method: "POST", headers: AUTH_HEADERS, body: JSON.stringify({ id }) }).then(() => loadNews());
     }
     function exportCSV() {
       const cols = ["telegram_id", "username", "nome", "pipeline_stage", "sondaggio_completato", "created_at"];
