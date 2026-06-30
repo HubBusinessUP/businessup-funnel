@@ -112,8 +112,9 @@
       let aff = {};
       try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
       let totServizi = 0;
-      try { const rc = await fetch(EDGE + "/catalogo"); if (rc.ok) { const c = await rc.json(); totServizi = (c.categorie || []).reduce((n, cat) => n + ((cat.servizi || []).length), 0); } } catch {}
-      render(d, aff, totServizi);
+      const servId = {};
+      try { const rc = await fetch(EDGE + "/catalogo"); if (rc.ok) { const c = await rc.json(); (c.categorie || []).forEach(cat => (cat.servizi || []).forEach(s => { servId[s.nome] = s.id; totServizi++; })); } } catch {}
+      render(d, aff, totServizi, servId);
     }
 
     // Fase del funnel in cui si trova l'utente.
@@ -142,9 +143,10 @@
       return (s && s.livello_trading) || "-";
     }
 
-    function render(d, aff, totServizi) {
+    function render(d, aff, totServizi, servId) {
       aff = aff || {};
       totServizi = totServizi || 0;
+      servId = servId || {};
       const l = d.lead || {};
       const s = d.sondaggio;
       const tutDone = (d.tutorial || []).filter(t => t.completato).length;
@@ -171,7 +173,7 @@
         : `<div class="li"><span class="ptext">Sondaggio non ancora fatto.</span></div>`;
 
       const serviziList = serviziAttivi.length
-        ? serviziAttivi.map(x => `<div class="li tap serv-item" data-nome="${(x.nome || "").replace(/"/g, "&quot;")}"><span class="v">${x.nome}</span><span class="ch">›</span></div>`).join("")
+        ? serviziAttivi.map(x => `<div class="li tap serv-item" data-id="${servId[x.nome] || ""}" data-nome="${(x.nome || "").replace(/"/g, "&quot;")}"><span class="v">${x.nome}</span><span class="ch">›</span></div>`).join("")
         : `<div class="li"><span class="ptext">Nessun servizio attivo. Vai su Business List per attivarne uno.</span></div>`;
 
       const affListHtml = (aff.links || []).map(x => `<div class="li"><span class="k">${x.nome}</span><span class="v" style="color:${x.approvato ? "var(--accent2)" : "var(--muted)"}">${x.approvato ? "Approvato" : "In attesa"}</span></div>`).join("");
@@ -251,8 +253,10 @@
 
       // Servizi attivi → dashboard del servizio (in arrivo)
       document.querySelectorAll(".serv-item").forEach(el => el.addEventListener("click", () => {
+        const id = el.getAttribute("data-id");
+        if (id) { location.href = "servizio.html?id=" + id; return; }
         const nome = el.getAttribute("data-nome") || "";
-        if (TG && TG.showAlert) TG.showAlert("Dashboard di \"" + nome + "\" in arrivo.");
+        if (TG && TG.showAlert) TG.showAlert("Dashboard di \"" + nome + "\" non disponibile.");
       }));
 
       // Condividi ref link
