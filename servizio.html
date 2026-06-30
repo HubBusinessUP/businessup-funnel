@@ -46,6 +46,11 @@
     .li .ch { color:var(--muted); font-size:19px; }
     .li .lk { color:var(--accent2); font-weight:600; }
     .ptext { font-size:14px; color:var(--muted); line-height:1.6; white-space:pre-line; }
+    .video { position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000; margin-bottom:6px; }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .feat { display:flex; gap:11px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line); font-size:14px; line-height:1.45; }
+    .feat:first-child { border-top:none; }
+    .feat .ck { color:var(--accent2); font-weight:800; flex:none; }
 
     .btn { width:100%; padding:15px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; margin-top:10px; transition:transform .1s ease, filter .1s ease; }
     .btn:active { transform:scale(.99); filter:brightness(.95); }
@@ -68,6 +73,48 @@
     const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
     const app = document.getElementById("app");
     const ICONS = { "Broker vs Broker":"🔁", "Prop vs Broker":"🏦", "Bonus ADM":"🎁", "BvB Swap":"🔄" };
+
+    // Video YouTube comune (placeholder finché non se ne caricano di dedicati per servizio)
+    const VIDEO_DEFAULT = "zqJSGq3JDd4";
+    // Contenuti per metodo (caratteristiche + costi/info). Chiave = tutorial key.
+    const CONTENT = {
+      bvb: {
+        caratteristiche: [
+          "Arbitraggio sullo stesso strumento tra due broker",
+          "Rischio direzionale molto basso",
+          "Gestione attiva: 1-2 ore al giorno",
+          "Servono 2 conti broker ECN/STP con EA permessi",
+        ],
+        costi: [["Capitale minimo", "€2.000"], ["Impegno", "1-2 ore/giorno"], ["Tipo", "Gestione attiva"]],
+      },
+      prop: {
+        caratteristiche: [
+          "Capitale finanziato superando una challenge prop",
+          "Split sui profitti tipicamente 70-80%",
+          "Alternativa: broker tradizionale con capitale proprio",
+          "Regole di drawdown da rispettare",
+        ],
+        costi: [["Capitale", "Basso (costo challenge)"], ["Split profitti", "70-80%"], ["Tipo", "Struttura / disciplina"]],
+      },
+      bonus: {
+        caratteristiche: [
+          "Capitale extra da broker regolati ADM",
+          "Condizionato da rollover (volume da generare)",
+          "Strategia a basso rischio per muovere il volume",
+          "Calcolo preciso dei costi prima di iniziare",
+        ],
+        costi: [["Esempio", "Bonus €500 · rollover 30x"], ["Volume da girare", "€15.000"], ["Tipo", "Condizionato"]],
+      },
+      swap: {
+        caratteristiche: [
+          "Sfrutta le differenze di swap overnight tra broker",
+          "Rischio direzionale vicino a zero",
+          "Poco attivo: incassi mentre dormi",
+          "Immobilizza capitale per il differenziale",
+        ],
+        costi: [["Capitale consigliato", "€5.000+"], ["ROI realistico", "~12% annuo"], ["Tipo", "Semi-passivo"]],
+      },
+    };
 
     function qid() { const m = new URLSearchParams(location.search).get("id"); return m ? parseInt(m) : null; }
     function openLink(u) { if (!u) return; if (TG && TG.openLink) TG.openLink(u); else window.open(u, "_blank"); }
@@ -128,23 +175,42 @@
       const statoTxt = attivo ? "Attivo" : interessato ? "In attivazione" : "Non attivo";
 
       const key = tutKey(svc);
+      const content = (key && CONTENT[key]) || {};
       const risorse = Array.isArray(svc.risorse) ? svc.risorse : [];
+      const videoId = content.video || VIDEO_DEFAULT;
 
-      const tutRow = key
-        ? `<div class="li tap" data-go="tutorial/${key}.html"><span class="k">Come funziona<small>Guida al metodo, passo per passo</small></span><span class="ch">›</span></div>`
+      const videoHtml = videoId
+        ? `<div class="lbl">Video tutorial</div>
+           <div class="video"><iframe src="https://www.youtube.com/embed/${videoId}" title="Video tutorial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`
         : "";
+
+      const caratteristiche = Array.isArray(content.caratteristiche) ? content.caratteristiche : [];
+      const caratteristicheHtml = caratteristiche.length
+        ? `<div class="lbl">Scheda caratteristiche</div><div class="group pad">${caratteristiche.map(c => `<div class="feat"><span class="ck">✓</span><span>${c}</span></div>`).join("")}</div>`
+        : "";
+
+      const costi = Array.isArray(content.costi) ? content.costi : [];
+      const costiRows = costi.slice();
+      if (svc.prezzo) costiRows.unshift(["Prezzo servizio", svc.prezzo]);
+      const costiHtml = costiRows.length
+        ? `<div class="lbl">Costi e info</div><div class="group">${costiRows.map(r => `<div class="li"><span class="k">${r[0]}</span><span class="lk">${r[1]}</span></div>`).join("")}</div>`
+        : "";
+
       const newsRow = attivo
         ? `<div class="li tap" data-go="news.html"><span class="k">News del servizio<small>Aggiornamenti dedicati</small></span><span class="ch">›</span></div>`
         : "";
+      const approfondisciHtml = newsRow ? `<div class="lbl">Approfondisci</div><div class="group">${newsRow}</div>` : "";
 
       const risorseHtml = risorse.length
         ? `<div class="lbl">Risorse</div><div class="group">${risorse.map(r => `<div class="li tap" data-link="${r.url}"><span class="lk">${r.label || r.url}</span><span class="ch">↗</span></div>`).join("")}</div>`
         : "";
 
-      const cta = attivo
-        ? (key ? `<button class="btn btn-accent" id="openMethod">Apri il metodo</button>` : "")
+      // CTA: tutorial di attivazione + (attiva / stato)
+      const tutCta = key ? `<button class="btn ${attivo ? "btn-accent" : "btn-ghost"}" id="tutAttiva">📺 Tutorial di attivazione</button>` : "";
+      const azioneCta = attivo
+        ? ""
         : interessato
-          ? `<div class="group pad"><div class="ptext">Hai richiesto l'attivazione. Ti contattiamo a breve coi passi operativi.</div></div>`
+          ? `<div class="group pad" style="margin-top:10px"><div class="ptext">Hai richiesto l'attivazione. Ti contattiamo a breve coi passi operativi.</div></div>`
           : `<button class="btn btn-accent" id="attiva">Attiva questo servizio</button>`;
 
       app.innerHTML = `
@@ -163,13 +229,19 @@
           <div class="statwrap"><span class="status ${statoCls}"><span class="dot"></span>${statoTxt}</span></div>
         </div>
 
+        ${videoHtml}
+
         ${svc.descrizione ? `<div class="lbl">Cos'è</div><div class="group pad"><div class="ptext">${svc.descrizione}</div></div>` : ""}
 
-        ${(tutRow || newsRow) ? `<div class="lbl">Approfondisci</div><div class="group">${tutRow}${newsRow}</div>` : ""}
+        ${caratteristicheHtml}
+
+        ${costiHtml}
+
+        ${approfondisciHtml}
 
         ${risorseHtml}
 
-        <div style="margin-top:18px">${cta}</div>
+        <div style="margin-top:18px">${azioneCta}${tutCta}</div>
         <button class="btn btn-ghost" id="back2" style="margin-top:10px">Torna alla dashboard</button>
 
         <div id="result" class="hidden" style="margin-top:14px"></div>`;
@@ -180,8 +252,8 @@
       document.querySelectorAll("[data-go]").forEach(el => el.addEventListener("click", () => { location.href = el.getAttribute("data-go"); }));
       document.querySelectorAll("[data-link]").forEach(el => el.addEventListener("click", () => openLink(el.getAttribute("data-link"))));
 
-      const openMethod = document.getElementById("openMethod");
-      if (openMethod) openMethod.addEventListener("click", () => { if (key) location.href = "tutorial/" + key + ".html"; });
+      const tutAttiva = document.getElementById("tutAttiva");
+      if (tutAttiva) tutAttiva.addEventListener("click", () => { if (key) location.href = "tutorial/" + key + ".html"; });
 
       const attivaBtn = document.getElementById("attiva");
       if (attivaBtn) attivaBtn.addEventListener("click", async () => {
