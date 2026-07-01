@@ -33,6 +33,13 @@
   .req.on{background:rgba(233,185,73,.14);color:var(--giallo);border:1px solid rgba(233,185,73,.35);}
   .backbtn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:16px;}
   .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
+  .net{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line);}
+  .net:first-child{border-top:none;}
+  .neta{width:38px;height:38px;border-radius:11px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;}
+  .net .nn{flex:1;} .net .nn b{font-size:14px;font-weight:600;display:block;} .net .nn span{font-size:12px;color:var(--muted);}
+  .nb{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:3px 9px;border-radius:999px;}
+  .nb-att{color:var(--accent2);background:rgba(25,205,172,.12);}
+  .nb-isc{color:var(--giallo);background:rgba(233,185,73,.12);}
 </style></head>
 <body>
 <div class="wrap">
@@ -45,9 +52,9 @@
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="v">0</div><div class="k">Invitati</div></div>
-    <div class="stat"><div class="v">0</div><div class="k">Attivati</div></div>
-    <div class="stat"><div class="v a">0 €</div><div class="k">Guadagno</div></div>
+    <div class="stat"><div class="v">4</div><div class="k">Invitati</div></div>
+    <div class="stat"><div class="v">1</div><div class="k">Attivati</div></div>
+    <div class="stat"><div class="v a">120 €</div><div class="k">Guadagno</div></div>
   </div>
 
   <div class="lbl">Il tuo link</div>
@@ -56,6 +63,17 @@
     <button class="btn" id="copy">📋 Copia link</button>
     <a class="btn g" id="share">📤 Condividi su Telegram</a>
   </div>
+
+  <div class="lbl">La tua pagina personale</div>
+  <div class="card">
+    <div class="d" style="font-size:13px;color:var(--muted);margin-bottom:10px">Una pagina tutta tua con i servizi su cui sei affiliato: la condividi e chi la apre entra collegato a te.</div>
+    <div class="link" id="pagelink">business-up.it/a/enrico</div>
+    <a class="btn" id="openPage" href="affiliato.html?ref=enrico">👤 Apri la mia pagina</a>
+    <button class="btn g" id="copyPage">📋 Copia link pagina</button>
+  </div>
+
+  <div class="lbl">La mia rete</div>
+  <div class="card" id="rete"></div>
 
   <div class="lbl">Come funziona</div>
   <div class="card">
@@ -75,6 +93,27 @@
   document.getElementById("copy").onclick=()=>{ navigator.clipboard?.writeText(REF).then(()=>{ const b=document.getElementById("copy"); b.textContent="✅ Copiato!"; setTimeout(()=>b.textContent="📋 Copia link",1500); }); };
   const shareText="Entra in Business UP: metodi di trading testati, numeri alla mano. Niente guru, niente filtri.";
   document.getElementById("share").href="https://t.me/share/url?url="+encodeURIComponent(REF)+"&text="+encodeURIComponent(shareText);
+
+  // Link pagina personale
+  const PAGE="https://business-up.it/a/enrico";
+  document.getElementById("copyPage").onclick=()=>{ navigator.clipboard?.writeText(PAGE).then(()=>{ const b=document.getElementById("copyPage"); b.textContent="✅ Copiato!"; setTimeout(()=>b.textContent="📋 Copia link pagina",1500); }); };
+
+  // La mia rete di invitati
+  const RETE=[
+    {nome:"Enrico Fabbri", tg:"@enrico_fab", stato:"attivato", servizio:"BvB Swap"},
+    {nome:"Giulia Conti", tg:"@giuliac", stato:"iscritto", servizio:null},
+    {nome:"Davide Russo", tg:"@dave_rml", stato:"iscritto", servizio:null},
+    {nome:"Marta Leone", tg:"@marta.leone", stato:"iscritto", servizio:null},
+  ];
+  const rete=document.getElementById("rete");
+  rete.innerHTML = RETE.length ? RETE.map(p=>{
+    const att = p.stato==="attivato";
+    return `<div class="net">
+      <div class="neta">${p.nome[0]}</div>
+      <div class="nn"><b>${p.nome}</b><span>${p.tg}${att?` · ${p.servizio}`:""}</span></div>
+      <span class="nb ${att?'nb-att':'nb-isc'}">${att?"Ha attivato":"Iscritto"}</span>
+    </div>`;
+  }).join("") : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:14px">Non hai ancora invitato nessuno.</div>';
 
   // Servizi su cui chiedere affiliazione
   const SRV=[
