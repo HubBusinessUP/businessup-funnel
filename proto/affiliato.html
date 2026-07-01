@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Pagina affiliato — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:18px 16px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:13px;letter-spacing:1.5px;margin-bottom:20px;}
+  .brand .bdot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px 2px rgba(13,158,136,.7);}
+  .hero{background:linear-gradient(180deg,#1d2f2b,#16211f);border:1px solid rgba(13,158,136,.3);border-radius:20px;padding:22px;text-align:center;}
+  .av{width:74px;height:74px;border-radius:22px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:30px;margin:0 auto 12px;}
+  .hero h1{font-size:22px;font-weight:800;letter-spacing:-.3px;}
+  .hero .who{font-size:13px;color:var(--accent2);font-weight:700;margin-top:4px;}
+  .hero p{font-size:14px;color:#c7d0cd;margin-top:12px;line-height:1.6;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:22px 4px 8px;}
+  .svc{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin-bottom:9px;}
+  .svc .ic{width:42px;height:42px;border-radius:12px;background:rgba(13,158,136,.14);display:grid;place-items:center;font-size:19px;flex:none;}
+  .svc .t{flex:1;} .svc .t b{font-size:15px;font-weight:600;display:block;} .svc .t span{font-size:12.5px;color:var(--muted);}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .d-g{background:var(--accent2);} .d-y{background:var(--giallo);} .d-r{background:var(--rosso);}
+  .step{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);}
+  .step:first-child{border-top:none;}
+  .num{width:26px;height:26px;border-radius:50%;background:rgba(13,158,136,.16);color:var(--accent2);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+  .step .tx{font-size:14px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;}
+  .cta{display:block;width:100%;padding:16px;border:none;border-radius:14px;font-weight:800;font-size:16px;font-family:inherit;text-align:center;text-decoration:none;cursor:pointer;background:var(--accent);color:#04221c;margin-top:20px;}
+  .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;line-height:1.5;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="bdot"></span>BUSINESS UP</div>
+
+  <div class="hero">
+    <div class="av" id="av">E</div>
+    <h1 id="tit">Enrico ti invita in Business UP</h1>
+    <div class="who" id="who">Affiliato Business UP</div>
+    <p>Nessun guru, nessun filtro: solo metodi di trading testati, numeri alla mano. Entra dal mio invito e parti con il piede giusto.</p>
+  </div>
+
+  <div class="lbl">I servizi che seguo</div>
+  <div id="servizi"></div>
+
+  <div class="lbl">Come si parte</div>
+  <div class="card">
+    <div class="step"><div class="num">1</div><div class="tx">Entri nel bot da questo invito e fai il <b>breve sondaggio</b>.</div></div>
+    <div class="step"><div class="num">2</div><div class="tx">Vedi i <b>servizi</b> e capisci quale fa per te.</div></div>
+    <div class="step"><div class="num">3</div><div class="tx">Attivi e ti seguiamo <b>passo-passo</b>, io compreso.</div></div>
+  </div>
+
+  <a class="cta" id="cta" href="#">🚀 Entra in Business UP</a>
+  <div class="foot">PROTOTIPO · Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+</div>
+<script>
+  // ref dall'URL: affiliato.html?ref=enrico
+  const params = new URLSearchParams(location.search);
+  const ref = (params.get("ref") || "enrico").toLowerCase();
+  // demo: anagrafica affiliato per ref
+  const AFF = {
+    enrico: { nome:"Enrico", tgid:"334179105", servizi:[
+      {nome:"Broker VS Broker Swap", desc:"Copertura tra due broker · quota 30%", stato:"y"},
+      {nome:"Broker VS Broker Bonus", desc:"Come lo Swap · quota 50%", stato:"r"},
+    ]},
+  };
+  const a = AFF[ref] || AFF.enrico;
+  document.getElementById("av").textContent = a.nome[0].toUpperCase();
+  document.getElementById("tit").textContent = a.nome + " ti invita in Business UP";
+  document.getElementById("who").textContent = "Pagina personale di " + a.nome;
+
+  const ICON = { };
+  const box = document.getElementById("servizi");
+  box.innerHTML = a.servizi.map(s=>`<div class="svc">
+    <div class="ic">💼</div>
+    <div class="t"><b>${s.nome}</b><span>${s.desc}</span></div>
+    <span class="dot d-${s.stato}"></span>
+  </div>`).join("");
+
+  // CTA verso il bot col ref dell'affiliato
+  document.getElementById("cta").href = "https://t.me/BotBusinessUP_bot?start=ref_" + a.tgid;
+</script>
+</body></html>
