@@ -1,0 +1,8 @@
+
+# Segreti — mai committare i valori reali
+.env
+.env.local
+*/.env
+supabase/functions/**/.env
+node_modules/
+.DS_Store
