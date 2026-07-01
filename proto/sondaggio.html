@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Sondaggio — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:18px 16px 30px;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .progress{height:7px;background:var(--surface2);border-radius:999px;overflow:hidden;}
+  .progress>i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .25s ease;}
+  .pmeta{font-size:12px;color:var(--muted);font-weight:600;margin:8px 0 22px;}
+  .q{font-size:22px;font-weight:800;letter-spacing:-.3px;margin-bottom:18px;line-height:1.3;}
+  .opt{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:15px 16px;font-size:15px;font-weight:600;font-family:inherit;margin-bottom:10px;cursor:pointer;transition:transform .1s,border-color .1s;}
+  .opt:active{transform:scale(.99);border-color:rgba(13,158,136,.5);}
+  .fld{width:100%;padding:15px;border-radius:14px;background:var(--surface);color:var(--text);border:1px solid var(--line);font-family:inherit;font-size:16px;margin-bottom:12px;}
+  .fld:focus{outline:none;border-color:rgba(13,158,136,.5);}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:14px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;background:var(--accent);color:#04221c;}
+  .btn:disabled{opacity:.4;}
+  .done{text-align:center;padding:30px 6px;}
+  .done .big{font-size:48px;} .done h2{font-size:22px;font-weight:800;margin:12px 0 6px;} .done p{color:var(--muted);font-size:14px;line-height:1.6;}
+  .badge{display:inline-block;color:var(--accent2);background:rgba(25,205,172,.1);border:1px solid rgba(25,205,172,.3);padding:6px 13px;border-radius:999px;font-weight:700;font-size:13px;margin:14px 0;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="progress"><i id="bar" style="width:0"></i></div>
+  <div class="pmeta" id="pmeta"></div>
+  <div id="q"></div>
+</div>
+<script>
+  const Q = [
+    {k:"nome", type:"text", q:"Come ti chiami? (nome e cognome)", ph:"Nome e cognome"},
+    {k:"email", type:"text", q:"La tua email?", ph:"nome@email.com"},
+    {k:"tel", type:"phone", q:"Il tuo numero di telefono?"},
+    {k:"paese", type:"choice", q:"In che Paese vivi?", opts:["Italia","Altro"]},
+    {k:"citta", type:"text", q:"In che città vivi?", ph:"Città"},
+    {k:"eta", type:"choice", q:"Quanti anni hai?", opts:["18-25","26-35","36-45","46+"]},
+    {k:"situazione", type:"choice", q:"Qual è la tua situazione attuale?", opts:["Dipendente","Autonomo / P.IVA","Imprenditore","Studente","In cerca di lavoro","Altro"]},
+    {k:"cerca", type:"choice", q:"Cosa cerchi con Business UP?", opts:["Reddito extra","Libertà finanziaria","Far crescere i risparmi","Nuova attività","Altro"]},
+    {k:"budget", type:"choice", q:"Quanto budget puoi dedicare per iniziare?", opts:["Meno di €500","€500 - 2.000","€2.000 - 5.000","€5.000+"]},
+    {k:"tempo", type:"choice", q:"Quanto tempo puoi dedicare?", opts:["Poche ore a settimana","Qualche ora al giorno","Tempo pieno","Altro"]},
+    {k:"pronto", type:"choice", q:"Quanto sei pronto a iniziare?", opts:["Subito","Entro un mese","Sto valutando"]},
+  ];
+  const data = {}; let i = 0;
+  const bar=document.getElementById("bar"), pmeta=document.getElementById("pmeta"), box=document.getElementById("q");
+
+  function next(v){ data[Q[i].k]=v; i++; render(); }
+
+  function render(){
+    if(i>=Q.length){ finish(); return; }
+    const item=Q[i];
+    bar.style.width=(i/Q.length*100)+"%";
+    pmeta.textContent="Domanda "+(i+1)+" di "+Q.length;
+    let html='<div class="q">'+item.q+'</div>';
+    if(item.type==="choice"){
+      html+=item.opts.map((o,idx)=>'<button class="opt" data-o="'+idx+'">'+o+'</button>').join("");
+      box.innerHTML=html;
+      box.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{
+        const o=item.opts[+b.dataset.o];
+        if(o==="Altro"){ askAltro(item); } else next(o);
+      }));
+    } else if(item.type==="phone"){
+      html+='<button class="btn" id="share">📱 Condividi il mio numero</button><div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px">(nel bot vero è un tocco: numero verificato)</div>';
+      box.innerHTML=html;
+      document.getElementById("share").addEventListener("click",()=>next("+39 ••• ••• ••••"));
+    } else {
+      html+='<input class="fld" id="in" placeholder="'+(item.ph||"")+'"><button class="btn" id="go" disabled>Continua →</button>';
+      box.innerHTML=html;
+      const inp=document.getElementById("in"), go=document.getElementById("go");
+      inp.addEventListener("input",()=>go.disabled=!inp.value.trim());
+      go.addEventListener("click",()=>next(inp.value.trim()));
+      inp.focus();
+    }
+  }
+  function askAltro(item){
+    box.innerHTML='<div class="q">'+item.q+'</div><input class="fld" id="in" placeholder="Scrivi la tua risposta"><button class="btn" id="go" disabled>Continua →</button>';
+    const inp=document.getElementById("in"), go=document.getElementById("go");
+    inp.addEventListener("input",()=>go.disabled=!inp.value.trim());
+    go.addEventListener("click",()=>next(inp.value.trim()));
+    inp.focus();
+  }
+  function finish(){
+    bar.style.width="100%"; pmeta.textContent="Completato";
+    // qualifica demo: budget >= 2.000 e non "sto valutando"
+    const okBudget = data.budget==="€2.000 - 5.000" || data.budget==="€5.000+";
+    const idoneo = okBudget && data.pronto!=="Sto valutando";
+    box.innerHTML='<div class="done"><div class="big">'+(idoneo?"✅":"👍")+'</div>'+
+      '<span class="badge">'+(idoneo?"Profilo qualificato":"Profilo registrato")+'</span>'+
+      '<h2>Grazie '+(data.nome? data.nome.split(" ")[0] : "")+'</h2>'+
+      '<p>'+(idoneo
+        ? "Hai il profilo giusto. Ecco la tua area personale con i servizi disponibili."
+        : "Ti abbiamo registrato. Puoi comunque esplorare i servizi (con qualche accortezza).")+'</p>'+
+      '<a class="btn" style="margin-top:20px" href="home.html">Entra nella tua area →</a></div>';
+  }
+  render();
+</script>
+</body></html>
