@@ -5,27 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>News - Business UP</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root { --bg: var(--tg-theme-bg-color,#0a0a0a); --card: var(--tg-theme-secondary-bg-color,#1a1a1a);
-      --text: var(--tg-theme-text-color,#fff); --muted: var(--tg-theme-hint-color,#8a8a8a); --accent:#0d9e88; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:16px 14px 36px; line-height:1.55; }
-    .head { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-    .head .logo { width:38px; height:38px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#042; }
-    .head b { font-size:18px; } .head span { font-size:12px; color:var(--muted); display:block; }
-    .ch { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:14px; padding:15px 16px; margin-bottom:10px; cursor:pointer; }
-    .ch .ic { width:40px; height:40px; border-radius:10px; background:rgba(13,158,136,.15); display:flex; align-items:center; justify-content:center; font-size:18px; }
-    .ch .t { flex:1; } .ch .t b { font-size:15px; display:block; } .ch .t span { font-size:12px; color:var(--muted); }
-    .ch .ar { color:var(--muted); }
-    .post { background:var(--card); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+    :root { --bg:#0b0c0e; --surface:#15171a; --surface2:#1d2024; --line:rgba(255,255,255,.07); --text:#eceef0; --muted:#8b9096; --accent:#0d9e88; --accent2:#19cdac; }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:14px 14px calc(34px + env(safe-area-inset-bottom)); line-height:1.5; -webkit-font-smoothing:antialiased; }
+    body > * { max-width:520px; margin-left:auto; margin-right:auto; }
+    .head { display:flex; align-items:center; gap:11px; margin-bottom:16px; padding-top:6px; }
+    .head .logo { width:40px; height:40px; border-radius:12px; background:var(--accent); display:grid; place-items:center; font-weight:800; color:#04221c; }
+    .head b { font-size:18px; font-weight:700; } .head span { font-size:12px; color:var(--muted); display:block; }
+    .ch { display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:15px 16px; margin-bottom:9px; cursor:pointer; transition:background .12s ease; }
+    .ch:active { background:var(--surface2); }
+    .ch .ic { width:40px; height:40px; border-radius:11px; background:rgba(13,158,136,.14); display:grid; place-items:center; font-size:18px; flex:none; }
+    .ch .t { flex:1; } .ch .t b { font-size:15px; display:block; font-weight:600; } .ch .t span { font-size:12px; color:var(--muted); }
+    .ch .ar { color:var(--muted); font-size:19px; }
+    .post { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:15px 16px; margin-bottom:11px; }
     .post .top { display:flex; align-items:center; margin-bottom:6px; }
     .post .date { font-size:11px; color:var(--muted); margin-left:auto; }
-    .post .titolo { font-size:16px; font-weight:600; margin:2px 0 4px; }
-    .post .testo { font-size:14px; white-space:pre-line; }
-    .post img { width:100%; border-radius:10px; margin-top:10px; }
-    .x { font-size:14px; color:var(--accent); cursor:pointer; margin-bottom:12px; display:inline-block; }
-    .empty { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
-    .back { width:100%; margin-top:18px; padding:14px; border:none; border-radius:12px; background:var(--card); color:var(--text); font-weight:600; font-size:15px; cursor:pointer; }
+    .post .titolo { font-size:16px; font-weight:700; margin:2px 0 5px; }
+    .post .testo { font-size:14px; color:#cfd2d6; white-space:pre-line; line-height:1.6; }
+    .post img { width:100%; border-radius:12px; margin-top:10px; }
+    .x { font-size:14px; color:var(--accent2); cursor:pointer; margin-bottom:14px; display:inline-block; font-weight:600; }
+    .empty { text-align:center; color:var(--muted); padding:48px 20px; font-size:14px; }
+    .back { width:100%; margin-top:18px; padding:14px; border:none; border-radius:13px; background:var(--surface2); color:var(--text); border:1px solid var(--line); font-weight:700; font-size:15px; cursor:pointer; font-family:inherit; }
   </style>
 </head>
 <body>

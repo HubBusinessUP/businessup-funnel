@@ -5,52 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Business UP</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root { --bg: var(--tg-theme-bg-color,#0a0a0a); --card: var(--tg-theme-secondary-bg-color,#1a1a1a);
-      --text: var(--tg-theme-text-color,#fff); --muted: var(--tg-theme-hint-color,#8a8a8a); --accent:#0d9e88; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:18px 14px 36px; line-height:1.5; }
-    .hero { text-align:center; margin-bottom:18px; }
-    .hero h1 { font-size:24px; font-weight:700; color:var(--accent); }
-    .hero p { font-size:13px; color:var(--muted); margin-top:6px; }
-    .video { position:relative; width:100%; aspect-ratio:16/9; background:var(--card); border-radius:14px; overflow:hidden; margin:16px 0; display:flex; align-items:center; justify-content:center; }
-    .video iframe { width:100%; height:100%; border:0; }
-    .video .ph { text-align:center; color:var(--muted); font-size:13px; padding:16px; }
-    .sect { font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:18px 0 8px; }
-    .link { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:8px; cursor:pointer; }
-    .link .ic { font-size:20px; }
-    .link b { font-size:15px; }
-    .link span { display:block; font-size:12px; color:var(--muted); }
-    .back { width:100%; margin-top:22px; padding:14px; border:none; border-radius:12px; background:var(--accent); color:#042; font-weight:600; font-size:15px; cursor:pointer; }
+    :root { --bg:#0b0c0e; --surface:#15171a; --surface2:#1d2024; --line:rgba(255,255,255,.07); --text:#eceef0; --muted:#8b9096; --accent:#0d9e88; --accent2:#19cdac; }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.45; -webkit-font-smoothing:antialiased; padding:10px 14px calc(34px + env(safe-area-inset-bottom)); }
+    .wrap { max-width:520px; margin:0 auto; }
+    .brand { display:flex; align-items:center; gap:9px; padding:8px 2px 4px; font-weight:800; font-size:15px; letter-spacing:1.5px; }
+    .brand .bdot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 14px 2px rgba(13,158,136,.7); }
+    .hero { padding:12px 2px 4px; }
+    .hero h1 { font-size:26px; font-weight:800; letter-spacing:-.4px; }
+    .hero p { font-size:14px; color:var(--muted); margin-top:6px; }
+    .video { position:relative; width:100%; aspect-ratio:16/9; border-radius:18px; overflow:hidden; border:1px solid var(--line); background:#000; margin:16px 0 6px; }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .video .ph { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted); font-size:13px; background:linear-gradient(180deg,var(--surface2),var(--surface)); }
+    .video .ph .pi { font-size:30px; }
+    .lbl { font-size:12px; color:var(--muted); font-weight:600; margin:22px 6px 8px; }
+    .group { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+    .li { display:flex; align-items:center; gap:13px; padding:15px 16px; border-top:1px solid var(--line); cursor:pointer; transition:background .12s ease; }
+    .li:first-child { border-top:none; }
+    .li:active { background:var(--surface2); }
+    .li .ic { width:38px; height:38px; border-radius:11px; background:rgba(13,158,136,.14); display:grid; place-items:center; font-size:18px; flex:none; }
+    .li .tx { flex:1; }
+    .li .tx b { font-size:15px; font-weight:600; display:block; }
+    .li .tx span { font-size:12px; color:var(--muted); }
+    .li .ch { color:var(--muted); font-size:19px; }
+    .btn { width:100%; padding:14px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; margin-top:22px; background:var(--surface2); color:var(--text); border:1px solid var(--line); transition:transform .1s ease; }
+    .btn:active { transform:scale(.99); }
+    .foot { text-align:center; font-size:11px; color:var(--muted); margin-top:22px; line-height:1.5; }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <h1>Business UP</h1>
-    <p>Nessun guru. Nessun filtro. Solo dati e logica.</p>
+  <div class="wrap">
+    <div class="brand"><span class="bdot"></span>BUSINESS UP</div>
+    <div class="hero">
+      <h1>Business UP</h1>
+      <p>Nessun guru. Nessun filtro. Solo dati e logica.</p>
+    </div>
+
+    <div class="video" id="video">
+      <div class="ph"><span class="pi">🎬</span>Video di presentazione<small>in arrivo</small></div>
+    </div>
+
+    <div class="lbl">I nostri progetti</div>
+    <div class="group">
+      <div class="li" data-url="https://tradingmatematicopro.com"><div class="ic">📈</div><div class="tx"><b>Trading Matematico Pro</b><span>tradingmatematicopro.com</span></div><span class="ch">↗</span></div>
+      <div class="li" data-url="https://cashly.it"><div class="ic">💸</div><div class="tx"><b>Cashly</b><span>cashly.it</span></div><span class="ch">↗</span></div>
+    </div>
+
+    <div class="lbl">Seguici</div>
+    <div class="group">
+      <div class="li" data-url="https://youtube.com"><div class="ic">▶️</div><div class="tx"><b>YouTube</b><span>I nostri video</span></div><span class="ch">↗</span></div>
+      <div class="li" data-url="https://instagram.com"><div class="ic">📷</div><div class="tx"><b>Instagram</b><span>Aggiornamenti</span></div><span class="ch">↗</span></div>
+    </div>
+
+    <button class="btn" id="back">Torna al bot</button>
+    <div class="foot">Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
   </div>
-
-  <div class="video" id="video">
-    <div class="ph">🎬 Video di presentazione<br><small>(inserisci qui il link del video)</small></div>
-  </div>
-
-  <div class="sect">I nostri progetti</div>
-  <div class="link" data-url="https://tradingmatematicopro.com"><div class="ic">📈</div><div><b>Trading Matematico Pro</b><span>tradingmatematicopro.com</span></div></div>
-  <div class="link" data-url="https://cashly.it"><div class="ic">💸</div><div><b>Cashly</b><span>cashly</span></div></div>
-
-  <div class="sect">Seguici</div>
-  <div class="link" data-url="https://youtube.com"><div class="ic">▶️</div><div><b>YouTube</b><span>I nostri video</span></div></div>
-  <div class="link" data-url="https://instagram.com"><div class="ic">📷</div><div><b>Instagram</b><span>Aggiornamenti</span></div></div>
-
-  <button class="back" id="back">Torna al bot</button>
 
   <script>
     const TG = window.Telegram ? window.Telegram.WebApp : null;
     if (TG) { TG.ready(); TG.expand(); }
-    function open(u) { if (TG && TG.openLink) TG.openLink(u); else window.open(u, "_blank"); }
-    document.querySelectorAll(".link").forEach((l) => l.addEventListener("click", () => open(l.dataset.url)));
+
+    // Per il video di presentazione: metti qui l'ID YouTube (es. "zqJSGq3JDd4"). Vuoto = placeholder.
+    const VIDEO_ID = "";
+    if (VIDEO_ID) {
+      document.getElementById("video").innerHTML =
+        '<iframe src="https://www.youtube.com/embed/' + VIDEO_ID + '" title="Video di presentazione" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>';
+    }
+
+    function openLink(u) { if (TG && TG.openLink) TG.openLink(u); else window.open(u, "_blank"); }
+    document.querySelectorAll(".li").forEach((l) => l.addEventListener("click", () => openLink(l.dataset.url)));
     document.getElementById("back").addEventListener("click", () => { if (TG) TG.close(); });
-    // Per inserire il video: sostituisci il blocco .ph con <iframe src="URL_EMBED" allowfullscreen></iframe>
   </script>
 </body>
 </html>
