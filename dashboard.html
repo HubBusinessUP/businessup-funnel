@@ -100,7 +100,10 @@
     async function load() {
       const ready = await waitInitData(2500);
       if (!ready) {
-        app.innerHTML = '<div class="err">Non riesco a leggere i tuoi dati Telegram.<br><br>Chiudi questa finestra (×) e riapri la <b>Dashboard</b> dal menu del bot.<br>Evita "Reload Page": apri sempre dal pulsante.<br><br><button class="btn btn-ghost" style="max-width:200px;margin:18px auto 0" onclick="location.reload()">Riprova</button></div>';
+        const u = TG && TG.initDataUnsafe && TG.initDataUnsafe.user;
+        const code = !TG ? "no-TG" : (u ? "user-no-firma" : "no-dati");
+        const plat = TG ? ((TG.platform || "?") + " v" + (TG.version || "?")) : "-";
+        app.innerHTML = '<div class="err">Non riesco a leggere i tuoi dati Telegram.<br><br>Aprila dal bot così: scrivi <b>/start</b>, poi tocca il pulsante <b>👤 Dashboard</b> nella tastiera in basso (non il menu in alto).<br>Evita "Reload Page".<br><br><button class="btn btn-ghost" style="max-width:200px;margin:14px auto 4px" onclick="location.reload()">Riprova</button><div style="font-size:11px;opacity:.6;margin-top:14px">diagnostica: ' + code + ' · ' + plat + '</div></div>';
         return;
       }
       let d;
