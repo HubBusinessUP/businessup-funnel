@@ -1,146 +1,198 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>La mia Dashboard - Business UP</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root { --bg: var(--tg-theme-bg-color,#0a0a0a); --card: var(--tg-theme-secondary-bg-color,#1a1a1a);
-      --text: var(--tg-theme-text-color,#fff); --muted: var(--tg-theme-hint-color,#8a8a8a); --accent:#0d9e88; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:18px 14px 36px; line-height:1.5; }
-    h1 { font-size:20px; font-weight:700; color:var(--accent); margin-bottom:2px; }
-    .sub { font-size:13px; color:var(--muted); margin-bottom:16px; }
-    .card { background:var(--card); border-radius:14px; padding:16px; margin-bottom:12px; }
-    .row { display:flex; justify-content:space-between; padding:6px 0; font-size:14px; }
-    .row span { color:var(--muted); }
-    .badge { display:inline-block; background:rgba(13,158,136,.18); color:var(--accent); font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; }
-    .sect { font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:18px 0 8px; }
-    .item { display:flex; justify-content:space-between; align-items:center; background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:8px; cursor:pointer; }
-    .item b { font-size:15px; }
-    .item .ch { color:var(--muted); }
-    .hidden { display:none; }
-    .ptext { font-size:13px; color:var(--muted); white-space:pre-line; }
-    .btn { width:100%; padding:13px; border:none; border-radius:12px; font-weight:600; font-size:14px; cursor:pointer; margin-top:10px; }
-    .btn-accent { background:var(--accent); color:#042; }
-    .btn-danger { background:#3a1a1a; color:#ff6b6b; }
-    .btn-ghost { background:var(--card); color:var(--text); }
-    .err { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
-  </style>
-</head>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>La mia area — Business UP</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.45;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .head{display:flex;align-items:center;gap:14px;margin:6px 0 18px;}
+  .avatar{width:54px;height:54px;border-radius:16px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:21px;flex:none;overflow:hidden;}
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+  .hi{font-size:22px;font-weight:800;letter-spacing:-.3px;}
+  .status{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;margin-top:4px;color:var(--muted);}
+  .status .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);}
+  .lbl{font-size:12px;color:var(--muted);font-weight:600;margin:20px 4px 8px;}
+  .tiles{display:flex;gap:10px;}
+  .tile{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;}
+  .tile .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+  .tile .v{font-size:19px;font-weight:800;margin-top:5px;letter-spacing:-.3px;}
+  .tile .v.b{font-size:14px;color:var(--accent2);}
+  .bar{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+  .bar .r{display:flex;justify-content:space-between;font-size:13px;}
+  .bar .r span{color:var(--muted);}
+  .track{height:7px;background:var(--surface2);border-radius:999px;margin-top:10px;overflow:hidden;}
+  .track>i{display:block;height:100%;background:var(--accent);border-radius:999px;}
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);font-size:15px;}
+  .li:first-child{border-top:none;}
+  .li .k{color:var(--muted);font-weight:500;} .li .v{font-weight:600;text-align:right;}
+  .li.tap{cursor:pointer;} .li.tap:active{background:var(--surface2);}
+  .li .ic{width:34px;height:34px;border-radius:10px;background:rgba(13,158,136,.14);display:grid;place-items:center;font-size:16px;flex:none;}
+  .li .lead{display:flex;align-items:center;gap:11px;flex:1;}
+  .li .lead b{display:block;font-size:15px;font-weight:600;} .li .lead span{font-size:12px;color:var(--muted);}
+  .li .ch{color:var(--muted);font-size:19px;}
+  .cta{background:linear-gradient(180deg,#1d2f2b,#16211f);border:1px solid rgba(13,158,136,.3);border-radius:16px;padding:16px;}
+  .cta .t{font-weight:700;font-size:15px;} .cta .d{font-size:13px;color:var(--muted);margin:5px 0 12px;}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:14px;font-family:inherit;text-align:center;cursor:pointer;background:var(--accent);color:#04221c;}
+  .btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--line);margin-top:10px;}
+  .btn.danger{background:#3a1a1a;color:#ff6b6b;margin-top:10px;}
+  .linkbox{word-break:break-all;font-size:13px;color:var(--accent2);font-weight:600;margin-bottom:10px;}
+  .fld{width:100%;padding:12px;border-radius:11px;background:#0e0f11;color:var(--text);border:1px solid var(--line);font-family:inherit;font-size:14px;margin-bottom:8px;}
+  .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+  .err{text-align:center;color:var(--muted);padding:44px 20px;font-size:14px;}
+</style></head>
 <body>
-  <div id="app"><div class="err">Caricamento...</div></div>
+<div class="wrap"><div id="app"><div class="err">Caricamento…</div></div></div>
+<script>
+  const TG = window.Telegram ? window.Telegram.WebApp : null;
+  if (TG) { TG.ready(); TG.expand(); }
+  const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
+  const app = document.getElementById("app");
+  const STAGE = { nuovo:"Nuovo", qualificato:"Qualificato", squalificato:"Non idoneo ora", contattato:"In contatto", cliente:"Cliente" };
+  const esc = s => String(s==null?"":s).replace(/[<>&]/g, c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+  const isActive = st => /attiv/i.test(String(st||""));
+  function close(){ if (TG) TG.close(); }
 
-  <script>
-    const TG = window.Telegram ? window.Telegram.WebApp : null;
-    if (TG) { TG.ready(); TG.expand(); }
-    const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
-    const app = document.getElementById("app");
-    const STAGE = { nuovo:"Nuovo", qualificato:"Qualificato", squalificato:"Non idoneo ora", contattato:"In contatto", cliente:"Cliente" };
+  async function load(){
+    if (!TG || !TG.initData) { app.innerHTML = '<div class="err">Apri questa pagina dal bot Telegram.</div>'; return; }
+    let d;
+    try {
+      const r = await fetch(EDGE + "/me", { headers: { "x-telegram-init-data": TG.initData } });
+      d = await r.json();
+      if (!r.ok) throw 0;
+    } catch { app.innerHTML = '<div class="err">Errore. Riapri dal bot.</div>'; return; }
+    let aff = {};
+    try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
+    render(d, aff);
+  }
 
-    function close() { if (TG) TG.close(); }
+  function render(d, aff){
+    aff = aff || {};
+    const l = d.lead || {};
+    const s = d.sondaggio;
+    const servizi = d.servizi || [];
+    const attivi = servizi.filter(x => isActive(x.stato)).length;
+    const tutDone = (d.tutorial || []).filter(t => t.completato).length;
+    const stageLabel = STAGE[l.pipeline_stage] || l.pipeline_stage || "—";
+    const attivo = attivi > 0;
+    const photo = (TG && TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.photo_url) || "";
+    const nome = l.nome || (TG && TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.first_name) || "";
+    const iniz = (nome || "?").trim().charAt(0).toUpperCase();
 
-    async function load() {
-      if (!TG || !TG.initData) { app.innerHTML = '<div class="err">Apri questa pagina dal bot Telegram.</div>'; return; }
-      let d;
+    let profilo;
+    if (s) {
+      profilo = `
+        <div class="li"><span class="k">Livello</span><span class="v">${esc(s.livello_trading)||"—"}</span></div>
+        <div class="li"><span class="k">Esperienza broker</span><span class="v">${esc(s.broker_usati)||"—"}</span></div>
+        <div class="li"><span class="k">Capitale</span><span class="v">${esc(s.capitale)||"—"}</span></div>
+        <div class="li"><span class="k">Interesse</span><span class="v">${esc(s.prodotto_preferito)||"—"}</span></div>`;
+    } else {
+      profilo = '<div class="li"><span class="k">Sondaggio non ancora fatto</span></div>';
+    }
+
+    const serviziHtml = servizi.length
+      ? servizi.map(x => `<div class="li"><span class="k">${esc(x.nome)}</span><span class="v">${esc(x.stato)}</span></div>`).join("")
+      : '<div class="li"><span class="k">Nessun servizio attivo</span></div>';
+
+    const affServ = (aff.servizi || []).map(x => `<option value="${x.id}">${esc(x.nome)}</option>`).join("");
+    const affLinks = (aff.links || []).map(x => `<div class="li"><span class="k">${esc(x.nome)}</span><span class="v" style="color:${x.approvato?'var(--accent2)':'var(--muted)'}">${x.approvato?"Approvato":"In attesa"}</span></div>`).join("");
+
+    app.innerHTML = `
+      <div class="head">
+        <div class="avatar">${photo?`<img src="${esc(photo)}" alt=""/>`:iniz}</div>
+        <div><div class="hi">Ciao ${esc(nome)} 👋</div><div class="status"><span class="dot" style="background:${attivo?'var(--accent2)':'var(--muted)'}"></span>${attivo?"Attivo":"Non attivo"}</div></div>
+      </div>
+
+      <div class="lbl">Il tuo riepilogo</div>
+      <div class="tiles">
+        <div class="tile"><div class="k">Fase</div><div class="v b">${esc(stageLabel)}</div></div>
+        <div class="tile"><div class="k">Servizi attivi</div><div class="v">${attivi}</div></div>
+      </div>
+      <div class="bar"><div class="r"><span>Tutorial completati</span><b>${tutDone} / 4</b></div><div class="track"><i style="width:${Math.round(tutDone/4*100)}%"></i></div></div>
+
+      <div class="lbl">Il tuo profilo</div>
+      <div class="group">${profilo}</div>
+
+      <div class="lbl">I tuoi servizi</div>
+      <div class="group">${serviziHtml}</div>
+
+      ${attivo ? "" : `
+      <div class="lbl">Prossimo passo</div>
+      <div class="cta">
+        <div class="t">Non hai ancora attivato niente</div>
+        <div class="d">Scopri i servizi disponibili e trova quello adatto a te.</div>
+        <a class="btn" href="business-list.html">Esplora i servizi →</a>
+      </div>`}
+
+      <div class="lbl">Affiliazione</div>
+      <div class="group" style="padding:16px">
+        <div class="cta" style="padding:0;background:none;border:none">
+          <div class="d" style="margin:0 0 8px">Il tuo link. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
+          <div class="linkbox" id="refUrl">${esc(aff.ref_url) || "—"}</div>
+          <button class="btn g" id="copyRef" style="margin-top:0">📋 Copia link</button>
+        </div>
+        <div class="d" style="margin:16px 0 8px;font-size:13px;color:var(--muted)">Diventa affiliato di un servizio (valutiamo la richiesta):</div>
+        <select id="affServ" class="fld">${affServ}</select>
+        <input id="affLink" class="fld" placeholder="Incolla il tuo ref link"/>
+        <button class="btn" id="affSend">Invia richiesta</button>
+        <div id="affList" style="margin-top:10px">${affLinks}</div>
+      </div>
+
+      <div class="lbl">Naviga</div>
+      <div class="group">
+        <div class="li tap" onclick="location.href='business-list.html'"><div class="lead"><div class="ic">💼</div><div><b>Business List</b><span>Catalogo servizi</span></div></div><span class="ch">›</span></div>
+        <div class="li tap" onclick="location.href='news.html'"><div class="lead"><div class="ic">📢</div><div><b>Aggiornamenti</b><span>Novità e canali</span></div></div><span class="ch">›</span></div>
+        <div class="li tap" id="privacyItem"><div class="lead"><div class="ic">🔒</div><div><b>Privacy e dati</b><span>Informativa · cancella dati</span></div></div><span class="ch">›</span></div>
+      </div>
+      <div id="privacyPanel" class="group" style="display:none;padding:16px;margin-top:10px">
+        <div class="d" id="privacyText" style="font-size:13px;color:var(--muted);white-space:pre-line"></div>
+        <button class="btn danger" id="delBtn">Cancella i miei dati</button>
+      </div>
+
+      <button class="btn g" id="back" style="margin-top:16px">Torna al bot</button>
+      <div class="foot">Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>`;
+
+    const copyBtn = document.getElementById("copyRef");
+    if (copyBtn) copyBtn.addEventListener("click", () => {
+      const url = aff.ref_url || "";
+      if (navigator.clipboard) navigator.clipboard.writeText(url).catch(()=>{});
+      copyBtn.textContent = "✅ Copiato"; setTimeout(()=>copyBtn.textContent="📋 Copia link", 1500);
+    });
+
+    const affSend = document.getElementById("affSend");
+    if (affSend) affSend.addEventListener("click", async () => {
+      const sid = document.getElementById("affServ").value;
+      const link = document.getElementById("affLink").value.trim();
+      if (!sid || !link) return;
+      affSend.disabled = true; affSend.textContent = "Invio…";
       try {
-        const r = await fetch(EDGE + "/me", { headers: { "x-telegram-init-data": TG.initData } });
-        d = await r.json();
-        if (!r.ok) throw 0;
-      } catch { app.innerHTML = '<div class="err">Errore. Riapri dal bot.</div>'; return; }
-      let aff = {};
-      try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
-      render(d, aff);
-    }
+        await fetch(EDGE + "/affiliate-request", { method:"POST", headers:{ "Content-Type":"application/json", "x-telegram-init-data":TG.initData }, body: JSON.stringify({ servizio_id: parseInt(sid), ref_link: link }) });
+        affSend.textContent = "✓ Richiesta inviata";
+        if (TG && TG.showAlert) TG.showAlert("Richiesta inviata. Ti avviso quando viene approvata.");
+      } catch { affSend.disabled = false; affSend.textContent = "Invia richiesta"; }
+    });
 
-    function render(d, aff) {
-      aff = aff || {};
-      const l = d.lead || {};
-      const s = d.sondaggio;
-      const tutDone = (d.tutorial || []).filter(t => t.completato).length;
-      const servizi = d.servizi || [];
-      let profilo = '<div class="ptext">Sondaggio non ancora fatto.</div>';
-      if (s) profilo = `
-        <div class="row"><span>Livello</span><b>${s.livello_trading || "-"}</b></div>
-        <div class="row"><span>Esperienza</span><b>${s.broker_usati || "-"}</b></div>
-        <div class="row"><span>Capitale</span><b>${s.capitale || "-"}</b></div>
-        <div class="row"><span>Interesse</span><b>${s.prodotto_preferito || "-"}</b></div>`;
-      const serviziHtml = servizi.length
-        ? servizi.map(x => `<div class="row"><span>${x.nome}</span><b>${x.stato}</b></div>`).join("")
-        : '<div class="ptext">Nessun servizio attivo.</div>';
-
-      app.innerHTML = `
-        <h1>Ciao ${l.nome || ""}</h1>
-        <div class="sub">La tua dashboard personale</div>
-        <div class="card">
-          <div class="row"><span>Stato</span><span class="badge">${STAGE[l.pipeline_stage] || l.pipeline_stage || "-"}</span></div>
-          <div class="row"><span>Tutorial completati</span><b>${tutDone}/4</b></div>
-        </div>
-        <div class="sect">Il tuo profilo</div>
-        <div class="card">${profilo}</div>
-        <div class="sect">I tuoi servizi</div>
-        <div class="card">${serviziHtml}</div>
-        <div class="sect">Affiliazione</div>
-        <div class="card">
-          <div class="ptext" style="margin-bottom:8px">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
-          <div style="word-break:break-all;font-size:13px;color:var(--accent);margin-bottom:8px">${aff.ref_url || "-"}</div>
-          <button class="btn btn-ghost" id="copyRef">Copia link</button>
-        </div>
-        <div class="card">
-          <div class="ptext" style="margin-bottom:8px">Diventa affiliato di un servizio (serve essere attivo; valutiamo la richiesta):</div>
-          <select id="affServ" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px">
-            ${(aff.servizi || []).map(s => `<option value="${s.id}">${s.nome}</option>`).join("")}
-          </select>
-          <input id="affLink" placeholder="Incolla il tuo ref link" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px" />
-          <button class="btn btn-accent" id="affSend">Invia richiesta</button>
-          <div id="affList" style="margin-top:10px">${(aff.links || []).map(l => `<div class="row"><span>${l.nome}</span><b style="color:${l.approvato ? "var(--accent)" : "var(--muted)"}">${l.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>
-        </div>
-        <div class="sect">Menu</div>
-        <div class="item" id="privacyItem"><b>🔒 Privacy e dati</b><span class="ch">›</span></div>
-        <div id="privacyPanel" class="card hidden">
-          <div class="ptext" id="privacyText"></div>
-          <button class="btn btn-danger" id="delBtn">Cancella i miei dati</button>
-        </div>
-        <button class="btn btn-accent" id="back">Torna al bot</button>`;
-
-      document.getElementById("privacyItem").addEventListener("click", () => {
-        const p = document.getElementById("privacyPanel");
-        document.getElementById("privacyText").textContent =
-          "Informativa privacy - Business UP\n\nTitolare: Business UP (antonybusinesshub@gmail.com).\nDati: ID/username Telegram, nome, risposte sondaggio, uso del bot.\nFinalita: indirizzarti ai metodi adatti e contattarti.\nBase: il tuo consenso. Non vendiamo i tuoi dati.\nPuoi cancellare tutto qui sotto in qualsiasi momento.";
-        p.classList.toggle("hidden");
-      });
-      document.getElementById("delBtn").addEventListener("click", async () => {
-        const ok = TG && TG.showConfirm
-          ? await new Promise(res => TG.showConfirm("Cancellare TUTTI i tuoi dati? Azione definitiva.", res))
-          : confirm("Cancellare TUTTI i tuoi dati?");
-        if (!ok) return;
-        await fetch(EDGE + "/delete-me", { method:"POST", headers:{ "x-telegram-init-data": TG.initData } });
-        app.innerHTML = '<div class="err">Dati cancellati. Scrivi /start al bot per ricominciare.</div>';
-      });
-      document.getElementById("back").addEventListener("click", close);
-
-      const copyBtn = document.getElementById("copyRef");
-      if (copyBtn) copyBtn.addEventListener("click", () => {
-        const url = aff.ref_url || "";
-        if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
-        copyBtn.textContent = "Copiato ✓";
-        setTimeout(() => copyBtn.textContent = "Copia link", 1500);
-      });
-      const affSend = document.getElementById("affSend");
-      if (affSend) affSend.addEventListener("click", async () => {
-        const sid = document.getElementById("affServ").value;
-        const link = document.getElementById("affLink").value.trim();
-        if (!sid || !link) return;
-        affSend.disabled = true; affSend.textContent = "Invio...";
-        try {
-          await fetch(EDGE + "/affiliate-request", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: parseInt(sid), ref_link: link }) });
-          affSend.textContent = "✓ Richiesta inviata";
-          if (TG && TG.showAlert) TG.showAlert("Richiesta inviata. Ti avviso quando viene approvata.");
-        } catch { affSend.disabled = false; affSend.textContent = "Invia richiesta"; }
-      });
-    }
-    load();
-  </script>
-</body>
-</html>
+    document.getElementById("privacyItem").addEventListener("click", () => {
+      const p = document.getElementById("privacyPanel");
+      document.getElementById("privacyText").textContent =
+        "Informativa privacy — Business UP\n\nTitolare: Business UP (antonybusinesshub@gmail.com).\nDati: ID/username Telegram, nome, risposte sondaggio, uso del bot.\nFinalità: indirizzarti ai metodi adatti e contattarti.\nBase: il tuo consenso. Non vendiamo i tuoi dati.\nPuoi cancellare tutto qui sotto in qualsiasi momento.";
+      p.style.display = p.style.display === "none" ? "block" : "none";
+    });
+    document.getElementById("delBtn").addEventListener("click", async () => {
+      const ok = TG && TG.showConfirm
+        ? await new Promise(res => TG.showConfirm("Cancellare TUTTI i tuoi dati? Azione definitiva.", res))
+        : confirm("Cancellare TUTTI i tuoi dati?");
+      if (!ok) return;
+      await fetch(EDGE + "/delete-me", { method:"POST", headers:{ "x-telegram-init-data":TG.initData } });
+      app.innerHTML = '<div class="err">Dati cancellati. Scrivi /start al bot per ricominciare.</div>';
+    });
+    document.getElementById("back").addEventListener("click", close);
+  }
+  load();
+</script>
+</body></html>
