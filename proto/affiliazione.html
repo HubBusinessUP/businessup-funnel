@@ -33,13 +33,25 @@
   .req.on{background:rgba(233,185,73,.14);color:var(--giallo);border:1px solid rgba(233,185,73,.35);}
   .backbtn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:16px;}
   .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
-  .net{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line);}
-  .net:first-child{border-top:none;}
-  .neta{width:38px;height:38px;border-radius:11px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;}
+  .net{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer;}
+  .net:first-child{border-top:none;} .net:active{opacity:.7;}
+  .neta{width:42px;height:42px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;overflow:hidden;}
+  .neta img{width:100%;height:100%;object-fit:cover;}
   .net .nn{flex:1;} .net .nn b{font-size:14px;font-weight:600;display:block;} .net .nn span{font-size:12px;color:var(--muted);}
+  .net .ch{color:var(--muted);font-size:18px;}
   .nb{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:3px 9px;border-radius:999px;}
   .nb-att{color:var(--accent2);background:rgba(25,205,172,.12);}
   .nb-isc{color:var(--giallo);background:rgba(233,185,73,.12);}
+  .msheet{position:fixed;inset:0;background:var(--bg);padding:18px 16px 30px;overflow-y:auto;transform:translateY(100%);transition:transform .25s;z-index:20;}
+  .msheet.open{transform:translateY(0);}
+  .mx{color:var(--accent2);font-weight:700;font-size:14px;cursor:pointer;margin-bottom:14px;display:inline-block;}
+  .mhead{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .mav{width:60px;height:60px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:22px;flex:none;overflow:hidden;}
+  .mav img{width:100%;height:100%;object-fit:cover;}
+  .cbtn{display:flex;align-items:center;gap:10px;width:100%;padding:13px 14px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-weight:700;font-size:14px;font-family:inherit;text-align:left;text-decoration:none;cursor:pointer;margin-bottom:8px;}
+  .cbtn .ci{font-size:17px;}
+  .arow{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;}
+  .arow:first-child{border-top:none;} .arow .k{color:var(--muted);} .arow .v{font-weight:600;text-align:right;}
 </style></head>
 <body>
 <div class="wrap">
@@ -88,6 +100,7 @@
   <a class="backbtn" href="home.html">‹ Torna alla Home</a>
   <div class="foot">PROTOTIPO · Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
 </div>
+<div class="msheet" id="msheet"></div>
 <script>
   const REF="https://t.me/BotBusinessUP_bot?start=ref_334179105";
   document.getElementById("copy").onclick=()=>{ navigator.clipboard?.writeText(REF).then(()=>{ const b=document.getElementById("copy"); b.textContent="✅ Copiato!"; setTimeout(()=>b.textContent="📋 Copia link",1500); }); };
@@ -100,20 +113,60 @@
 
   // La mia rete di invitati
   const RETE=[
-    {nome:"Enrico Fabbri", tg:"@enrico_fab", stato:"attivato", servizio:"BvB Swap"},
-    {nome:"Giulia Conti", tg:"@giuliac", stato:"iscritto", servizio:null},
-    {nome:"Davide Russo", tg:"@dave_rml", stato:"iscritto", servizio:null},
-    {nome:"Marta Leone", tg:"@marta.leone", stato:"iscritto", servizio:null},
+    {nome:"Enrico Fabbri", user:"enrico_fab", tel:"+39 333 22 44 556", stato:"attivato", entrato:"20/06/2026",
+      servizi:[{nome:"BvB Swap", data:"30/06/2026", quando:"ieri"}], ref:"334200111"},
+    {nome:"Giulia Conti", user:"giuliac", tel:"+39 340 55 66 778", stato:"iscritto", entrato:"29/06/2026", servizi:[], ref:"334200112"},
+    {nome:"Davide Russo", user:"dave_rml", tel:null, stato:"iscritto", entrato:"28/06/2026", servizi:[], ref:"334200113"},
+    {nome:"Marta Leone", user:"marta_leone", tel:"+39 351 11 22 334", stato:"iscritto", entrato:"27/06/2026", servizi:[], ref:"334200114"},
   ];
   const rete=document.getElementById("rete");
-  rete.innerHTML = RETE.length ? RETE.map(p=>{
+  rete.innerHTML = RETE.length ? RETE.map((p,i)=>{
     const att = p.stato==="attivato";
-    return `<div class="net">
+    return `<div class="net" data-i="${i}">
       <div class="neta">${p.nome[0]}</div>
-      <div class="nn"><b>${p.nome}</b><span>${p.tg}${att?` · ${p.servizio}`:""}</span></div>
+      <div class="nn"><b>${p.nome}</b><span>@${p.user}${att?` · ${p.servizi[0].nome}`:""}</span></div>
       <span class="nb ${att?'nb-att':'nb-isc'}">${att?"Ha attivato":"Iscritto"}</span>
+      <span class="ch">›</span>
     </div>`;
   }).join("") : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:14px">Non hai ancora invitato nessuno.</div>';
+  rete.querySelectorAll(".net").forEach(el=>el.onclick=()=>openMember(+el.dataset.i));
+
+  // Scheda del membro della rete
+  const msheet=document.getElementById("msheet");
+  function openMember(i){
+    const p=RETE[i], att=p.stato==="attivato";
+    const servHtml = p.servizi.length
+      ? p.servizi.map(s=>`<div class="arow"><span class="k">${s.nome}</span><span class="v">${s.data}${s.quando?` · ${s.quando}`:""}</span></div>`).join("")
+      : '<div style="color:var(--muted);font-size:13px">Non ha ancora attivato nessun servizio.</div>';
+    const telBtn = p.tel ? `<a class="cbtn" href="tel:${p.tel.replace(/\s/g,"")}"><span class="ci">📞</span> Chiama ${p.tel}</a>` : "";
+    const refUrl = "https://t.me/BotBusinessUP_bot?start=ref_"+p.ref;
+    msheet.innerHTML=`
+      <span class="mx" id="mback">‹ La mia rete</span>
+      <div class="mhead"><div class="mav">${p.nome[0]}</div>
+        <div><div style="font-size:20px;font-weight:800">${p.nome}</div>
+        <span class="nb ${att?'nb-att':'nb-isc'}">${att?"Ha attivato":"Iscritto"}</span></div></div>
+
+      <div class="lbl" style="margin-top:4px">Contatta</div>
+      <a class="cbtn" href="https://t.me/${p.user}" target="_blank"><span class="ci">💬</span> Scrivi su Telegram · @${p.user}</a>
+      ${telBtn}
+
+      <div class="lbl">Servizi attivati</div>
+      <div class="card">${servHtml}</div>
+
+      <div class="lbl">Dettagli</div>
+      <div class="card"><div class="arow"><span class="k">Entrato dal tuo link</span><span class="v">${p.entrato}</span></div></div>
+
+      <div class="lbl">Il suo ref link</div>
+      <div class="card"><div class="link" style="margin-bottom:10px" id="mref">${refUrl}</div>
+        <button class="btn g" id="mcopy" style="margin-top:0">📋 Copia il suo ref link</button></div>
+
+      <a class="backbtn" id="mclose" style="margin-top:16px">Chiudi</a>`;
+    msheet.classList.add("open");
+    document.getElementById("mback").onclick=close;
+    document.getElementById("mclose").onclick=close;
+    document.getElementById("mcopy").onclick=()=>{ navigator.clipboard?.writeText(refUrl).then(()=>{ const b=document.getElementById("mcopy"); b.textContent="✅ Copiato!"; setTimeout(()=>b.textContent="📋 Copia il suo ref link",1500); }); };
+    function close(){ msheet.classList.remove("open"); }
+  }
 
   // Servizi su cui chiedere affiliazione
   const SRV=[
