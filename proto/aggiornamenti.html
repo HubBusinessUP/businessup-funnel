@@ -44,14 +44,14 @@
   ];
   const POSTS = {
     gen:[
-      {t:"Nuova settimana operativa 🚀\nAbbiamo aggiornato le linee guida sui broker. Nessun guru, nessun filtro: solo dati.", when:"2h fa", media:{tipo:"img"}},
-      {t:"Promemoria: la disciplina batte l'entusiasmo. Chi segue il metodo, resta.", when:"1g fa"},
+      {t:"Nuova settimana operativa 🚀\nAbbiamo aggiornato le linee guida sui broker. Nessun guru, nessun filtro: solo dati.", when:"01/07/2026 · 14:30", media:{tipo:"img"}},
+      {t:"Promemoria: la disciplina batte l'entusiasmo. Chi segue il metodo, resta.", when:"30/06/2026 · 18:05"},
     ],
     swap:[
-      {t:"Il servizio Swap sta per ripartire. Preparate i due conti: vi avviseremo appena è attivo.", when:"5h fa", media:{tipo:"vid"}},
+      {t:"Il servizio Swap sta per ripartire. Preparate i due conti: vi avviseremo appena è attivo.", when:"01/07/2026 · 09:15", media:{tipo:"vid"}},
     ],
     bonus:[
-      {t:"Bonus: stiamo valutando un nuovo broker con condizioni migliori. Aggiornamenti a breve.", when:"3g fa"},
+      {t:"Bonus: stiamo valutando un nuovo broker con condizioni migliori. Aggiornamenti a breve.", when:"28/06/2026 · 20:40"},
     ],
   };
   let cur = "gen";
@@ -67,7 +67,7 @@
     const tag = CANALI.find(c=>c.id===cur).nome.replace("📢 ","");
     feed.innerHTML = list.map(p=>`
       <div class="post">
-        <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">· ${p.when}</div></div><span class="tag">${tag}</span></div>
+        <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">🕒 ${p.when}</div></div><span class="tag">${tag}</span></div>
         <div class="txt">${p.t}</div>
         ${p.media? (p.media.tipo==="img"
           ? '<div class="media"><div class="img">🖼️ immagine</div></div>'
