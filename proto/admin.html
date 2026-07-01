@@ -2,133 +2,234 @@
 <html lang="it"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-<title>Admin — Business UP</title>
+<title>Admin CRM — Business UP</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;--blu:#5b9dff;}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
-  .wrap{max-width:600px;margin:0 auto;}
-  .top{display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px;letter-spacing:1px;margin-bottom:4px;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:14px 12px 40px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:640px;margin:0 auto;}
+  .top{display:flex;align-items:center;gap:9px;font-weight:800;font-size:13px;letter-spacing:1px;margin-bottom:12px;}
   .top .bdot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
-  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:16px;}
-  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:22px 4px 8px;}
-  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;}
-  .kpi .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
-  .kpi .v{font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-.4px;}
+  .tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:16px;-ms-overflow-style:none;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex:none;padding:9px 13px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .tab.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
+  .sec{display:none;} .sec.on{display:block;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:18px 4px 8px;}
+  .lbl:first-child{margin-top:4px;}
+  .kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:12px;}
+  .kpi .k{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+  .kpi .v{font-size:20px;font-weight:800;margin-top:4px;letter-spacing:-.4px;}
   .kpi .v.a{color:var(--accent2);}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
-  .chip{padding:7px 13px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;}
-  .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
-  textarea{width:100%;min-height:90px;background:#0e0f11;border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;padding:12px;resize:vertical;}
+  /* funnel */
+  .frow{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:14px;}
+  .frow .fn{flex:1;color:var(--muted);} .frow .fv{font-weight:700;}
+  .fbar{height:8px;border-radius:999px;background:var(--surface2);overflow:hidden;margin-top:3px;}
+  .fbar>i{display:block;height:100%;background:var(--accent);border-radius:999px;}
+  /* lead list */
+  .search{width:100%;padding:12px 14px;border-radius:12px;background:#0e0f11;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:14px;margin-bottom:10px;}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .fchip{padding:6px 11px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;}
+  .fchip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.4);color:var(--accent2);}
+  .lead{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--line);cursor:pointer;}
+  .lead:first-child{border-top:none;}
+  .lav{width:36px;height:36px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+  .lead .ln{flex:1;} .lead .ln b{font-size:14px;} .lead .ln span{display:block;font-size:12px;color:var(--muted);}
+  .stage{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:3px 8px;border-radius:999px;}
+  .s-nuovo{color:var(--blu);background:rgba(91,157,255,.12);}
+  .s-qualificato{color:var(--accent2);background:rgba(25,205,172,.12);}
+  .s-squalificato{color:var(--rosso);background:rgba(255,93,93,.12);}
+  .s-contattato{color:var(--giallo);background:rgba(233,185,73,.12);}
+  .s-cliente{color:#c9a3ff;background:rgba(180,140,255,.14);}
+  /* lead card */
+  .row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;}
+  .row:first-child{border-top:none;} .row .k{color:var(--muted);} .row .v{font-weight:600;text-align:right;}
+  .selstage{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+  .ss{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;}
+  .ss.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.4);color:var(--accent2);}
+  .back{color:var(--accent2);font-weight:700;font-size:14px;cursor:pointer;margin-bottom:12px;display:inline-block;}
+  textarea{width:100%;min-height:80px;background:#0e0f11;border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:12px;resize:vertical;}
   textarea:focus{outline:none;border-color:rgba(13,158,136,.5);}
-  .media-btns{display:flex;gap:8px;margin-top:10px;}
-  .mbtn{flex:1;padding:11px;border-radius:11px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+  .chip{padding:7px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;}
+  .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
+  .mbtn{padding:10px;border-radius:11px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;}
   .mbtn.on{border-color:rgba(13,158,136,.5);color:var(--accent2);}
-  .dest{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5;}
-  .dest b{color:var(--text);}
   .pub{width:100%;padding:14px;border:none;border-radius:13px;background:var(--accent);color:#04221c;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;margin-top:12px;}
-  /* preview post */
-  .prevlbl{font-size:11px;color:var(--muted);margin:14px 0 6px;}
-  .post{background:#0e0f11;border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
-  .ph{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
-  .av{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:12px;}
-  .who b{font-size:13px;} .who .m{font-size:11px;color:var(--muted);}
-  .tag{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;color:var(--accent2);background:rgba(25,205,172,.1);padding:2px 7px;border-radius:999px;}
-  .ptxt{font-size:14px;color:#e4e6e8;white-space:pre-line;min-height:18px;}
-  .pmedia{margin-top:8px;aspect-ratio:16/9;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);font-size:12px;background:linear-gradient(135deg,#123,#1b3a34);}
-  /* servizi */
+  .dest{font-size:12.5px;color:var(--muted);margin-top:10px;}
   .srv{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);}
-  .srv:first-child{border-top:none;}
-  .srv b{flex:1;font-size:14px;font-weight:600;}
-  .sel{display:flex;gap:6px;}
+  .srv:first-child{border-top:none;} .srv b{flex:1;font-size:14px;font-weight:600;}
   .st{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);cursor:pointer;display:grid;place-items:center;}
-  .st.on{border-width:2px;}
+  .st.on{border-width:2px;} .dotc{width:11px;height:11px;border-radius:50%;}
   .g{background:var(--accent2);} .y{background:var(--giallo);} .r{background:var(--rosso);}
-  .dotc{width:11px;height:11px;border-radius:50%;}
-  .demo{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
+  .demo{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
 </style></head>
 <body>
 <div class="wrap">
-  <div class="top"><span class="bdot"></span>BUSINESS UP · ADMIN</div>
-  <h1>CRM</h1>
+  <div class="top"><span class="bdot"></span>BUSINESS UP · ADMIN CRM</div>
+  <div class="tabs" id="tabs"></div>
 
-  <div class="lbl">Statistiche (KPI)</div>
-  <div class="kpis">
-    <div class="kpi"><div class="k">Totale lead</div><div class="v">235</div></div>
-    <div class="kpi"><div class="k">Qualificati</div><div class="v a">89</div></div>
-    <div class="kpi"><div class="k">Clienti</div><div class="v">12</div></div>
-    <div class="kpi"><div class="k">Tasso qualifica</div><div class="v">38%</div></div>
+  <!-- DASHBOARD -->
+  <div class="sec on" id="s-dash">
+    <div class="lbl">KPI</div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Totale lead</div><div class="v">235</div></div>
+      <div class="kpi"><div class="k">Nuovi</div><div class="v">98</div></div>
+      <div class="kpi"><div class="k">Qualificati</div><div class="v a">89</div></div>
+      <div class="kpi"><div class="k">Squalificati</div><div class="v">36</div></div>
+      <div class="kpi"><div class="k">Clienti</div><div class="v">12</div></div>
+      <div class="kpi"><div class="k">Tasso qualifica</div><div class="v">38%</div></div>
+    </div>
+    <div class="lbl">Funnel</div>
+    <div class="card" id="funnel"></div>
+    <div class="lbl">Statistiche sondaggio</div>
+    <div class="card" id="stats"></div>
   </div>
 
-  <div class="lbl">📢 Pubblica aggiornamento</div>
-  <div class="card">
-    <div class="chips" id="chips"></div>
-    <textarea id="txt" placeholder="Scrivi l'aggiornamento…"></textarea>
-    <div class="media-btns">
-      <button class="mbtn" data-m="img">🖼️ Immagine</button>
-      <button class="mbtn" data-m="vid">🎬 Video</button>
-      <button class="mbtn" data-m="">✖ Nessun media</button>
+  <!-- LEAD -->
+  <div class="sec" id="s-lead">
+    <div id="leadList">
+      <input class="search" id="q" placeholder="Cerca nome, email…"/>
+      <div class="filters" id="filters"></div>
+      <div class="card" id="list"></div>
     </div>
-
-    <div class="prevlbl">Anteprima (come lo vede l'utente)</div>
-    <div class="post">
-      <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">🕒 ora</div></div><span class="tag" id="pTag">Generale</span></div>
-      <div class="ptxt" id="pTxt">…</div>
-      <div class="pmedia" id="pMedia" style="display:none"></div>
-    </div>
-
-    <div class="dest" id="dest"></div>
-    <button class="pub" id="pub">Pubblica →</button>
+    <div id="leadCard" style="display:none"></div>
   </div>
 
-  <div class="lbl">Gestione servizi (stato → notifica)</div>
-  <div class="card" id="servizi"></div>
+  <!-- BROADCAST -->
+  <div class="sec" id="s-bc">
+    <div class="lbl">Invia broadcast</div>
+    <div class="card">
+      <div class="chips" id="bcSeg"></div>
+      <textarea id="bcTxt" placeholder="Messaggio da inviare al segmento…"></textarea>
+      <div class="dest" id="bcDest"></div>
+      <button class="pub" id="bcSend">Invia broadcast →</button>
+    </div>
+  </div>
 
-  <div class="demo">PROTOTIPO ADMIN · nella versione reale è protetto da password</div>
+  <!-- POST -->
+  <div class="sec" id="s-post">
+    <div class="lbl">📢 Pubblica aggiornamento</div>
+    <div class="card">
+      <div class="chips" id="canali"></div>
+      <textarea id="pTxt" placeholder="Scrivi l'aggiornamento…"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="mbtn" style="flex:1" data-m="img">🖼️ Immagine</button>
+        <button class="mbtn" style="flex:1" data-m="vid">🎬 Video</button>
+        <button class="mbtn" style="flex:1" data-m="">✖ Nessuno</button>
+      </div>
+      <div class="dest" id="pDest"></div>
+      <button class="pub" id="pPub">Pubblica →</button>
+    </div>
+  </div>
+
+  <!-- SERVIZI -->
+  <div class="sec" id="s-srv">
+    <div class="lbl">Gestione stato servizi (→ notifica)</div>
+    <div class="card" id="servizi"></div>
+  </div>
+
+  <div class="demo">PROTOTIPO ADMIN · dati finti · nella versione reale è protetto da password</div>
 </div>
 <script>
-  const CAN=[{id:"gen",n:"Generale",dm:"tutti gli iscritti al Generale"},{id:"swap",n:"Swap",dm:"chi ha il servizio Swap o è iscritto al canale"},{id:"bonus",n:"Bonus",dm:"chi ha il servizio Bonus o è iscritto"},{id:"prop",n:"Prop",dm:"chi ha il servizio Prop o è iscritto"}];
-  let canale="gen", media="";
-  const chips=document.getElementById("chips"), txt=document.getElementById("txt");
-  const pTag=document.getElementById("pTag"), pTxt=document.getElementById("pTxt"), pMedia=document.getElementById("pMedia"), dest=document.getElementById("dest");
+  const TABS=[["dash","📊 Dashboard"],["lead","👥 Lead"],["bc","📣 Broadcast"],["post","📢 Post"],["srv","⚙️ Servizi"]];
+  const tabsEl=document.getElementById("tabs");
+  function drawTabs(cur){ tabsEl.innerHTML=TABS.map(t=>`<button class="tab ${t[0]===cur?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join("");
+    tabsEl.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ show(b.dataset.t); }); }
+  function show(t){ drawTabs(t); document.querySelectorAll(".sec").forEach(s=>s.classList.remove("on")); document.getElementById("s-"+t).classList.add("on"); }
+  drawTabs("dash");
 
-  function drawChips(){ chips.innerHTML=CAN.map(c=>`<button class="chip ${c.id===canale?'on':''}" data-c="${c.id}">${c.n}</button>`).join("");
-    chips.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{canale=b.dataset.c;drawChips();sync();}); }
-  function sync(){
-    const c=CAN.find(x=>x.id===canale);
-    pTag.textContent=c.n;
-    pTxt.textContent=txt.value||"…";
-    if(media){pMedia.style.display="grid";pMedia.textContent=media==="img"?"🖼️ immagine":"🎬 video";}else{pMedia.style.display="none";}
-    dest.innerHTML=`Arriverà a: <b>timeline canale ${c.n}</b> · <b>DM</b> a ${c.dm} · <b>topic gruppo "Aggiornamenti"</b>.`;
+  // Funnel
+  const FUN=[["Entrati",235,100],["Sondaggio completato",199,85],["Qualificati",89,38],["Interessati a un servizio",41,17],["Clienti",12,5]];
+  document.getElementById("funnel").innerHTML=FUN.map(f=>`<div class="frow"><span class="fn">${f[0]}</span><span class="fv">${f[1]} · ${f[2]}%</span></div><div class="fbar"><i style="width:${f[2]}%"></i></div>`).join("");
+  // Stats sondaggio
+  const ST=[["Budget €2k+","54%"],["Situazione: Dipendente","41%"],["Cerca: Reddito extra","47%"],["Prontezza: Subito","33%"],["Paese: Italia","92%"]];
+  document.getElementById("stats").innerHTML=ST.map(s=>`<div class="row"><span class="k">${s[0]}</span><span class="v">${s[1]}</span></div>`).join("");
+
+  // LEAD data
+  const STAGES=["nuovo","qualificato","squalificato","contattato","cliente"];
+  const LEADS=[
+    {n:"Antony Rossi",em:"antony@email.com",tel:"+39 333 111 2222",paese:"Italia",citta:"Milano",eta:"26-35",stage:"qualificato",cerca:"Reddito extra",budget:"€2.000 - 5.000",sit:"Dipendente",pronto:"Subito",serv:"—",pag:"—"},
+    {n:"Luca Verdi",em:"luca@email.com",tel:"+39 340 555 7788",paese:"Italia",citta:"Roma",eta:"36-45",stage:"cliente",cerca:"Libertà finanziaria",budget:"€5.000+",sit:"Imprenditore",pronto:"Subito",serv:"BvB Swap (attivo)",pag:"50 USDT + 2 cicli"},
+    {n:"Marco Bianchi",em:"marco@email.com",tel:"+39 320 444 1212",paese:"Italia",citta:"Torino",eta:"18-25",stage:"nuovo",cerca:"Nuova attività",budget:"€500 - 2.000",sit:"Studente",pronto:"Sto valutando",serv:"—",pag:"—"},
+    {n:"Sara Neri",em:"sara@email.com",tel:"+39 351 999 3434",paese:"Italia",citta:"Napoli",eta:"26-35",stage:"squalificato",cerca:"Reddito extra",budget:"Meno di €500",sit:"In cerca di lavoro",pronto:"Entro un mese",serv:"—",pag:"—"},
+    {n:"Paolo Gialli",em:"paolo@email.com",tel:"+39 366 777 5656",paese:"Italia",citta:"Bologna",eta:"36-45",stage:"contattato",cerca:"Far crescere i risparmi",budget:"€2.000 - 5.000",sit:"Autonomo / P.IVA",pronto:"Subito",serv:"BvB Bonus (interessato)",pag:"—"},
+  ];
+  let filtro="tutti";
+  const listEl=document.getElementById("list"), leadList=document.getElementById("leadList"), leadCard=document.getElementById("leadCard");
+  const FILTERS=["tutti",...STAGES];
+  document.getElementById("filters").innerHTML=FILTERS.map(f=>`<button class="fchip ${f===filtro?'on':''}" data-f="${f}">${f}</button>`).join("");
+  document.querySelectorAll(".fchip").forEach(b=>b.onclick=()=>{filtro=b.dataset.f;document.querySelectorAll(".fchip").forEach(x=>x.classList.toggle("on",x===b));drawList();});
+  document.getElementById("q").addEventListener("input",drawList);
+  function drawList(){
+    const q=document.getElementById("q").value.toLowerCase();
+    const rows=LEADS.filter(l=>(filtro==="tutti"||l.stage===filtro)&&(l.n.toLowerCase().includes(q)||l.em.toLowerCase().includes(q)));
+    listEl.innerHTML=rows.length?rows.map((l,idx)=>`<div class="lead" data-i="${LEADS.indexOf(l)}"><div class="lav">${l.n[0]}</div><div class="ln"><b>${l.n}</b><span>${l.citta} · ${l.budget}</span></div><span class="stage s-${l.stage}">${l.stage}</span></div>`).join(""):'<div style="color:var(--muted);text-align:center;padding:20px;font-size:14px">Nessun lead.</div>';
+    listEl.querySelectorAll(".lead").forEach(el=>el.onclick=()=>openLead(+el.dataset.i));
   }
-  txt.addEventListener("input",sync);
-  document.querySelectorAll(".mbtn").forEach(b=>b.onclick=()=>{media=b.dataset.m;document.querySelectorAll(".mbtn").forEach(x=>x.classList.toggle("on",x===b&&media));sync();});
-  document.getElementById("pub").onclick=()=>{
-    if(!txt.value.trim()){alert("Scrivi il testo dell'aggiornamento.");return;}
-    const c=CAN.find(x=>x.id===canale);
-    alert("✅ Pubblicato!\n\nCanale: "+c.n+"\n→ Timeline aggiornata\n→ DM inviato a "+c.dm+"\n→ Postato nel topic gruppo \"Aggiornamenti\"");
-  };
-  drawChips(); sync();
+  function openLead(i){
+    const l=LEADS[i];
+    leadList.style.display="none"; leadCard.style.display="block";
+    leadCard.innerHTML=`
+      <span class="back" id="bk">‹ Tutti i lead</span>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div class="lav" style="width:46px;height:46px;font-size:16px">${l.n[0]}</div><div><div style="font-size:19px;font-weight:800">${l.n}</div><span class="stage s-${l.stage}">${l.stage}</span></div></div>
+      <div class="lbl">Anagrafica</div><div class="card">
+        <div class="row"><span class="k">Email</span><span class="v">${l.em}</span></div>
+        <div class="row"><span class="k">Telefono</span><span class="v">${l.tel}</span></div>
+        <div class="row"><span class="k">Paese · Città</span><span class="v">${l.paese} · ${l.citta}</span></div>
+        <div class="row"><span class="k">Età</span><span class="v">${l.eta}</span></div>
+      </div>
+      <div class="lbl">Sondaggio</div><div class="card">
+        <div class="row"><span class="k">Cosa cerca</span><span class="v">${l.cerca}</span></div>
+        <div class="row"><span class="k">Budget</span><span class="v">${l.budget}</span></div>
+        <div class="row"><span class="k">Situazione</span><span class="v">${l.sit}</span></div>
+        <div class="row"><span class="k">Prontezza</span><span class="v">${l.pronto}</span></div>
+      </div>
+      <div class="lbl">Pipeline</div><div class="card">
+        <div class="selstage">${STAGES.map(s=>`<span class="ss ${s===l.stage?'on':''}" data-s="${s}">${s}</span>`).join("")}</div>
+      </div>
+      <div class="lbl">Servizi & Pagamenti</div><div class="card">
+        <div class="row"><span class="k">Servizi</span><span class="v">${l.serv}</span></div>
+        <div class="row"><span class="k">Pagamenti</span><span class="v">${l.pag}</span></div>
+      </div>
+      <div class="lbl">Note & Azioni</div><div class="card">
+        <textarea placeholder="Aggiungi una nota su questo lead…"></textarea>
+        <button class="pub" onclick="alert('Apre la chat DM con ${l.n}')">💬 Contatta in DM</button>
+      </div>`;
+    document.getElementById("bk").onclick=()=>{leadCard.style.display="none";leadList.style.display="block";};
+    leadCard.querySelectorAll(".ss").forEach(s=>s.onclick=()=>{ LEADS[i].stage=s.dataset.s; alert('Stage di '+l.n+' → '+s.dataset.s); openLead(i); drawList(); });
+  }
+  drawList();
 
-  // Gestione servizi
+  // BROADCAST
+  const SEG=[["all","Tutti (235)"],["qualificato","Qualificati (89)"],["squalificato","Squalificati (36)"],["cliente","Clienti (12)"],["swap","Interessati Swap"]];
+  let seg="all";
+  document.getElementById("bcSeg").innerHTML=SEG.map(s=>`<button class="chip ${s[0]===seg?'on':''}" data-s="${s[0]}">${s[1]}</button>`).join("");
+  const bcDest=document.getElementById("bcDest");
+  function bcSync(){ const s=SEG.find(x=>x[0]===seg); bcDest.textContent="Verrà inviato in DM a: "+s[1]; }
+  document.querySelectorAll("#bcSeg .chip").forEach(b=>b.onclick=()=>{seg=b.dataset.s;document.querySelectorAll("#bcSeg .chip").forEach(x=>x.classList.toggle("on",x===b));bcSync();});
+  bcSync();
+  document.getElementById("bcSend").onclick=()=>{ const t=document.getElementById("bcTxt").value.trim(); if(!t){alert("Scrivi il messaggio.");return;} const s=SEG.find(x=>x[0]===seg); alert("✅ Broadcast inviato a: "+s[1]); };
+
+  // POST
+  const CAN=[["gen","Generale"],["swap","Swap"],["bonus","Bonus"],["prop","Prop"]];
+  let canale="gen", media="";
+  document.getElementById("canali").innerHTML=CAN.map(c=>`<button class="chip ${c[0]===canale?'on':''}" data-c="${c[0]}">${c[1]}</button>`).join("");
+  const pDest=document.getElementById("pDest");
+  function pSync(){ const c=CAN.find(x=>x[0]===canale); pDest.innerHTML="Arriverà a: <b>timeline "+c[1]+"</b> · <b>DM</b> a chi ha il tag/è iscritto · <b>topic gruppo</b>."; }
+  document.querySelectorAll("#canali .chip").forEach(b=>b.onclick=()=>{canale=b.dataset.c;document.querySelectorAll("#canali .chip").forEach(x=>x.classList.toggle("on",x===b));pSync();});
+  document.querySelectorAll("#s-post .mbtn").forEach(b=>b.onclick=()=>{media=b.dataset.m;document.querySelectorAll("#s-post .mbtn").forEach(x=>x.classList.toggle("on",x===b&&media));});
+  pSync();
+  document.getElementById("pPub").onclick=()=>{ const t=document.getElementById("pTxt").value.trim(); if(!t){alert("Scrivi il testo.");return;} const c=CAN.find(x=>x[0]===canale); alert("✅ Pubblicato su "+c[1]+"!\n→ Timeline + DM + topic gruppo"); };
+
+  // SERVIZI
   const SRV=[{n:"Broker VS Broker Swap",s:"y"},{n:"Prop VS Broker",s:"y"},{n:"Broker VS Broker Bonus",s:"r"}];
   const box=document.getElementById("servizi");
-  function drawSrv(){ box.innerHTML=SRV.map((s,i)=>`
-    <div class="srv"><b>${s.n}</b><div class="sel">
-      ${["g","y","r"].map(col=>`<div class="st ${s.s===col?'on':''}" data-i="${i}" data-c="${col}"><span class="dotc ${col}"></span></div>`).join("")}
-    </div></div>`).join("");
-    box.querySelectorAll(".st").forEach(el=>el.onclick=()=>{
-      const i=+el.dataset.i, col=el.dataset.c, old=SRV[i].s; SRV[i].s=col; drawSrv();
-      const lbl={g:"Attivo 🟢",y:"In pausa 🟡",r:"Fermo 🔴"};
-      let msg="Stato di \""+SRV[i].n+"\" → "+lbl[col]+"\n\n";
-      if(col==="g") msg+="→ Notifica inviata a chi era in LISTA D'ATTESA: \"ora è attivo!\"";
-      else msg+="→ Notifica inviata a TUTTI gli utenti (col motivo che scrivi).";
-      alert(msg);
-    });
-  }
+  function drawSrv(){ box.innerHTML=SRV.map((s,i)=>`<div class="srv"><b>${s.n}</b><div style="display:flex;gap:6px">${["g","y","r"].map(col=>`<div class="st ${s.s===col?'on':''}" data-i="${i}" data-c="${col}"><span class="dotc ${col}"></span></div>`).join("")}</div></div>`).join("");
+    box.querySelectorAll(".st").forEach(el=>el.onclick=()=>{ const i=+el.dataset.i,col=el.dataset.c; SRV[i].s=col; drawSrv(); const lbl={g:"Attivo 🟢",y:"In pausa 🟡",r:"Fermo 🔴"}; alert('Stato "'+SRV[i].n+'" → '+lbl[col]+(col==="g"?"\n→ Notifica alla lista d'attesa":"\n→ Notifica a tutti col motivo")); }); }
   drawSrv();
 </script>
 </body></html>
