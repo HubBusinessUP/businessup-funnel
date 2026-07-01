@@ -3,112 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>La mia Dashboard - Business UP</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg:#0b0c0e; --surface:#15171a; --surface2:#1d2024; --line:rgba(255,255,255,.07);
-      --text:#eceef0; --muted:#8b9096; --accent:#0d9e88; --accent2:#19cdac; --danger:#ff5d5d;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body {
-      font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      background:var(--bg); color:var(--text); line-height:1.45; -webkit-font-smoothing:antialiased;
-      padding:10px 14px calc(34px + env(safe-area-inset-bottom));
-    }
-    .wrap { max-width:520px; margin:0 auto; }
-
-    /* App bar */
-    .appbar { display:flex; align-items:center; gap:12px; padding:8px 2px 18px; }
-    .avatar { width:42px; height:42px; border-radius:13px; background:var(--accent); color:#04221c; display:grid; place-items:center; font-weight:800; font-size:17px; flex:none; }
-    img.avatar { object-fit:cover; background:var(--surface2); }
-    .appbar .t { font-size:12px; color:var(--muted); font-weight:600; letter-spacing:.2px; }
-    .appbar .n { font-size:18px; font-weight:700; letter-spacing:-.2px; line-height:1.2; }
-
-    /* Hero */
-    .hero { background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:18px; margin-bottom:18px; }
-    .hero-row { display:flex; align-items:center; justify-content:space-between; }
-    .status { display:inline-flex; align-items:center; gap:9px; font-size:19px; font-weight:700; letter-spacing:-.2px; }
-    .status .dot { width:9px; height:9px; border-radius:50%; flex:none; }
-    .status.on { color:var(--accent2); }
-    .status.on .dot { background:var(--accent2); animation:pulseGreen 2.2s ease-out infinite; }
-    .status.off { color:var(--danger); }
-    .status.off .dot { background:var(--danger); animation:pulseRed 1.2s ease-out infinite; }
-    @keyframes pulseGreen { 0%{box-shadow:0 0 0 0 rgba(25,205,172,.45);} 70%{box-shadow:0 0 0 7px rgba(25,205,172,0);} 100%{box-shadow:0 0 0 0 rgba(25,205,172,0);} }
-    @keyframes pulseRed { 0%{box-shadow:0 0 0 0 rgba(255,93,93,.55);transform:scale(1);} 70%{box-shadow:0 0 0 8px rgba(255,93,93,0);transform:scale(1.07);} 100%{box-shadow:0 0 0 0 rgba(255,93,93,0);transform:scale(1);} }
-    .pill { font-size:12px; font-weight:600; color:var(--muted); background:var(--surface2); border:1px solid var(--line); padding:5px 11px; border-radius:999px; }
-    .stats { display:flex; gap:10px; margin-top:16px; }
-    .stat { flex:1; background:var(--surface2); border-radius:14px; padding:13px 14px; }
-    .stat .k { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.3px; }
-    .stat .v { font-size:18px; font-weight:700; margin-top:4px; letter-spacing:-.3px; }
-
-    /* Grouped lists */
-    .lbl { font-size:12px; color:var(--muted); font-weight:600; letter-spacing:.2px; margin:20px 6px 8px; }
-    .group { background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; margin-bottom:6px; }
-    .group.pad { padding:16px; }
-    .li { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-top:1px solid var(--line); font-size:15px; }
-    .li:first-child { border-top:none; }
-    .li .k { color:var(--muted); font-weight:500; }
-    .li .v { font-weight:600; text-align:right; }
-    .li.tap { cursor:pointer; transition:background .12s ease; }
-    .li.tap:active { background:var(--surface2); }
-    .li .ch { color:var(--muted); font-size:19px; line-height:1; }
-
-    .ptext { font-size:13px; color:var(--muted); white-space:pre-line; line-height:1.55; }
-    .reflink { word-break:break-all; font-size:13px; font-weight:600; color:var(--accent2); background:rgba(13,158,136,.08); border:1px solid rgba(13,158,136,.2); border-radius:12px; padding:11px 13px; margin:12px 0; }
-    .fld { width:100%; padding:13px; border-radius:12px; background:#0e0f11; color:var(--text); border:1px solid var(--line); margin-bottom:10px; font-family:inherit; font-size:14px; }
-    .fld:focus { outline:none; border-color:rgba(13,158,136,.5); }
-
-    .btn { width:100%; padding:14px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; margin-top:10px; transition:transform .1s ease, filter .1s ease; }
-    .btn:active { transform:scale(.99); filter:brightness(.95); }
-    .btn-accent { background:var(--accent); color:#04221c; }
-    .btn-ghost { background:var(--surface2); color:var(--text); border:1px solid var(--line); }
-    .btn-danger { background:transparent; color:var(--danger); border:1px solid rgba(255,93,93,.3); }
-    .err { text-align:center; color:var(--muted); padding:60px 20px; font-size:14px; }
+    :root { --bg: var(--tg-theme-bg-color,#0a0a0a); --card: var(--tg-theme-secondary-bg-color,#1a1a1a);
+      --text: var(--tg-theme-text-color,#fff); --muted: var(--tg-theme-hint-color,#8a8a8a); --accent:#0d9e88; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:18px 14px 36px; line-height:1.5; }
+    h1 { font-size:20px; font-weight:700; color:var(--accent); margin-bottom:2px; }
+    .sub { font-size:13px; color:var(--muted); margin-bottom:16px; }
+    .card { background:var(--card); border-radius:14px; padding:16px; margin-bottom:12px; }
+    .row { display:flex; justify-content:space-between; padding:6px 0; font-size:14px; }
+    .row span { color:var(--muted); }
+    .badge { display:inline-block; background:rgba(13,158,136,.18); color:var(--accent); font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; }
+    .sect { font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin:18px 0 8px; }
+    .item { display:flex; justify-content:space-between; align-items:center; background:var(--card); border-radius:12px; padding:14px 16px; margin-bottom:8px; cursor:pointer; }
+    .item b { font-size:15px; }
+    .item .ch { color:var(--muted); }
     .hidden { display:none; }
+    .ptext { font-size:13px; color:var(--muted); white-space:pre-line; }
+    .btn { width:100%; padding:13px; border:none; border-radius:12px; font-weight:600; font-size:14px; cursor:pointer; margin-top:10px; }
+    .btn-accent { background:var(--accent); color:#042; }
+    .btn-danger { background:#3a1a1a; color:#ff6b6b; }
+    .btn-ghost { background:var(--card); color:var(--text); }
+    .err { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div id="app"><div class="err">Caricamento…</div></div>
-  </div>
+  <div id="app"><div class="err">Caricamento...</div></div>
 
   <script>
     const TG = window.Telegram ? window.Telegram.WebApp : null;
     if (TG) { TG.ready(); TG.expand(); }
     const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
     const app = document.getElementById("app");
+    const STAGE = { nuovo:"Nuovo", qualificato:"Qualificato", squalificato:"Non idoneo ora", contattato:"In contatto", cliente:"Cliente" };
 
     function close() { if (TG) TG.close(); }
 
-    // Su alcuni client initData non è pronto nell'istante in cui parte la pagina:
-    // aspettiamo che arrivi (fino a ~2,5s) prima di mostrare l'errore.
-    function waitInitData(timeoutMs) {
-      return new Promise(resolve => {
-        if (TG && TG.initData) return resolve(true);
-        const start = Date.now();
-        const iv = setInterval(() => {
-          if (TG && TG.initData) { clearInterval(iv); resolve(true); }
-          else if (Date.now() - start > timeoutMs) { clearInterval(iv); resolve(false); }
-        }, 150);
-      });
-    }
-
     async function load() {
-      const ready = await waitInitData(2500);
-      if (!ready) {
-        const u = TG && TG.initDataUnsafe && TG.initDataUnsafe.user;
-        const code = !TG ? "no-TG" : (u ? "user-no-firma" : "no-dati");
-        const plat = TG ? ((TG.platform || "?") + " v" + (TG.version || "?")) : "-";
-        app.innerHTML = '<div class="err">Non riesco a leggere i tuoi dati Telegram.<br><br>Aprila dal bot così: scrivi <b>/start</b>, poi tocca il pulsante <b>👤 Dashboard</b> nella tastiera in basso (non il menu in alto).<br>Evita "Reload Page".<br><br><button class="btn btn-ghost" style="max-width:200px;margin:14px auto 4px" onclick="location.reload()">Riprova</button><div style="font-size:11px;opacity:.6;margin-top:14px">diagnostica: ' + code + ' · ' + plat + '</div></div>';
-        return;
-      }
+      if (!TG || !TG.initData) { app.innerHTML = '<div class="err">Apri questa pagina dal bot Telegram.</div>'; return; }
       let d;
       try {
         const r = await fetch(EDGE + "/me", { headers: { "x-telegram-init-data": TG.initData } });
@@ -117,121 +51,58 @@
       } catch { app.innerHTML = '<div class="err">Errore. Riapri dal bot.</div>'; return; }
       let aff = {};
       try { const ra = await fetch(EDGE + "/my-affiliate", { headers: { "x-telegram-init-data": TG.initData } }); if (ra.ok) aff = await ra.json(); } catch {}
-      let totServizi = 0;
-      const servId = {};
-      try { const rc = await fetch(EDGE + "/catalogo"); if (rc.ok) { const c = await rc.json(); (c.categorie || []).forEach(cat => (cat.servizi || []).forEach(s => { servId[s.nome] = s.id; totServizi++; })); } } catch {}
-      render(d, aff, totServizi, servId);
+      render(d, aff);
     }
 
-    // Fase del funnel in cui si trova l'utente.
-    function faseLabel(l, sondDone, tutDone, attivo) {
-      const st = l.pipeline_stage;
-      if (st === "cliente" || attivo) return "Cliente";
-      if (st === "squalificato") return "Non idoneo";
-      if (!sondDone) return "Sondaggio";
-      if (tutDone < 4) return "Tutorial";
-      return "Valutazione";
-    }
-    // Idoneità in base al sondaggio (verrà approfondita con il nuovo sondaggio).
-    function idoneita(l, attivo) {
-      const st = l.pipeline_stage;
-      if (st === "cliente" || attivo) return { txt: "Cliente attivo", col: "var(--accent2)" };
-      if (st === "qualificato") return { txt: "Idoneo", col: "var(--accent2)" };
-      if (st === "squalificato") return { txt: "Non idoneo ora", col: "var(--danger)" };
-      return { txt: "Da valutare", col: "var(--text)" };
-    }
-    // Livello sintetico dal sondaggio.
-    function livelloLabel(s) {
-      const v = String((s && s.livello_trading) || "").toLowerCase();
-      if (v.includes("avanz") || v.includes("espert")) return "Esperto";
-      if (v.includes("interm")) return "Intermedio";
-      if (v.includes("princ") || v.includes("base")) return "Base";
-      return (s && s.livello_trading) || "-";
-    }
-
-    function render(d, aff, totServizi, servId) {
+    function render(d, aff) {
       aff = aff || {};
-      totServizi = totServizi || 0;
-      servId = servId || {};
       const l = d.lead || {};
       const s = d.sondaggio;
       const tutDone = (d.tutorial || []).filter(t => t.completato).length;
       const servizi = d.servizi || [];
-      const serviziAttivi = servizi.filter(x => String(x.stato || "").toLowerCase() === "attivo");
-      const attivo = serviziAttivi.length > 0;
-      const sondDone = !!s || !!l.sondaggio_completato;
-      const fase = faseLabel(l, sondDone, tutDone, attivo);
-      const idon = idoneita(l, attivo);
-      const nome = l.nome || "";
-      const initials = (nome.trim().charAt(0) || "?").toUpperCase();
-      const tgUser = (TG && TG.initDataUnsafe && TG.initDataUnsafe.user) || {};
-      const photo = tgUser.photo_url || "";
-      const avatarHtml = photo
-        ? `<img class="avatar" src="${photo}" alt="" />`
-        : `<div class="avatar">${initials}</div>`;
-
-      const profilo = s
-        ? `<div class="li"><span class="k">Idoneità</span><span class="v" style="color:${idon.col}">${idon.txt}</span></div>
-           <div class="li"><span class="k">Livello</span><span class="v">${livelloLabel(s)}</span></div>
-           <div class="li"><span class="k">Esperienza</span><span class="v">${s.broker_usati || "-"}</span></div>
-           <div class="li"><span class="k">Capitale</span><span class="v">${s.capitale || "-"}</span></div>
-           <div class="li"><span class="k">Interesse</span><span class="v">${s.prodotto_preferito || "-"}</span></div>`
-        : `<div class="li"><span class="ptext">Sondaggio non ancora fatto.</span></div>`;
-
-      const serviziList = serviziAttivi.length
-        ? serviziAttivi.map(x => `<div class="li tap serv-item" data-id="${servId[x.nome] || ""}" data-nome="${(x.nome || "").replace(/"/g, "&quot;")}"><span class="v">${x.nome}</span><span class="ch">›</span></div>`).join("")
-        : `<div class="li"><span class="ptext">Nessun servizio attivo. Vai su Business List per attivarne uno.</span></div>`;
-
-      const affListHtml = (aff.links || []).map(x => `<div class="li"><span class="k">${x.nome}</span><span class="v" style="color:${x.approvato ? "var(--accent2)" : "var(--muted)"}">${x.approvato ? "Approvato" : "In attesa"}</span></div>`).join("");
-      const affHtml = attivo
-        ? `<div class="ptext">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
-           <div class="reflink">${aff.ref_url || "-"}</div>
-           <button class="btn btn-accent" id="shareRef">Condividi</button>
-           <button class="btn btn-ghost" id="copyRef">Copia link</button>`
-        : `<div class="ptext" style="margin-bottom:12px">Diventa affiliato di un servizio. Manda la richiesta col tuo ref link: la valutiamo e ti avvisiamo.</div>
-           <select id="affServ" class="fld">${(aff.servizi || []).map(x => `<option value="${x.id}">${x.nome}</option>`).join("")}</select>
-           <input id="affLink" class="fld" placeholder="Incolla il tuo ref link" />
-           <button class="btn btn-accent" id="affSend">Invia richiesta</button>`;
+      let profilo = '<div class="ptext">Sondaggio non ancora fatto.</div>';
+      if (s) profilo = `
+        <div class="row"><span>Livello</span><b>${s.livello_trading || "-"}</b></div>
+        <div class="row"><span>Esperienza</span><b>${s.broker_usati || "-"}</b></div>
+        <div class="row"><span>Capitale</span><b>${s.capitale || "-"}</b></div>
+        <div class="row"><span>Interesse</span><b>${s.prodotto_preferito || "-"}</b></div>`;
+      const serviziHtml = servizi.length
+        ? servizi.map(x => `<div class="row"><span>${x.nome}</span><b>${x.stato}</b></div>`).join("")
+        : '<div class="ptext">Nessun servizio attivo.</div>';
 
       app.innerHTML = `
-        <div class="appbar">
-          ${avatarHtml}
-          <div>
-            <div class="t">Business UP</div>
-            <div class="n">${nome || "La mia dashboard"}</div>
-          </div>
+        <h1>Ciao ${l.nome || ""}</h1>
+        <div class="sub">La tua dashboard personale</div>
+        <div class="card">
+          <div class="row"><span>Stato</span><span class="badge">${STAGE[l.pipeline_stage] || l.pipeline_stage || "-"}</span></div>
+          <div class="row"><span>Tutorial completati</span><b>${tutDone}/4</b></div>
         </div>
-
-        <div class="hero">
-          <div class="hero-row">
-            <span class="status ${attivo ? "on" : "off"}"><span class="dot"></span>${attivo ? "Attivo" : "Non attivo"}</span>
-            <span class="pill">${fase}</span>
-          </div>
-          <div class="stats">
-            <div class="stat"><div class="k">Servizi attivi</div><div class="v">${serviziAttivi.length}/${totServizi || "-"}</div></div>
-            <div class="stat"><div class="k">Tutorial</div><div class="v">${tutDone}/4</div></div>
-          </div>
+        <div class="sect">Il tuo profilo</div>
+        <div class="card">${profilo}</div>
+        <div class="sect">I tuoi servizi</div>
+        <div class="card">${serviziHtml}</div>
+        <div class="sect">Affiliazione</div>
+        <div class="card">
+          <div class="ptext" style="margin-bottom:8px">Il tuo link da condividere. Chi entra da qui e attiva un servizio su cui sei affiliato, usa il TUO ref.</div>
+          <div style="word-break:break-all;font-size:13px;color:var(--accent);margin-bottom:8px">${aff.ref_url || "-"}</div>
+          <button class="btn btn-ghost" id="copyRef">Copia link</button>
         </div>
-
-        <div class="lbl">Il tuo profilo</div>
-        <div class="group">${profilo}</div>
-
-        <div class="lbl">I tuoi servizi</div>
-        <div class="group">${serviziList}</div>
-
-        <div class="lbl">Affiliazione</div>
-        <div class="group pad">${affHtml}${affListHtml ? `<div style="margin-top:10px;border-top:1px solid var(--line)">${affListHtml}</div>` : ""}</div>
-
-        <div class="lbl">Account</div>
-        <div class="group">
-          <div class="li tap" id="privacyItem"><span class="k">Privacy e dati</span><span class="ch">›</span></div>
+        <div class="card">
+          <div class="ptext" style="margin-bottom:8px">Diventa affiliato di un servizio (serve essere attivo; valutiamo la richiesta):</div>
+          <select id="affServ" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px">
+            ${(aff.servizi || []).map(s => `<option value="${s.id}">${s.nome}</option>`).join("")}
+          </select>
+          <input id="affLink" placeholder="Incolla il tuo ref link" style="width:100%;padding:11px;border-radius:10px;background:var(--bg);color:var(--text);border:1px solid var(--muted);margin-bottom:8px" />
+          <button class="btn btn-accent" id="affSend">Invia richiesta</button>
+          <div id="affList" style="margin-top:10px">${(aff.links || []).map(l => `<div class="row"><span>${l.nome}</span><b style="color:${l.approvato ? "var(--accent)" : "var(--muted)"}">${l.approvato ? "Approvato" : "In attesa"}</b></div>`).join("")}</div>
         </div>
-        <div id="privacyPanel" class="group pad hidden" style="margin-top:6px">
+        <div class="sect">Menu</div>
+        <div class="item" id="privacyItem"><b>🔒 Privacy e dati</b><span class="ch">›</span></div>
+        <div id="privacyPanel" class="card hidden">
           <div class="ptext" id="privacyText"></div>
           <button class="btn btn-danger" id="delBtn">Cancella i miei dati</button>
         </div>
-
-        <button class="btn btn-ghost" id="back" style="margin-top:18px">Torna al bot</button>`;
+        <button class="btn btn-accent" id="back">Torna al bot</button>`;
 
       document.getElementById("privacyItem").addEventListener("click", () => {
         const p = document.getElementById("privacyPanel");
@@ -249,33 +120,6 @@
       });
       document.getElementById("back").addEventListener("click", close);
 
-      // Foto profilo Telegram: se non carica, ripiega sull'iniziale
-      const avImg = app.querySelector("img.avatar");
-      if (avImg) avImg.addEventListener("error", () => {
-        const dv = document.createElement("div");
-        dv.className = "avatar"; dv.textContent = initials;
-        avImg.replaceWith(dv);
-      });
-
-      // Servizi attivi → dashboard del servizio (in arrivo)
-      document.querySelectorAll(".serv-item").forEach(el => el.addEventListener("click", () => {
-        const id = el.getAttribute("data-id");
-        if (id) { location.href = "servizio.html?id=" + id; return; }
-        const nome = el.getAttribute("data-nome") || "";
-        if (TG && TG.showAlert) TG.showAlert("Dashboard di \"" + nome + "\" non disponibile.");
-      }));
-
-      // Condividi ref link
-      const shareBtn = document.getElementById("shareRef");
-      if (shareBtn) shareBtn.addEventListener("click", () => {
-        const url = aff.ref_url || "";
-        if (!url) return;
-        const msg = "Entra in Business UP. Nessun guru, nessun filtro: dati e logica.";
-        if (TG && TG.openTelegramLink) TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(msg));
-        else if (navigator.share) navigator.share({ url, text: msg }).catch(() => {});
-        else if (navigator.clipboard) navigator.clipboard.writeText(url).catch(() => {});
-      });
-
       const copyBtn = document.getElementById("copyRef");
       if (copyBtn) copyBtn.addEventListener("click", () => {
         const url = aff.ref_url || "";
@@ -288,7 +132,7 @@
         const sid = document.getElementById("affServ").value;
         const link = document.getElementById("affLink").value.trim();
         if (!sid || !link) return;
-        affSend.disabled = true; affSend.textContent = "Invio…";
+        affSend.disabled = true; affSend.textContent = "Invio...";
         try {
           await fetch(EDGE + "/affiliate-request", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: parseInt(sid), ref_link: link }) });
           affSend.textContent = "✓ Richiesta inviata";

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Tutorial - Business UP</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: var(--tg-theme-bg-color, #0a0a0a);
+      --card: var(--tg-theme-secondary-bg-color, #1a1a1a);
+      --text: var(--tg-theme-text-color, #ffffff);
+      --muted: var(--tg-theme-hint-color, #8a8a8a);
+      --accent: #0d9e88;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.55; padding: 16px 14px 40px;
+    }
+    .head { margin-bottom: 18px; }
+    .head h1 { font-size: 20px; font-weight: 600; color: var(--accent); }
+    .head p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .card {
+      background: var(--card); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; margin-bottom: 12px; overflow: hidden;
+    }
+    .card-head {
+      display: flex; align-items: center; gap: 12px; padding: 16px; cursor: pointer; user-select: none;
+    }
+    .ic { width: 40px; height: 40px; border-radius: 10px; background: rgba(13,158,136,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .card-head .t { flex: 1; }
+    .card-head .t b { font-size: 15px; font-weight: 600; display: block; }
+    .card-head .t span { font-size: 12px; color: var(--muted); }
+    .chev { color: var(--muted); transition: transform .2s; font-size: 14px; }
+    .card.open .chev { transform: rotate(90deg); }
+    .body { display: none; padding: 0 16px 16px; }
+    .card.open .body { display: block; }
+    .step { padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .step .n { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .step .st { font-size: 14px; font-weight: 600; margin: 3px 0; }
+    .step .sb { font-size: 13px; color: var(--muted); }
+    .done-btn {
+      width: 100%; margin-top: 14px; padding: 12px; border: none; border-radius: 10px;
+      background: var(--accent); color: #042; font-weight: 600; font-size: 14px; cursor: pointer;
+    }
+    .done-badge { color: var(--accent); font-size: 13px; font-weight: 600; }
+    .foot { text-align: center; color: var(--muted); font-size: 11px; margin-top: 22px; }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <h1>Tutorial Business UP</h1>
+    <p>Nessun guru, nessun filtro. Tocca un metodo per la spiegazione passo-passo.</p>
+  </div>
+  <div id="list"></div>
+  <div class="foot">Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+
+  <script>
+    const TG = window.Telegram ? window.Telegram.WebApp : null;
+    if (TG) { TG.ready(); TG.expand(); }
+    const UID = TG && TG.initDataUnsafe && TG.initDataUnsafe.user ? TG.initDataUnsafe.user.id : null;
+    const TRACK = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot/track";
+
+    function track(key, event) {
+      if (!UID) return;
+      fetch(TRACK, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegram_id: UID, tutorial_key: key, event }) }).catch(() => {});
+    }
+
+    const TUT = [
+      { key: "bvb", icon: "🔁", titolo: "Broker vs Broker", sub: "Arbitraggio spread tra broker", steps: [
+        ["Cos'è", "Sfrutti le differenze di quotazione dello stesso strumento tra due broker diversi. Piccole discrepanze = opportunità."],
+        ["Come funziona", "Compri su un broker e vendi sull'altro nello stesso momento, sullo stesso strumento. Lo spread differenziale è il guadagno."],
+        ["Requisiti", "Almeno €2.000, due conti broker, connessione stabile, 1-2 ore al giorno per monitorare."],
+        ["Broker giusti", "ECN/STP con spread bassi, che permettono EA e non vietano l'arbitraggio. Non tutti vanno bene."],
+        ["Reality check", "Non è passivo. Serve gestione attiva e disciplina sul rischio. Se cerchi soldi facili, non è questo."],
+      ]},
+      { key: "prop", icon: "🏦", titolo: "Prop vs Broker", sub: "Conto finanziato o capitale tuo", steps: [
+        ["La scelta", "Fare trading come cliente di un broker, oppure diventare prop trader con capitale finanziato."],
+        ["Broker tradizionale", "Libertà totale e profitti tuoi, ma servono capitale tuo e tutto il rischio è su di te."],
+        ["Prop trader", "Non rischi capitale tuo per accedere: superi una challenge e ricevi un conto finanziato. Split 70-80%, ma regole e drawdown."],
+        ["Quando scegliere", "Prop se hai poco capitale e vuoi struttura. Broker se hai capitale e vuoi libertà."],
+        ["Reality check", "Molti li combinano: prop per imparare sotto pressione, broker per scalare. Nessuna scorciatoia."],
+      ]},
+      { key: "bonus", icon: "🎁", titolo: "Bonus ADM", sub: "Capitale extra dai broker regolati", steps: [
+        ["Cosa sono", "Capitale extra offerto da broker regolati ADM. Non è denaro libero: è condizionato da un rollover."],
+        ["Meccanismo", "Depositi, ricevi il bonus, 'giri' un volume stabilito (rollover), poi puoi prelevare."],
+        ["Esempio", "Bonus €500 con rollover 30x = €15.000 di volume da muovere prima di sbloccarlo."],
+        ["Strategia Business UP", "Broker affidabili, strategia a basso rischio per muovere il volume, calcolo preciso dei costi."],
+        ["Reality check", "Non sono soldi facili. Se non sai tradare, il bonus non cambia nulla. Leggi sempre i termini."],
+      ]},
+      { key: "swap", icon: "🔄", titolo: "BvB Swap", sub: "Arbitraggio swap overnight", steps: [
+        ["Cos'è", "Variante del Broker vs Broker che sfrutta le differenze di swap (interessi overnight) tra broker."],
+        ["Meccanismo", "Long su un broker con swap positivo + short sull'altro: incassi il differenziale di swap mentre dormi."],
+        ["Perché funziona", "Broker diversi applicano swap diversi: accordi di liquidità e markup creano inefficienze reali."],
+        ["Vantaggi e limiti", "Poco attivo e rischio direzionale zero, ma immobilizza capitale: ROI realistico ~12% annuo."],
+        ["Reality check", "Strategia per chi ha €5.000+ e sa muoversi tra broker. Non per principianti."],
+      ]},
+    ];
+
+    const list = document.getElementById("list");
+    list.innerHTML = TUT.map((t) => `
+      <div class="card" data-key="${t.key}">
+        <div class="card-head">
+          <div class="ic">${t.icon}</div>
+          <div class="t"><b>${t.titolo}</b><span>${t.sub}</span></div>
+          <div class="chev">▶</div>
+        </div>
+        <div class="body">
+          ${t.steps.map((s, i) => `<div class="step"><div class="n">Passo ${i + 1}</div><div class="st">${s[0]}</div><div class="sb">${s[1]}</div></div>`).join("")}
+          <button class="done-btn" data-done="${t.key}">Fatto, ho capito</button>
+        </div>
+      </div>`).join("");
+
+    document.querySelectorAll(".card-head").forEach((h) => {
+      h.addEventListener("click", () => {
+        const card = h.parentElement;
+        const wasOpen = card.classList.contains("open");
+        if (!wasOpen) track(card.dataset.key, "open");
+        card.classList.toggle("open");
+      });
+    });
+    document.querySelectorAll("[data-done]").forEach((b) => {
+      b.addEventListener("click", () => {
+        track(b.dataset.done, "done");
+        b.outerHTML = '<div class="done-badge">✓ Completato</div>';
+        if (TG) TG.HapticFeedback && TG.HapticFeedback.notificationOccurred("success");
+      });
+    });
+  </script>
+</body>
+</html>
