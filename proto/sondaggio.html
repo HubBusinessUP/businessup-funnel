@@ -31,7 +31,8 @@
 </div>
 <script>
   const Q = [
-    {k:"nome", type:"text", q:"Come ti chiami? (nome e cognome)", ph:"Nome e cognome"},
+    {k:"nome", type:"text", q:"Come ti chiami?", ph:"Nome"},
+    {k:"cognome", type:"text", q:"Il tuo cognome?", ph:"Cognome"},
     {k:"email", type:"text", q:"La tua email?", ph:"nome@email.com"},
     {k:"tel", type:"phone", q:"Il tuo numero di telefono?"},
     {k:"paese", type:"choice", q:"In che Paese vivi?", opts:["Italia","Altro"]},
@@ -69,8 +70,9 @@
       html+='<input class="fld" id="in" placeholder="'+(item.ph||"")+'"><button class="btn" id="go" disabled>Continua →</button>';
       box.innerHTML=html;
       const inp=document.getElementById("in"), go=document.getElementById("go");
-      inp.addEventListener("input",()=>go.disabled=!inp.value.trim());
-      go.addEventListener("click",()=>next(inp.value.trim()));
+      const valid=v=>item.k==="email" ? /^\S+@\S+\.\S+$/.test(v.trim()) : !!v.trim();
+      inp.addEventListener("input",()=>go.disabled=!valid(inp.value));
+      go.addEventListener("click",()=>{ if(valid(inp.value)) next(inp.value.trim()); });
       inp.focus();
     }
   }
@@ -88,7 +90,7 @@
     const idoneo = okBudget && data.pronto!=="Sto valutando";
     box.innerHTML='<div class="done"><div class="big">'+(idoneo?"✅":"👍")+'</div>'+
       '<span class="badge">'+(idoneo?"Profilo qualificato":"Profilo registrato")+'</span>'+
-      '<h2>Grazie '+(data.nome? data.nome.split(" ")[0] : "")+'</h2>'+
+      '<h2>Grazie '+(data.nome||"")+'</h2>'+
       '<p>'+(idoneo
         ? "Hai il profilo giusto. Ecco la tua area personale con i servizi disponibili."
         : "Ti abbiamo registrato. Puoi comunque esplorare i servizi (con qualche accortezza).")+'</p>'+
