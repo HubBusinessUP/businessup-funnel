@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Aggiornamenti — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 30px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:520px;margin:0 auto;}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:12px;}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-ms-overflow-style:none;scrollbar-width:none;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:none;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+  .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.4);color:var(--accent2);}
+  .chip .b{display:inline-block;min-width:16px;padding:0 5px;margin-left:6px;border-radius:999px;background:var(--accent);color:#04221c;font-size:11px;font-weight:800;}
+  .post{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin-bottom:11px;}
+  .ph{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .av{width:38px;height:38px;border-radius:11px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+  .who{flex:1;} .who b{font-size:14px;font-weight:700;} .who .m{font-size:12px;color:var(--muted);}
+  .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--accent2);background:rgba(25,205,172,.1);padding:2px 7px;border-radius:999px;}
+  .txt{font-size:15px;color:#e4e6e8;line-height:1.55;white-space:pre-line;}
+  .media{margin-top:12px;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .img{aspect-ratio:16/9;background:linear-gradient(135deg,#123,#1b3a34);display:grid;place-items:center;color:var(--muted);font-size:13px;}
+  .vid{position:relative;aspect-ratio:16/9;background:#000;display:grid;place-items:center;}
+  .vid .play{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:20px;}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px;}
+  .backbtn{display:block;width:100%;padding:13px;border:none;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:14px;}
+</style></head>
+<body>
+<div class="wrap">
+  <h1>Aggiornamenti</h1>
+  <div class="chips" id="chips"></div>
+  <div id="feed"></div>
+  <a class="backbtn" href="home.html">‹ Torna alla Home</a>
+</div>
+<script>
+  // Canali visibili all'utente: Generale + i suoi servizi (demo: iscritto a Swap e Bonus)
+  const CANALI = [
+    {id:"gen", nome:"📢 Generale", unread:2},
+    {id:"swap", nome:"Swap", unread:1},
+    {id:"bonus", nome:"Bonus", unread:0},
+  ];
+  const POSTS = {
+    gen:[
+      {t:"Nuova settimana operativa 🚀\nAbbiamo aggiornato le linee guida sui broker. Nessun guru, nessun filtro: solo dati.", when:"2h fa", media:{tipo:"img"}},
+      {t:"Promemoria: la disciplina batte l'entusiasmo. Chi segue il metodo, resta.", when:"1g fa"},
+    ],
+    swap:[
+      {t:"Il servizio Swap sta per ripartire. Preparate i due conti: vi avviseremo appena è attivo.", when:"5h fa", media:{tipo:"vid"}},
+    ],
+    bonus:[
+      {t:"Bonus: stiamo valutando un nuovo broker con condizioni migliori. Aggiornamenti a breve.", when:"3g fa"},
+    ],
+  };
+  let cur = "gen";
+  const chips=document.getElementById("chips"), feed=document.getElementById("feed");
+
+  function renderChips(){
+    chips.innerHTML = CANALI.map(c=>`<button class="chip ${c.id===cur?'on':''}" data-c="${c.id}">${c.nome}${c.unread?`<span class="b">${c.unread}</span>`:""}</button>`).join("");
+    chips.querySelectorAll(".chip").forEach(b=>b.addEventListener("click",()=>{ cur=b.dataset.c; renderChips(); renderFeed(); }));
+  }
+  function renderFeed(){
+    const list = POSTS[cur] || [];
+    if(!list.length){ feed.innerHTML='<div class="empty">Nessun aggiornamento in questo canale.</div>'; return; }
+    const tag = CANALI.find(c=>c.id===cur).nome.replace("📢 ","");
+    feed.innerHTML = list.map(p=>`
+      <div class="post">
+        <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">· ${p.when}</div></div><span class="tag">${tag}</span></div>
+        <div class="txt">${p.t}</div>
+        ${p.media? (p.media.tipo==="img"
+          ? '<div class="media"><div class="img">🖼️ immagine</div></div>'
+          : '<div class="media"><div class="vid"><div class="play">▶</div></div></div>') : ""}
+      </div>`).join("");
+  }
+  renderChips(); renderFeed();
+</script>
+</body></html>
