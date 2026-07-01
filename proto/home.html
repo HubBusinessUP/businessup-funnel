@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Home — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.45;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .head{display:flex;align-items:center;gap:14px;margin:6px 0 18px;}
+  .avatar{width:54px;height:54px;border-radius:16px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:21px;flex:none;}
+  .hi{font-size:22px;font-weight:800;letter-spacing:-.3px;}
+  .status{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;margin-top:4px;color:var(--muted);}
+  .status .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);}
+  .lbl{font-size:12px;color:var(--muted);font-weight:600;margin:20px 4px 8px;}
+  .tiles{display:flex;gap:10px;}
+  .tile{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;}
+  .tile .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+  .tile .v{font-size:19px;font-weight:800;margin-top:5px;letter-spacing:-.3px;}
+  .tile .v.b{font-size:14px;color:var(--accent2);}
+  .bar{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+  .bar .r{display:flex;justify-content:space-between;font-size:13px;}
+  .bar .r span{color:var(--muted);}
+  .track{height:7px;background:var(--surface2);border-radius:999px;margin-top:10px;overflow:hidden;}
+  .track>i{display:block;height:100%;width:40%;background:var(--accent);border-radius:999px;}
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-top:1px solid var(--line);font-size:15px;}
+  .li:first-child{border-top:none;}
+  .li .k{color:var(--muted);font-weight:500;} .li .v{font-weight:600;}
+  .li.tap{cursor:pointer;} .li.tap:active{background:var(--surface2);}
+  .li .ic{width:34px;height:34px;border-radius:10px;background:rgba(13,158,136,.14);display:grid;place-items:center;font-size:16px;flex:none;}
+  .li .lead{display:flex;align-items:center;gap:11px;flex:1;}
+  .li .lead b{display:block;font-size:15px;font-weight:600;} .li .lead span{font-size:12px;color:var(--muted);}
+  .li .ch{color:var(--muted);font-size:19px;}
+  .cta{background:linear-gradient(180deg,#1d2f2b,#16211f);border:1px solid rgba(13,158,136,.3);border-radius:16px;padding:16px;}
+  .cta .t{font-weight:700;font-size:15px;} .cta .d{font-size:13px;color:var(--muted);margin:5px 0 12px;}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:14px;font-family:inherit;text-align:center;cursor:pointer;background:var(--accent);color:#04221c;}
+  .btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--line);margin-top:22px;}
+  .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="avatar">A</div>
+    <div><div class="hi">Ciao Antony 👋</div><div class="status"><span class="dot"></span>Non attivo</div></div>
+  </div>
+
+  <div class="lbl">Il tuo riepilogo</div>
+  <div class="tiles">
+    <div class="tile"><div class="k">Fase</div><div class="v b">Qualificato</div></div>
+    <div class="tile"><div class="k">Servizi attivi</div><div class="v">0/3</div></div>
+  </div>
+  <div class="bar"><div class="r"><span>Percorso completato</span><b>2 / 5</b></div><div class="track"><i></i></div></div>
+
+  <div class="lbl">Il tuo profilo</div>
+  <div class="group">
+    <div class="li"><span class="k">Cosa cerchi</span><span class="v">Reddito extra</span></div>
+    <div class="li"><span class="k">Budget</span><span class="v">€2.000 - 5.000</span></div>
+    <div class="li"><span class="k">Situazione</span><span class="v">Dipendente</span></div>
+    <div class="li"><span class="k">Prontezza</span><span class="v">Subito</span></div>
+  </div>
+
+  <div class="lbl">Prossimo passo</div>
+  <div class="cta">
+    <div class="t">Non hai ancora attivato niente</div>
+    <div class="d">Scopri i servizi disponibili e trova quello adatto a te.</div>
+    <a class="btn" href="business-list.html">Esplora i servizi →</a>
+  </div>
+
+  <div class="lbl">Affiliazione</div>
+  <div class="group"><div class="li tap" onclick="alert('Affiliazione — in definizione')"><div class="lead"><div class="ic">🤝</div><div><b>Condividi e guadagna</b><span>Invita e guadagna col tuo link</span></div></div><span class="ch">›</span></div></div>
+
+  <div class="lbl">Naviga</div>
+  <div class="group">
+    <div class="li tap" onclick="location.href='business-list.html'"><div class="lead"><div class="ic">💼</div><div><b>Business List</b><span>Catalogo servizi</span></div></div><span class="ch">›</span></div>
+    <div class="li tap" onclick="alert('Servizi Attivi — in definizione')"><div class="lead"><div class="ic">✅</div><div><b>Servizi Attivi</b><span>I tuoi servizi</span></div></div><span class="ch">›</span></div>
+    <div class="li tap" onclick="alert('Aggiornamenti — in definizione')"><div class="lead"><div class="ic">📢</div><div><b>Aggiornamenti</b><span>Timeline / novità</span></div></div><span class="ch">›</span></div>
+    <div class="li tap" onclick="alert('Affiliazione — in definizione')"><div class="lead"><div class="ic">🤝</div><div><b>Affiliazione</b><span>Condividi e guadagna</span></div></div><span class="ch">›</span></div>
+  </div>
+
+  <div class="lbl">Account</div>
+  <div class="group"><div class="li tap" onclick="alert('Privacy e dati — informativa + cancella dati')"><span class="k">🔒 Privacy e dati</span><span class="ch">›</span></div></div>
+
+  <div class="foot">PROTOTIPO · Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+</div>
+</body></html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Attivazione — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--warn:#e9b949;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 40px;-webkit-font-smoothing:antialiased;line-height:1.55;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .top{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;}
+  h1{font-size:23px;font-weight:800;letter-spacing:-.3px;margin:4px 0 18px;}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px;}
+  .sh{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+  .num{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;}
+  .sh .t{font-size:17px;font-weight:800;letter-spacing:-.2px;}
+  .li{display:flex;gap:9px;font-size:14px;padding:5px 0;} .li .n{color:var(--accent2);font-weight:800;flex:none;}
+  .spec{background:var(--surface2);border-radius:12px;padding:11px 13px;margin:10px 0;font-size:13.5px;} .spec .r{padding:2px 0;}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:14px;font-family:inherit;margin-top:10px;text-align:center;text-decoration:none;cursor:pointer;background:var(--accent);color:#04221c;}
+  .btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
+  .sub{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+  .sub .h{font-size:13px;font-weight:700;color:var(--warn);margin-bottom:6px;} .sub p{font-size:13px;color:var(--muted);}
+  .mailrow{display:flex;gap:8px;margin-top:10px;} .mailrow a{flex:1;margin-top:0;}
+  .copy{flex:none;width:46px;border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:12px;font-size:16px;cursor:pointer;}
+  .msgbox{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-top:10px;}
+  .msg{font-size:13px;color:#cfd2d6;word-break:break-word;line-height:1.5;} .msg .lnk{color:var(--accent2);}
+  .copied{color:var(--accent2)!important;border-color:rgba(25,205,172,.4)!important;}
+  .warn{background:rgba(233,185,73,.08);border:1px solid rgba(233,185,73,.3);border-radius:16px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;} .warn b{color:var(--warn);}
+  .p{font-size:14px;color:#cfd2d6;} .muted{color:var(--muted);font-size:13px;margin-top:6px;}
+</style></head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+  const NAMES = { swap:"Broker VS Broker Swap", bonus:"Broker VS Broker Bonus" };
+  const SPLIT = { swap:30, bonus:50 };
+  const q = new URLSearchParams(location.search).get("id") || "swap";
+  const nome = NAMES[q] || "Broker VS Broker";
+  const split = SPLIT[q] || 50;
+  const MON = "https://account.monaxa.com/links/go/22304";
+  const TOT = "https://secure.totalfx.com/Registration/Main/Account?dest=live&camp=460";
+
+  document.getElementById("app").innerHTML = `
+    <div class="top">Attivazione</div>
+    <h1>${nome}</h1>
+
+    <div class="step">
+      <div class="sh"><div class="num">1</div><div class="t">Iscrizione Broker A — Monaxa</div></div>
+      <div class="li"><span class="n">1.</span><span>Registrati su Monaxa con il link ufficiale.</span></div>
+      <a class="btn" href="${MON}" target="_blank">🔗 Registrati su Monaxa</a>
+      <div class="li" style="margin-top:8px"><span class="n">2.</span><span>Verifica identità (KYC): carica i documenti e attendi l'approvazione.</span></div>
+      <div class="li"><span class="n">3.</span><span>Apri il conto:</span></div>
+      <div class="spec"><div class="r">✔️ MT5 – ITA50</div><div class="r">✔️ Leva 1:500</div><div class="r">✔️ Valuta EUR</div></div>
+      <div class="li"><span class="n">4.</span><span>Deposita: minimo €1.000 · massimo €10.000 (in EUR).</span></div>
+      <div class="sub">
+        <div class="h">Hai già un conto Monaxa attivo?</div>
+        <p>Devi cambiare sponsor/IB. Manda una mail dalla tua email registrata a:</p>
+        <div class="mailrow"><a class="btn g" href="mailto:support@monaxa.com">✉️ support@monaxa.com</a><button class="copy" data-copy="support@monaxa.com">📋</button></div>
+        <p class="muted" style="margin-top:8px">In alternativa scrivi al supporto in live chat sul sito Monaxa.</p>
+        <p class="muted" style="margin-top:12px">Messaggio già pronto — copialo e incollalo:</p>
+        <div class="msgbox"><div class="msg" id="m1">Salve, ho già un conto Monaxa. Voglio cambiare sponsor/IB e collegarmi a questo IB: <span class="lnk">${MON}</span></div></div>
+        <button class="btn g" data-copytext="m1">📋 Copia il messaggio</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><div class="num">2</div><div class="t">Iscrizione Broker B — TotalFX</div></div>
+      <div class="li"><span class="n">1.</span><span>Registrati su TotalFX con il link ufficiale.</span></div>
+      <a class="btn" href="${TOT}" target="_blank">🔗 Registrati su TotalFX</a>
+      <div class="li" style="margin-top:8px"><span class="n">2.</span><span>Verifica identità (KYC): carica i documenti e attendi l'approvazione.</span></div>
+      <div class="li"><span class="n">3.</span><span>Apri il conto:</span></div>
+      <div class="spec"><div class="r">✔️ MT5</div><div class="r">✔️ Leva 1:1000</div><div class="r">✔️ Valuta EUR</div></div>
+      <div class="li"><span class="n">4.</span><span>Deposita: minimo €1.000 · massimo €10.000 (in EUR).</span></div>
+      <div class="sub">
+        <div class="h">Hai già un conto TotalFX attivo?</div>
+        <p>Cambio IB: scrivi dalla tua email registrata su TotalFX a:</p>
+        <div class="mailrow"><a class="btn g" href="mailto:cz@totalfx.com">✉️ cz@totalfx.com</a><button class="copy" data-copy="cz@totalfx.com">📋</button></div>
+        <p class="muted" style="margin-top:12px">Messaggio già pronto — copialo e incollalo:</p>
+        <div class="msgbox"><div class="msg" id="m2">Salve, scrivo dalla mia email registrata su TotalFX. Voglio passare sotto a questo ref: <span class="lnk">${TOT}</span></div></div>
+        <button class="btn g" data-copytext="m2">📋 Copia il messaggio</button>
+      </div>
+    </div>
+
+    <div class="warn">⚠️ <b>Importante:</b> per <b>entrambi</b> i broker devi risultare sotto il nostro IB/sponsor corretto. È <b>indispensabile</b> per attivare: senza il collegamento giusto l'attivazione non è possibile.</div>
+
+    <div class="step">
+      <div class="sh"><div class="num">3</div><div class="t">VPS dedicata</div></div>
+      <div class="p">La VPS è fornita e gestita dal nostro team: non configuri nulla. Garantisce continuità e stabilità.</div>
+      <div class="spec"><div class="r">💳 Attivazione + VPS: <b>50 USDT una tantum</b></div><div class="r">📅 Dal 2° mese: <b>25 USDT/mese</b></div></div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><div class="num">4</div><div class="t">Tassa di operatività a successo</div></div>
+      <div class="p">Paghi <b>solo a risultato</b>: il <b>${split}% sul profitto netto</b> di ogni ciclo. Se il ciclo non produce profitto, <b>non paghi nulla</b>.</div>
+      <div class="muted">Si salda in USDT — rete BSC (BEP20), a fine ciclo.</div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><div class="num">5</div><div class="t">Crea la chat di gestione</div></div>
+      <div class="p">È qui che avviene tutta l'operatività. Da qui creiamo il gruppo dedicato.</div>
+      <div class="warn" style="margin:12px 0">⚠️ Apri la chat <b>solo quando hai completato tutto</b>: KYC verificato, conti aperti e <b>depositati</b> su entrambi i broker.</div>
+      <a class="btn" href="https://t.me/BotBusinessUP_bot" target="_blank">💬 Apri la chat con noi</a>
+      <div class="p" style="margin-top:12px">Nella chat ci mandi i dati di <b>entrambi</b> i conti:</div>
+      <div class="spec"><div class="r">✔️ Numero conto MT5</div><div class="r">✔️ Server del broker</div><div class="r">✔️ Password</div><div class="r">✔️ Wallet per la VPS</div></div>
+      <div class="spec" style="margin-top:0"><div class="r">✔️ <b>Ci avvisi tu</b> con lo screenshot di chiusura del tuo ciclo</div><div class="r">✔️ Paghi la quota del ${split}% a fine ciclo</div><div class="r">✔️ Conti pronti → parte il nuovo ciclo</div></div>
+      <div class="muted">⚠️ Questa chat è vitale: tutta l'operatività passa da qui.</div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <a class="btn g" style="margin-top:0" href="servizio.html?id=${q}">‹ Torna al servizio</a>
+      <a class="btn g" style="margin-top:0" href="home.html">🏠 Home</a>
+    </div>`;
+
+  function flash(b,l){const o=b.textContent;b.textContent=l;b.classList.add('copied');setTimeout(()=>{b.textContent=o;b.classList.remove('copied');},1400);}
+  function copy(t){if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});}
+  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{copy(b.getAttribute('data-copy'));flash(b,'✓');}));
+  document.querySelectorAll('[data-copytext]').forEach(b=>b.addEventListener('click',()=>{const e=document.getElementById(b.getAttribute('data-copytext'));copy(e?e.innerText:'');flash(b,'✓ Copiato');}));
+</script>
+</body></html>

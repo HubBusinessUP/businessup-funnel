@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Servizio — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:520px;margin:0 auto;}
+  .name{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-top:4px;}
+  .status{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);margin-top:10px;}
+  .status .dot{width:9px;height:9px;border-radius:50%;}
+  .status.pausa{color:var(--giallo);} .status.pausa .dot{background:var(--giallo);}
+  .status.stop{color:var(--rosso);} .status.stop .dot{background:var(--rosso);}
+  .fit{display:flex;gap:10px;align-items:flex-start;background:rgba(25,205,172,.08);border:1px solid rgba(25,205,172,.28);border-radius:14px;padding:13px 14px;margin-top:16px;font-size:13.5px;}
+  .fit b{color:var(--accent2);}
+  .lbl{font-size:12px;color:var(--muted);font-weight:600;margin:20px 4px 8px;}
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;}
+  .pt{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:14px;}
+  .pt:first-child{border-top:none;} .pt .b{color:var(--accent2);font-weight:800;flex:none;}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px;}
+  .row:first-child{border-top:none;} .row .k{color:var(--muted);} .row .v{font-weight:600;text-align:right;color:var(--accent2);}
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:13px;font-weight:700;font-size:15px;font-family:inherit;margin-top:12px;text-align:center;text-decoration:none;cursor:pointer;background:var(--accent);color:#04221c;}
+  .btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
+  .note{text-align:center;font-size:12px;color:var(--muted);margin-top:9px;}
+  .ptext{font-size:14px;color:var(--muted);line-height:1.6;}
+</style></head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+  const SERVIZI = {
+    swap:{ nome:"Broker VS Broker Swap", stato:"pausa", tipo:"bvb", split:30,
+      desc:"Sfrutti le differenze di swap overnight tra due broker: long su uno, short sull'altro, incassi il differenziale mentre dormi.",
+      car:["Hedging tra due broker (Monaxa + TotalFX)","Rischio direzionale quasi nullo","2 conti da €1.000 + VPS dedicata","Semi-passivo"] },
+    bonus:{ nome:"Broker VS Broker Bonus", stato:"stop", tipo:"bvb", split:50,
+      desc:"Hedging tra due broker: su uno ottieni un bonus del 50-70%. A ogni ciclo estrai un profitto grazie al bonus.",
+      car:["Hedging tra due broker (Monaxa + TotalFX)","Rischio direzionale basso","2 conti da €1.000 + VPS dedicata","Servizio ciclico: ogni tot il sistema riposa"] },
+    prop:{ nome:"Prop VS Broker", stato:"pausa", tipo:"prop", split:null,
+      desc:"Conto finanziato tramite prop firm o capitale tuo su broker: ti aiutiamo a scegliere la strada giusta.",
+      car:["Capitale finanziato con challenge prop","Alternativa: broker con capitale tuo","Split profitti tipico 70-80%"] },
+  };
+  const q = new URLSearchParams(location.search).get("id") || "swap";
+  const s = SERVIZI[q] || SERVIZI.swap;
+  const statoTxt = s.stato==="pausa" ? "In pausa" : s.stato==="stop" ? "Fermo" : "Attivo";
+
+  const car = s.car.map(c=>`<div class="pt"><span class="b">✓</span><span>${c}</span></div>`).join("");
+  let costi = "";
+  if (s.tipo==="bvb") {
+    costi = `
+      <div class="lbl">Requisiti</div><div class="group">
+        <div class="row"><span class="k">Budget minimo</span><span class="v">€2.000 (€1.000 × 2 broker)</span></div>
+        <div class="row"><span class="k">Budget massimo</span><span class="v">€20.000</span></div>
+      </div>
+      <div class="lbl">Costi</div><div class="group">
+        <div class="row"><span class="k">Attivazione + VPS</span><span class="v">50 USDT (una tantum)</span></div>
+        <div class="row"><span class="k">Dal 2° mese</span><span class="v">25 USDT/mese</span></div>
+        <div class="row"><span class="k">Quota a successo</span><span class="v">${s.split}% sul profitto</span></div>
+        <div class="row"><span class="k">Pagamenti</span><span class="v">USDT · rete BSC</span></div>
+      </div>
+      <div class="group" style="margin-top:6px"><div class="ptext">ℹ️ Paghi la quota solo a risultato: se il ciclo non produce profitto, non paghi nulla.</div></div>`;
+  } else {
+    costi = `<div class="lbl">Info</div><div class="group"><div class="ptext">Costi e requisiti in definizione per questo servizio.</div></div>`;
+  }
+
+  const tutId = s.tipo==="bvb" ? q : null;
+  let cta = "";
+  if (s.stato==="pausa" || s.stato==="stop") {
+    cta = `<button class="btn" onclick="alert('Sei in lista: ti avvisiamo appena è attivo!')">🔔 Avvisami quando è disponibile</button>
+           <div class="note">Servizio ${statoTxt.toLowerCase()}. Ti avviso appena riparte.</div>`;
+    if (tutId) cta += `<a class="btn g" href="tutorial.html?id=${tutId}">📖 Guarda il tutorial di attivazione</a>`;
+  } else {
+    cta = tutId ? `<a class="btn" href="tutorial.html?id=${tutId}">Attiva servizio →</a>` : `<button class="btn" onclick="alert('Attivazione')">Attiva servizio</button>`;
+  }
+
+  document.getElementById("app").innerHTML = `
+    <div class="name">${s.nome}</div>
+    <div class="status ${s.stato}"><span class="dot"></span>${statoTxt}</div>
+    <div class="fit">✅ <div><b>In linea con il tuo profilo.</b> In base al sondaggio hai budget e prontezza adatti.</div></div>
+    <div class="lbl">Cos'è</div><div class="group"><div class="ptext">${s.desc}</div></div>
+    <div class="lbl">Scheda caratteristiche</div><div class="group">${car}</div>
+    ${costi}
+    <div style="margin-top:18px">${cta}</div>
+    <a class="btn g" href="business-list.html">‹ Torna alla Business List</a>`;
+</script>
+</body></html>
