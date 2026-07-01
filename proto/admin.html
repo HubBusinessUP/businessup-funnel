@@ -16,7 +16,7 @@
   .tab{flex:none;padding:9px 13px;border-radius:12px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
   .tab.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
   .sec{display:none;} .sec.on{display:block;}
-  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:18px 4px 8px;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:18px 4px 8px;display:flex;justify-content:space-between;align-items:center;}
   .lbl:first-child{margin-top:4px;}
   .kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
   .kpi{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:12px;}
@@ -51,21 +51,35 @@
   .ss{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;}
   .ss.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.4);color:var(--accent2);}
   .back{color:var(--accent2);font-weight:700;font-size:14px;cursor:pointer;margin-bottom:12px;display:inline-block;}
-  textarea{width:100%;min-height:80px;background:#0e0f11;border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:12px;resize:vertical;}
-  textarea:focus{outline:none;border-color:rgba(13,158,136,.5);}
+  textarea,input.f{width:100%;background:#0e0f11;border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:12px;resize:vertical;}
+  textarea{min-height:80px;} input.f{margin-bottom:10px;}
+  textarea:focus,input.f:focus{outline:none;border-color:rgba(13,158,136,.5);}
   .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
   .chip{padding:7px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;}
   .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
   .mbtn{padding:10px;border-radius:11px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;}
   .mbtn.on{border-color:rgba(13,158,136,.5);color:var(--accent2);}
   .pub{width:100%;padding:14px;border:none;border-radius:13px;background:var(--accent);color:#04221c;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;margin-top:12px;}
+  .pub.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
+  .pub.danger{background:rgba(255,93,93,.14);color:var(--rosso);border:1px solid rgba(255,93,93,.3);}
   .dest{font-size:12.5px;color:var(--muted);margin-top:10px;}
-  .srv{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);}
-  .srv:first-child{border-top:none;} .srv b{flex:1;font-size:14px;font-weight:600;}
+  .srv{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .srv:first-child{border-top:none;} .srv .sn{flex:1;min-width:140px;font-size:14px;font-weight:600;}
   .st{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);cursor:pointer;display:grid;place-items:center;}
   .st.on{border-width:2px;} .dotc{width:11px;height:11px;border-radius:50%;}
   .g{background:var(--accent2);} .y{background:var(--giallo);} .r{background:var(--rosso);}
+  .mini{padding:6px 10px;border-radius:9px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .mini.rosso{color:var(--rosso);border-color:rgba(255,93,93,.3);}
+  .tl{display:flex;gap:10px;padding:8px 0;font-size:13px;}
+  .tl .dt{color:var(--muted);flex:none;width:82px;font-size:12px;}
+  .tl .tx{flex:1;}
+  .tl .dotm{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex:none;}
+  .newsitem{display:flex;gap:11px;padding:11px 0;border-top:1px solid var(--line);}
+  .newsitem:first-child{border-top:none;}
+  .newsitem .nt{flex:1;font-size:13.5px;}
+  .newsitem .nt .m{color:var(--muted);font-size:11.5px;margin-top:3px;}
   .demo{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+  .split{width:70px;text-align:center;}
 </style></head>
 <body>
 <div class="wrap">
@@ -94,6 +108,7 @@
     <div id="leadList">
       <input class="search" id="q" placeholder="Cerca nome, email…"/>
       <div class="filters" id="filters"></div>
+      <button class="pub ghost" id="csv" style="margin:0 0 12px">⬇ Esporta CSV</button>
       <div class="card" id="list"></div>
     </div>
     <div id="leadCard" style="display:none"></div>
@@ -124,18 +139,56 @@
       <div class="dest" id="pDest"></div>
       <button class="pub" id="pPub">Pubblica →</button>
     </div>
+    <div class="lbl">Post pubblicati</div>
+    <div class="card" id="newsList"></div>
   </div>
 
-  <!-- SERVIZI -->
+  <!-- SERVIZI (CRUD) -->
   <div class="sec" id="s-srv">
-    <div class="lbl">Gestione stato servizi (→ notifica)</div>
+    <div class="lbl">Catalogo servizi <button class="mini" id="addSrv">+ Aggiungi</button></div>
     <div class="card" id="servizi"></div>
+    <div id="srvEditWrap" style="display:none">
+      <div class="lbl" id="srvEditTitle">Modifica servizio</div>
+      <div class="card">
+        <input class="f" id="e_nome" placeholder="Nome servizio"/>
+        <textarea id="e_desc" placeholder="Descrizione"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input class="f split" id="e_split" placeholder="Split %" style="margin-bottom:0"/>
+          <input class="f" id="e_costo" placeholder="Costo attivazione (es. 50 USDT)" style="margin-bottom:0"/>
+        </div>
+        <input class="f" id="e_link" placeholder="Link principale (broker A)" style="margin-top:10px"/>
+        <div class="lbl" style="margin:12px 4px 6px">Stato</div>
+        <div class="chips" id="e_stato"></div>
+        <button class="pub" id="srvSave">Salva servizio</button>
+        <button class="pub ghost" id="srvCancel">Annulla</button>
+      </div>
+    </div>
   </div>
 
-  <div class="demo">PROTOTIPO ADMIN · dati finti · nella versione reale è protetto da password</div>
+  <!-- FATTURATO -->
+  <div class="sec" id="s-fatt">
+    <div class="lbl">Riepilogo</div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Totale incassato</div><div class="v a" id="fTot">—</div></div>
+      <div class="kpi"><div class="k">Pagamenti</div><div class="v" id="fNum">—</div></div>
+      <div class="kpi"><div class="k">Media / pag.</div><div class="v" id="fAvg">—</div></div>
+    </div>
+    <div class="lbl">Per servizio</div>
+    <div class="card" id="fSrv"></div>
+    <div class="lbl">Per mese</div>
+    <div class="card" id="fMese"></div>
+  </div>
+
+  <!-- AFFILIAZIONE -->
+  <div class="sec" id="s-aff">
+    <div class="lbl">Richieste affiliazione</div>
+    <div class="card" id="affList"></div>
+  </div>
+
+  <div class="demo">PROTOTIPO ADMIN · dati finti · nella versione reale è protetto da password (x-admin-key)</div>
 </div>
 <script>
-  const TABS=[["dash","📊 Dashboard"],["lead","👥 Lead"],["bc","📣 Broadcast"],["post","📢 Post"],["srv","⚙️ Servizi"]];
+  const TABS=[["dash","📊 Dashboard"],["lead","👥 Lead"],["bc","📣 Broadcast"],["post","📢 Post"],["srv","⚙️ Servizi"],["fatt","💰 Fatturato"],["aff","🤝 Affiliazione"]];
   const tabsEl=document.getElementById("tabs");
   function drawTabs(cur){ tabsEl.innerHTML=TABS.map(t=>`<button class="tab ${t[0]===cur?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join("");
     tabsEl.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ show(b.dataset.t); }); }
@@ -152,11 +205,11 @@
   // LEAD data
   const STAGES=["nuovo","qualificato","squalificato","contattato","cliente"];
   const LEADS=[
-    {n:"Antony Rossi",em:"antony@email.com",tel:"+39 333 111 2222",paese:"Italia",citta:"Milano",eta:"26-35",stage:"qualificato",cerca:"Reddito extra",budget:"€2.000 - 5.000",sit:"Dipendente",pronto:"Subito",serv:"—",pag:"—"},
-    {n:"Luca Verdi",em:"luca@email.com",tel:"+39 340 555 7788",paese:"Italia",citta:"Roma",eta:"36-45",stage:"cliente",cerca:"Libertà finanziaria",budget:"€5.000+",sit:"Imprenditore",pronto:"Subito",serv:"BvB Swap (attivo)",pag:"50 USDT + 2 cicli"},
-    {n:"Marco Bianchi",em:"marco@email.com",tel:"+39 320 444 1212",paese:"Italia",citta:"Torino",eta:"18-25",stage:"nuovo",cerca:"Nuova attività",budget:"€500 - 2.000",sit:"Studente",pronto:"Sto valutando",serv:"—",pag:"—"},
-    {n:"Sara Neri",em:"sara@email.com",tel:"+39 351 999 3434",paese:"Italia",citta:"Napoli",eta:"26-35",stage:"squalificato",cerca:"Reddito extra",budget:"Meno di €500",sit:"In cerca di lavoro",pronto:"Entro un mese",serv:"—",pag:"—"},
-    {n:"Paolo Gialli",em:"paolo@email.com",tel:"+39 366 777 5656",paese:"Italia",citta:"Bologna",eta:"36-45",stage:"contattato",cerca:"Far crescere i risparmi",budget:"€2.000 - 5.000",sit:"Autonomo / P.IVA",pronto:"Subito",serv:"BvB Bonus (interessato)",pag:"—"},
+    {n:"Antony Rossi",em:"antony@email.com",tel:"+39 333 111 2222",paese:"Italia",citta:"Milano",eta:"26-35",stage:"qualificato",cerca:"Reddito extra",budget:"€2.000 - 5.000",sit:"Dipendente",pronto:"Subito",serv:"—",pag:"—",tut:["BvB Swap — attivazione (in corso)"],note:["Molto reattivo, ha chiesto info sul VPS."],att:[["01/07","Sondaggio completato"],["01/07","Profilo qualificato"]]},
+    {n:"Luca Verdi",em:"luca@email.com",tel:"+39 340 555 7788",paese:"Italia",citta:"Roma",eta:"36-45",stage:"cliente",cerca:"Libertà finanziaria",budget:"€5.000+",sit:"Imprenditore",pronto:"Subito",serv:"BvB Swap (attivo)",pag:"50 USDT + 2 cicli",tut:["BvB Swap — completato"],note:["Chiuso 2 cicli, puntuale nei pagamenti."],att:[["24/06","Diventato cliente"],["28/06","1° ciclo chiuso"],["30/06","2° ciclo chiuso"]]},
+    {n:"Marco Bianchi",em:"marco@email.com",tel:"+39 320 444 1212",paese:"Italia",citta:"Torino",eta:"18-25",stage:"nuovo",cerca:"Nuova attività",budget:"€500 - 2.000",sit:"Studente",pronto:"Sto valutando",serv:"—",pag:"—",tut:[],note:[],att:[["29/06","Entrato nel bot"]]},
+    {n:"Sara Neri",em:"sara@email.com",tel:"+39 351 999 3434",paese:"Italia",citta:"Napoli",eta:"26-35",stage:"squalificato",cerca:"Reddito extra",budget:"Meno di €500",sit:"In cerca di lavoro",pronto:"Entro un mese",serv:"—",pag:"—",tut:[],note:["Budget insufficiente per ora."],att:[["27/06","Sondaggio completato"],["27/06","Squalificata (budget)"]]},
+    {n:"Paolo Gialli",em:"paolo@email.com",tel:"+39 366 777 5656",paese:"Italia",citta:"Bologna",eta:"36-45",stage:"contattato",cerca:"Far crescere i risparmi",budget:"€2.000 - 5.000",sit:"Autonomo / P.IVA",pronto:"Subito",serv:"BvB Bonus (interessato)",pag:"—",tut:["BvB Bonus — step 1 visto"],note:["Contattato in DM, valuta il Bonus."],att:[["30/06","Interessato a BvB Bonus"],["01/07","Contattato in DM"]]},
   ];
   let filtro="tutti";
   const listEl=document.getElementById("list"), leadList=document.getElementById("leadList"), leadCard=document.getElementById("leadCard");
@@ -167,9 +220,18 @@
   function drawList(){
     const q=document.getElementById("q").value.toLowerCase();
     const rows=LEADS.filter(l=>(filtro==="tutti"||l.stage===filtro)&&(l.n.toLowerCase().includes(q)||l.em.toLowerCase().includes(q)));
-    listEl.innerHTML=rows.length?rows.map((l,idx)=>`<div class="lead" data-i="${LEADS.indexOf(l)}"><div class="lav">${l.n[0]}</div><div class="ln"><b>${l.n}</b><span>${l.citta} · ${l.budget}</span></div><span class="stage s-${l.stage}">${l.stage}</span></div>`).join(""):'<div style="color:var(--muted);text-align:center;padding:20px;font-size:14px">Nessun lead.</div>';
+    listEl.innerHTML=rows.length?rows.map(l=>`<div class="lead" data-i="${LEADS.indexOf(l)}"><div class="lav">${l.n[0]}</div><div class="ln"><b>${l.n}</b><span>${l.citta} · ${l.budget}</span></div><span class="stage s-${l.stage}">${l.stage}</span></div>`).join(""):'<div style="color:var(--muted);text-align:center;padding:20px;font-size:14px">Nessun lead.</div>';
     listEl.querySelectorAll(".lead").forEach(el=>el.onclick=()=>openLead(+el.dataset.i));
   }
+  // Export CSV (funziona davvero anche nel prototipo)
+  document.getElementById("csv").onclick=()=>{
+    const cols=["n","em","tel","paese","citta","eta","stage","cerca","budget","sit","pronto","serv","pag"];
+    const head=["Nome","Email","Telefono","Paese","Citta","Eta","Stage","Cerca","Budget","Situazione","Prontezza","Servizi","Pagamenti"];
+    const esc=v=>'"'+String(v).replace(/"/g,'""')+'"';
+    const csv=[head.join(",")].concat(LEADS.map(l=>cols.map(c=>esc(l[c])).join(","))).join("\n");
+    const blob=new Blob([csv],{type:"text/csv"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download="lead_businessup.csv"; a.click(); URL.revokeObjectURL(url);
+  };
   function openLead(i){
     const l=LEADS[i];
     leadList.style.display="none"; leadCard.style.display="block";
@@ -195,12 +257,24 @@
         <div class="row"><span class="k">Servizi</span><span class="v">${l.serv}</span></div>
         <div class="row"><span class="k">Pagamenti</span><span class="v">${l.pag}</span></div>
       </div>
-      <div class="lbl">Note & Azioni</div><div class="card">
-        <textarea placeholder="Aggiungi una nota su questo lead…"></textarea>
+      <div class="lbl">Tutorial seguiti</div><div class="card">
+        ${l.tut.length?l.tut.map(t=>`<div class="row"><span class="v" style="text-align:left">📖 ${t}</span></div>`).join(""):'<div style="color:var(--muted);font-size:13px">Nessun tutorial ancora.</div>'}
+      </div>
+      <div class="lbl">Timeline attività</div><div class="card">
+        ${l.att.map(a=>`<div class="tl"><span class="dotm"></span><span class="dt">${a[0]}</span><span class="tx">${a[1]}</span></div>`).join("")}
+      </div>
+      <div class="lbl">Note CRM</div><div class="card" id="noteBox">
+        ${l.note.length?l.note.map((nt,ni)=>`<div class="row"><span class="v" style="text-align:left;font-weight:500">📝 ${nt}</span><button class="mini rosso" data-dn="${ni}">✕</button></div>`).join(""):'<div style="color:var(--muted);font-size:13px">Nessuna nota.</div>'}
+        <textarea id="newNote" placeholder="Aggiungi una nota…" style="margin-top:10px"></textarea>
+        <button class="pub ghost" id="addNote">+ Aggiungi nota</button>
+      </div>
+      <div class="lbl">Azioni</div><div class="card">
         <button class="pub" onclick="alert('Apre la chat DM con ${l.n}')">💬 Contatta in DM</button>
       </div>`;
     document.getElementById("bk").onclick=()=>{leadCard.style.display="none";leadList.style.display="block";};
     leadCard.querySelectorAll(".ss").forEach(s=>s.onclick=()=>{ LEADS[i].stage=s.dataset.s; alert('Stage di '+l.n+' → '+s.dataset.s); openLead(i); drawList(); });
+    document.getElementById("addNote").onclick=()=>{ const t=document.getElementById("newNote").value.trim(); if(!t)return; LEADS[i].note.push(t); openLead(i); };
+    leadCard.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{ LEADS[i].note.splice(+b.dataset.dn,1); openLead(i); });
   }
   drawList();
 
@@ -214,22 +288,101 @@
   bcSync();
   document.getElementById("bcSend").onclick=()=>{ const t=document.getElementById("bcTxt").value.trim(); if(!t){alert("Scrivi il messaggio.");return;} const s=SEG.find(x=>x[0]===seg); alert("✅ Broadcast inviato a: "+s[1]); };
 
-  // POST
+  // POST + lista news
   const CAN=[["gen","Generale"],["swap","Swap"],["bonus","Bonus"],["prop","Prop"]];
   let canale="gen", media="";
+  const NEWS=[
+    {c:"Generale",t:"Nuova settimana operativa 🚀 Aggiornate le linee guida sui broker.",when:"01/07/2026 · 14:30"},
+    {c:"Swap",t:"Il servizio Swap sta per ripartire. Preparate i due conti.",when:"01/07/2026 · 09:15"},
+    {c:"Bonus",t:"Bonus: stiamo valutando un nuovo broker con condizioni migliori.",when:"28/06/2026 · 20:40"},
+  ];
   document.getElementById("canali").innerHTML=CAN.map(c=>`<button class="chip ${c[0]===canale?'on':''}" data-c="${c[0]}">${c[1]}</button>`).join("");
   const pDest=document.getElementById("pDest");
   function pSync(){ const c=CAN.find(x=>x[0]===canale); pDest.innerHTML="Arriverà a: <b>timeline "+c[1]+"</b> · <b>DM</b> a chi ha il tag/è iscritto · <b>topic gruppo</b>."; }
   document.querySelectorAll("#canali .chip").forEach(b=>b.onclick=()=>{canale=b.dataset.c;document.querySelectorAll("#canali .chip").forEach(x=>x.classList.toggle("on",x===b));pSync();});
   document.querySelectorAll("#s-post .mbtn").forEach(b=>b.onclick=()=>{media=b.dataset.m;document.querySelectorAll("#s-post .mbtn").forEach(x=>x.classList.toggle("on",x===b&&media));});
   pSync();
-  document.getElementById("pPub").onclick=()=>{ const t=document.getElementById("pTxt").value.trim(); if(!t){alert("Scrivi il testo.");return;} const c=CAN.find(x=>x[0]===canale); alert("✅ Pubblicato su "+c[1]+"!\n→ Timeline + DM + topic gruppo"); };
+  const newsBox=document.getElementById("newsList");
+  function drawNews(){ newsBox.innerHTML=NEWS.length?NEWS.map((n,i)=>`<div class="newsitem"><div class="nt">${n.t}<div class="m">${n.c} · 🕒 ${n.when}</div></div><button class="mini rosso" data-dp="${i}">🗑</button></div>`).join(""):'<div style="color:var(--muted);font-size:13px">Nessun post.</div>';
+    newsBox.querySelectorAll("[data-dp]").forEach(b=>b.onclick=()=>{ if(confirm("Eliminare questo post?")){NEWS.splice(+b.dataset.dp,1);drawNews();} }); }
+  drawNews();
+  document.getElementById("pPub").onclick=()=>{ const t=document.getElementById("pTxt").value.trim(); if(!t){alert("Scrivi il testo.");return;} const c=CAN.find(x=>x[0]===canale); NEWS.unshift({c:c[1],t:t+(media?(media==="img"?" 🖼️":" 🎬"):""),when:"01/07/2026 · ora"}); document.getElementById("pTxt").value=""; drawNews(); alert("✅ Pubblicato su "+c[1]+"!\n→ Timeline + DM + topic gruppo"); };
 
-  // SERVIZI
-  const SRV=[{n:"Broker VS Broker Swap",s:"y"},{n:"Prop VS Broker",s:"y"},{n:"Broker VS Broker Bonus",s:"r"}];
+  // SERVIZI CRUD
+  const STOPT=[["g","Attivo"],["y","In pausa"],["r","Fermo"]];
+  const SRV=[
+    {n:"Broker VS Broker Swap",desc:"Copertura tra due broker, quota a successo 30%.",split:"30",costo:"50 USDT",link:"https://account.monaxa.com/links/go/22304",s:"y"},
+    {n:"Prop VS Broker",desc:"Copertura tra prop firm e broker.",split:"—",costo:"50 USDT",link:"",s:"y"},
+    {n:"Broker VS Broker Bonus",desc:"Come lo Swap ma quota a successo 50%.",split:"50",costo:"50 USDT",link:"https://account.monaxa.com/links/go/22304",s:"r"},
+  ];
   const box=document.getElementById("servizi");
-  function drawSrv(){ box.innerHTML=SRV.map((s,i)=>`<div class="srv"><b>${s.n}</b><div style="display:flex;gap:6px">${["g","y","r"].map(col=>`<div class="st ${s.s===col?'on':''}" data-i="${i}" data-c="${col}"><span class="dotc ${col}"></span></div>`).join("")}</div></div>`).join("");
-    box.querySelectorAll(".st").forEach(el=>el.onclick=()=>{ const i=+el.dataset.i,col=el.dataset.c; SRV[i].s=col; drawSrv(); const lbl={g:"Attivo 🟢",y:"In pausa 🟡",r:"Fermo 🔴"}; alert('Stato "'+SRV[i].n+'" → '+lbl[col]+(col==="g"?"\n→ Notifica alla lista d'attesa":"\n→ Notifica a tutti col motivo")); }); }
+  const editWrap=document.getElementById("srvEditWrap");
+  let editIdx=-1, editStato="g";
+  function drawSrv(){
+    box.innerHTML=SRV.map((s,i)=>`<div class="srv">
+      <span class="sn">${s.n}<div style="font-size:12px;color:var(--muted);font-weight:400">split ${s.split}% · ${s.costo}</div></span>
+      <div style="display:flex;gap:6px">${["g","y","r"].map(col=>`<div class="st ${s.s===col?'on':''}" data-i="${i}" data-c="${col}"><span class="dotc ${col}"></span></div>`).join("")}</div>
+      <button class="mini" data-edit="${i}">✏️</button>
+      <button class="mini rosso" data-del="${i}">🗑</button>
+    </div>`).join("");
+    box.querySelectorAll(".st").forEach(el=>el.onclick=()=>{ const i=+el.dataset.i,col=el.dataset.c; SRV[i].s=col; drawSrv(); const lbl={g:"Attivo 🟢",y:"In pausa 🟡",r:"Fermo 🔴"}; alert('Stato "'+SRV[i].n+'" → '+lbl[col]+(col==="g"?"\n→ Notifica alla lista d'attesa":"\n→ Notifica a tutti col motivo")); });
+    box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEdit(+b.dataset.edit));
+    box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ if(confirm('Eliminare "'+SRV[+b.dataset.del].n+'"?')){ SRV.splice(+b.dataset.del,1); drawSrv(); } });
+  }
+  function openEdit(i){
+    editIdx=i;
+    const s=i>=0?SRV[i]:{n:"",desc:"",split:"",costo:"",link:"",s:"g"};
+    editStato=s.s;
+    document.getElementById("srvEditTitle").textContent=i>=0?"Modifica servizio":"Nuovo servizio";
+    document.getElementById("e_nome").value=s.n; document.getElementById("e_desc").value=s.desc;
+    document.getElementById("e_split").value=s.split; document.getElementById("e_costo").value=s.costo;
+    document.getElementById("e_link").value=s.link;
+    document.getElementById("e_stato").innerHTML=STOPT.map(o=>`<button class="chip ${o[0]===editStato?'on':''}" data-s="${o[0]}">${o[1]}</button>`).join("");
+    document.querySelectorAll("#e_stato .chip").forEach(b=>b.onclick=()=>{editStato=b.dataset.s;document.querySelectorAll("#e_stato .chip").forEach(x=>x.classList.toggle("on",x===b));});
+    editWrap.style.display="block"; editWrap.scrollIntoView({behavior:"smooth"});
+  }
+  document.getElementById("addSrv").onclick=()=>openEdit(-1);
+  document.getElementById("srvCancel").onclick=()=>{editWrap.style.display="none";};
+  document.getElementById("srvSave").onclick=()=>{
+    const rec={n:document.getElementById("e_nome").value.trim(),desc:document.getElementById("e_desc").value.trim(),split:document.getElementById("e_split").value.trim()||"—",costo:document.getElementById("e_costo").value.trim(),link:document.getElementById("e_link").value.trim(),s:editStato};
+    if(!rec.n){alert("Serve il nome.");return;}
+    if(editIdx>=0) SRV[editIdx]=rec; else SRV.push(rec);
+    editWrap.style.display="none"; drawSrv(); alert("✅ Servizio salvato.");
+  };
   drawSrv();
+
+  // FATTURATO
+  const PAG=[
+    {srv:"BvB Swap",imp:50,mese:"2026-06"},{srv:"BvB Swap",imp:120,mese:"2026-06"},
+    {srv:"BvB Swap",imp:95,mese:"2026-07"},{srv:"BvB Bonus",imp:200,mese:"2026-06"},
+    {srv:"Prop VS Broker",imp:50,mese:"2026-07"},
+  ];
+  const tot=PAG.reduce((a,p)=>a+p.imp,0);
+  document.getElementById("fTot").textContent=tot+" USDT";
+  document.getElementById("fNum").textContent=PAG.length;
+  document.getElementById("fAvg").textContent=Math.round(tot/PAG.length)+" USDT";
+  const perSrv={},perMese={};
+  PAG.forEach(p=>{perSrv[p.srv]=(perSrv[p.srv]||0)+p.imp;perMese[p.mese]=(perMese[p.mese]||0)+p.imp;});
+  const maxS=Math.max(...Object.values(perSrv));
+  document.getElementById("fSrv").innerHTML=Object.entries(perSrv).map(([k,v])=>`<div class="frow"><span class="fn">${k}</span><span class="fv">${v} USDT</span></div><div class="fbar"><i style="width:${Math.round(v/maxS*100)}%"></i></div>`).join("");
+  const maxM=Math.max(...Object.values(perMese));
+  document.getElementById("fMese").innerHTML=Object.entries(perMese).sort().map(([k,v])=>`<div class="frow"><span class="fn">${k}</span><span class="fv">${v} USDT</span></div><div class="fbar"><i style="width:${Math.round(v/maxM*100)}%"></i></div>`).join("");
+
+  // AFFILIAZIONE
+  const AFF=[
+    {chi:"@luca_v",srv:"BvB Swap",stato:"pending"},
+    {chi:"Paolo Gialli",srv:"BvB Bonus",stato:"pending"},
+    {chi:"@sara_n",srv:"Prop VS Broker",stato:"pending"},
+  ];
+  const affBox=document.getElementById("affList");
+  function drawAff(){
+    affBox.innerHTML=AFF.length?AFF.map((a,i)=>`<div class="srv">
+      <span class="sn">${a.chi}<div style="font-size:12px;color:var(--muted);font-weight:400">${a.srv} · ${a.stato==="pending"?"in attesa":a.stato}</div></span>
+      ${a.stato==="pending"?`<button class="mini" data-ap="${i}" style="color:var(--accent2);border-color:rgba(13,158,136,.4)">✓ Approva</button><button class="mini rosso" data-rv="${i}">✕ Revoca</button>`:`<span class="stage ${a.stato==="approvato"?'s-qualificato':'s-squalificato'}">${a.stato}</span>`}
+    </div>`).join(""):'<div style="color:var(--muted);font-size:13px">Nessuna richiesta.</div>';
+    affBox.querySelectorAll("[data-ap]").forEach(b=>b.onclick=()=>{ AFF[+b.dataset.ap].stato="approvato"; drawAff(); alert("✅ Affiliazione approvata → link generato e inviato in DM."); });
+    affBox.querySelectorAll("[data-rv]").forEach(b=>b.onclick=()=>{ AFF[+b.dataset.rv].stato="revocato"; drawAff(); });
+  }
+  drawAff();
 </script>
 </body></html>
