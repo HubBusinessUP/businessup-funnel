@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Admin — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:600px;margin:0 auto;}
+  .top{display:flex;align-items:center;gap:9px;font-weight:800;font-size:14px;letter-spacing:1px;margin-bottom:4px;}
+  .top .bdot{width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:16px;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:22px 4px 8px;}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .kpi .k{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+  .kpi .v{font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-.4px;}
+  .kpi .v.a{color:var(--accent2);}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+  .chip{padding:7px 13px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;}
+  .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.45);color:var(--accent2);}
+  textarea{width:100%;min-height:90px;background:#0e0f11;border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;padding:12px;resize:vertical;}
+  textarea:focus{outline:none;border-color:rgba(13,158,136,.5);}
+  .media-btns{display:flex;gap:8px;margin-top:10px;}
+  .mbtn{flex:1;padding:11px;border-radius:11px;background:var(--surface2);border:1px solid var(--line);color:var(--text);font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;}
+  .mbtn.on{border-color:rgba(13,158,136,.5);color:var(--accent2);}
+  .dest{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5;}
+  .dest b{color:var(--text);}
+  .pub{width:100%;padding:14px;border:none;border-radius:13px;background:var(--accent);color:#04221c;font-weight:800;font-size:15px;font-family:inherit;cursor:pointer;margin-top:12px;}
+  /* preview post */
+  .prevlbl{font-size:11px;color:var(--muted);margin:14px 0 6px;}
+  .post{background:#0e0f11;border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
+  .ph{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .av{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:12px;}
+  .who b{font-size:13px;} .who .m{font-size:11px;color:var(--muted);}
+  .tag{margin-left:auto;font-size:9px;font-weight:800;text-transform:uppercase;color:var(--accent2);background:rgba(25,205,172,.1);padding:2px 7px;border-radius:999px;}
+  .ptxt{font-size:14px;color:#e4e6e8;white-space:pre-line;min-height:18px;}
+  .pmedia{margin-top:8px;aspect-ratio:16/9;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);font-size:12px;background:linear-gradient(135deg,#123,#1b3a34);}
+  /* servizi */
+  .srv{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line);}
+  .srv:first-child{border-top:none;}
+  .srv b{flex:1;font-size:14px;font-weight:600;}
+  .sel{display:flex;gap:6px;}
+  .st{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);cursor:pointer;display:grid;place-items:center;}
+  .st.on{border-width:2px;}
+  .g{background:var(--accent2);} .y{background:var(--giallo);} .r{background:var(--rosso);}
+  .dotc{width:11px;height:11px;border-radius:50%;}
+  .demo{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="bdot"></span>BUSINESS UP · ADMIN</div>
+  <h1>CRM</h1>
+
+  <div class="lbl">Statistiche (KPI)</div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">Totale lead</div><div class="v">235</div></div>
+    <div class="kpi"><div class="k">Qualificati</div><div class="v a">89</div></div>
+    <div class="kpi"><div class="k">Clienti</div><div class="v">12</div></div>
+    <div class="kpi"><div class="k">Tasso qualifica</div><div class="v">38%</div></div>
+  </div>
+
+  <div class="lbl">📢 Pubblica aggiornamento</div>
+  <div class="card">
+    <div class="chips" id="chips"></div>
+    <textarea id="txt" placeholder="Scrivi l'aggiornamento…"></textarea>
+    <div class="media-btns">
+      <button class="mbtn" data-m="img">🖼️ Immagine</button>
+      <button class="mbtn" data-m="vid">🎬 Video</button>
+      <button class="mbtn" data-m="">✖ Nessun media</button>
+    </div>
+
+    <div class="prevlbl">Anteprima (come lo vede l'utente)</div>
+    <div class="post">
+      <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">🕒 ora</div></div><span class="tag" id="pTag">Generale</span></div>
+      <div class="ptxt" id="pTxt">…</div>
+      <div class="pmedia" id="pMedia" style="display:none"></div>
+    </div>
+
+    <div class="dest" id="dest"></div>
+    <button class="pub" id="pub">Pubblica →</button>
+  </div>
+
+  <div class="lbl">Gestione servizi (stato → notifica)</div>
+  <div class="card" id="servizi"></div>
+
+  <div class="demo">PROTOTIPO ADMIN · nella versione reale è protetto da password</div>
+</div>
+<script>
+  const CAN=[{id:"gen",n:"Generale",dm:"tutti gli iscritti al Generale"},{id:"swap",n:"Swap",dm:"chi ha il servizio Swap o è iscritto al canale"},{id:"bonus",n:"Bonus",dm:"chi ha il servizio Bonus o è iscritto"},{id:"prop",n:"Prop",dm:"chi ha il servizio Prop o è iscritto"}];
+  let canale="gen", media="";
+  const chips=document.getElementById("chips"), txt=document.getElementById("txt");
+  const pTag=document.getElementById("pTag"), pTxt=document.getElementById("pTxt"), pMedia=document.getElementById("pMedia"), dest=document.getElementById("dest");
+
+  function drawChips(){ chips.innerHTML=CAN.map(c=>`<button class="chip ${c.id===canale?'on':''}" data-c="${c.id}">${c.n}</button>`).join("");
+    chips.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{canale=b.dataset.c;drawChips();sync();}); }
+  function sync(){
+    const c=CAN.find(x=>x.id===canale);
+    pTag.textContent=c.n;
+    pTxt.textContent=txt.value||"…";
+    if(media){pMedia.style.display="grid";pMedia.textContent=media==="img"?"🖼️ immagine":"🎬 video";}else{pMedia.style.display="none";}
+    dest.innerHTML=`Arriverà a: <b>timeline canale ${c.n}</b> · <b>DM</b> a ${c.dm} · <b>topic gruppo "Aggiornamenti"</b>.`;
+  }
+  txt.addEventListener("input",sync);
+  document.querySelectorAll(".mbtn").forEach(b=>b.onclick=()=>{media=b.dataset.m;document.querySelectorAll(".mbtn").forEach(x=>x.classList.toggle("on",x===b&&media));sync();});
+  document.getElementById("pub").onclick=()=>{
+    if(!txt.value.trim()){alert("Scrivi il testo dell'aggiornamento.");return;}
+    const c=CAN.find(x=>x.id===canale);
+    alert("✅ Pubblicato!\n\nCanale: "+c.n+"\n→ Timeline aggiornata\n→ DM inviato a "+c.dm+"\n→ Postato nel topic gruppo \"Aggiornamenti\"");
+  };
+  drawChips(); sync();
+
+  // Gestione servizi
+  const SRV=[{n:"Broker VS Broker Swap",s:"y"},{n:"Prop VS Broker",s:"y"},{n:"Broker VS Broker Bonus",s:"r"}];
+  const box=document.getElementById("servizi");
+  function drawSrv(){ box.innerHTML=SRV.map((s,i)=>`
+    <div class="srv"><b>${s.n}</b><div class="sel">
+      ${["g","y","r"].map(col=>`<div class="st ${s.s===col?'on':''}" data-i="${i}" data-c="${col}"><span class="dotc ${col}"></span></div>`).join("")}
+    </div></div>`).join("");
+    box.querySelectorAll(".st").forEach(el=>el.onclick=()=>{
+      const i=+el.dataset.i, col=el.dataset.c, old=SRV[i].s; SRV[i].s=col; drawSrv();
+      const lbl={g:"Attivo 🟢",y:"In pausa 🟡",r:"Fermo 🔴"};
+      let msg="Stato di \""+SRV[i].n+"\" → "+lbl[col]+"\n\n";
+      if(col==="g") msg+="→ Notifica inviata a chi era in LISTA D'ATTESA: \"ora è attivo!\"";
+      else msg+="→ Notifica inviata a TUTTI gli utenti (col motivo che scrivi).";
+      alert(msg);
+    });
+  }
+  drawSrv();
+</script>
+</body></html>
