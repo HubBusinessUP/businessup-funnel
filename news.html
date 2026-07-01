@@ -3,83 +3,89 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>News - Business UP</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>Aggiornamenti - Business UP</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    :root { --bg: var(--tg-theme-bg-color,#0a0a0a); --card: var(--tg-theme-secondary-bg-color,#1a1a1a);
-      --text: var(--tg-theme-text-color,#fff); --muted: var(--tg-theme-hint-color,#8a8a8a); --accent:#0d9e88; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); padding:16px 14px 36px; line-height:1.55; }
-    .head { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-    .head .logo { width:38px; height:38px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; color:#042; }
-    .head b { font-size:18px; } .head span { font-size:12px; color:var(--muted); display:block; }
-    .ch { display:flex; align-items:center; gap:12px; background:var(--card); border-radius:14px; padding:15px 16px; margin-bottom:10px; cursor:pointer; }
-    .ch .ic { width:40px; height:40px; border-radius:10px; background:rgba(13,158,136,.15); display:flex; align-items:center; justify-content:center; font-size:18px; }
-    .ch .t { flex:1; } .ch .t b { font-size:15px; display:block; } .ch .t span { font-size:12px; color:var(--muted); }
-    .ch .ar { color:var(--muted); }
-    .post { background:var(--card); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
-    .post .top { display:flex; align-items:center; margin-bottom:6px; }
-    .post .date { font-size:11px; color:var(--muted); margin-left:auto; }
-    .post .titolo { font-size:16px; font-weight:600; margin:2px 0 4px; }
-    .post .testo { font-size:14px; white-space:pre-line; }
-    .post img { width:100%; border-radius:10px; margin-top:10px; }
-    .x { font-size:14px; color:var(--accent); cursor:pointer; margin-bottom:12px; display:inline-block; }
-    .empty { text-align:center; color:var(--muted); padding:40px 20px; font-size:14px; }
-    .back { width:100%; margin-top:18px; padding:14px; border:none; border-radius:12px; background:var(--card); color:var(--text); font-weight:600; font-size:15px; cursor:pointer; }
+    :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 30px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+    .wrap{max-width:520px;margin:0 auto;}
+    h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:12px;}
+    .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-ms-overflow-style:none;scrollbar-width:none;}
+    .chips::-webkit-scrollbar{display:none;}
+    .chip{flex:none;padding:8px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .chip.on{background:rgba(13,158,136,.16);border-color:rgba(13,158,136,.4);color:var(--accent2);}
+    .chip .b{display:inline-block;min-width:16px;padding:0 5px;margin-left:6px;border-radius:999px;background:var(--accent);color:#04221c;font-size:11px;font-weight:800;}
+    .post{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin-bottom:11px;}
+    .ph{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .av{width:38px;height:38px;border-radius:11px;background:var(--accent);color:#04221c;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+    .who{flex:1;} .who b{font-size:14px;font-weight:700;} .who .m{font-size:12px;color:var(--muted);}
+    .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--accent2);background:rgba(25,205,172,.1);padding:2px 7px;border-radius:999px;}
+    .titolo{font-size:16px;font-weight:700;margin-bottom:4px;}
+    .txt{font-size:15px;color:#e4e6e8;line-height:1.55;white-space:pre-line;}
+    .post img{width:100%;border-radius:12px;margin-top:12px;border:1px solid var(--line);}
+    .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14px;}
+    .backbtn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;cursor:pointer;font-family:inherit;margin-top:14px;}
   </style>
 </head>
 <body>
-  <div class="head"><div class="logo">BU</div><div><b>News & Aggiornamenti</b><span>Scegli un canale</span></div></div>
-  <div id="view"><div class="empty">Caricamento...</div></div>
-  <button class="back" id="back">Torna al bot</button>
+  <div class="wrap">
+    <h1>Aggiornamenti</h1>
+    <div class="chips" id="chips"></div>
+    <div id="feed"><div class="empty">Caricamento…</div></div>
+    <button class="backbtn" id="back">‹ Torna al bot</button>
+  </div>
 
   <script>
     const TG = window.Telegram ? window.Telegram.WebApp : null;
     if (TG) { TG.ready(); TG.expand(); }
     const EDGE = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot";
-    const view = document.getElementById("view");
-    const ICONS = { "Broker vs Broker":"🔁","Prop vs Broker":"🏦","Bonus ADM":"🎁","BvB Swap":"🔄" };
+    const chipsEl = document.getElementById("chips");
+    const feedEl = document.getElementById("feed");
     let DATA = { canali: [], news: [] };
+    let cur = null; // servizio_id corrente (null = Generale)
 
     function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-    function fmt(d){ try{ const x=new Date(d); return x.toLocaleDateString("it-IT",{day:"2-digit",month:"short"})+" "+x.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}); }catch{ return ""; } }
+    function fmt(d){ try{ const x=new Date(d); return x.toLocaleDateString("it-IT",{day:"2-digit",month:"2-digit",year:"numeric"})+" · "+x.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}); }catch{ return ""; } }
     function newsOf(sid){ return DATA.news.filter(n => sid===null ? n.servizio_id==null : n.servizio_id===sid); }
+    function sidOf(c){ return c.servizio_id==null ? null : c.servizio_id; }
 
-    function renderCanali() {
-      document.querySelector(".head span").textContent = "Scegli un canale";
-      view.innerHTML = DATA.canali.map((c) => {
-        const cnt = newsOf(c.servizio_id).length;
-        return `<div class="ch" data-sid="${c.servizio_id==null?"":c.servizio_id}">
-          <div class="ic">${c.servizio_id==null ? "📢" : (ICONS[c.nome]||"📊")}</div>
-          <div class="t"><b>${esc(c.nome)}</b><span>${cnt} ${cnt===1?"news":"news"}</span></div>
-          <div class="ar">›</div></div>`;
+    function renderChips(){
+      chipsEl.innerHTML = DATA.canali.map(c => {
+        const sid = sidOf(c);
+        const cnt = newsOf(sid).length;
+        const on = sid === cur;
+        const icon = sid==null ? "📢 " : "";
+        return `<button class="chip ${on?"on":""}" data-sid="${sid==null?"":sid}">${icon}${esc(c.nome)}${cnt?`<span class="b">${cnt}</span>`:""}</button>`;
       }).join("");
-      view.querySelectorAll(".ch").forEach((el) => el.addEventListener("click", () => {
-        const sid = el.dataset.sid === "" ? null : parseInt(el.dataset.sid);
-        renderFeed(sid);
+      chipsEl.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => {
+        cur = b.dataset.sid === "" ? null : parseInt(b.dataset.sid);
+        renderChips(); renderFeed();
       }));
     }
 
-    function renderFeed(sid) {
-      const canale = DATA.canali.find(c => (c.servizio_id==null?null:c.servizio_id) === sid) || { nome: "Canale" };
-      document.querySelector(".head span").textContent = canale.nome;
-      const items = newsOf(sid);
-      const list = items.length ? items.map((n) => `
+    function renderFeed(){
+      const canale = DATA.canali.find(c => sidOf(c) === cur) || { nome: "Canale" };
+      const tag = esc(canale.nome).replace("📢 ","");
+      const items = newsOf(cur);
+      if (!items.length){ feedEl.innerHTML = '<div class="empty">Nessun aggiornamento in questo canale.</div>'; return; }
+      feedEl.innerHTML = items.map(n => `
         <div class="post">
-          <div class="top"><span class="date">${fmt(n.data)}</span></div>
+          <div class="ph"><div class="av">BU</div><div class="who"><b>Business UP</b><div class="m">🕒 ${fmt(n.data)}</div></div><span class="tag">${tag}</span></div>
           ${n.titolo ? `<div class="titolo">${esc(n.titolo)}</div>` : ""}
-          ${n.testo ? `<div class="testo">${esc(n.testo)}</div>` : ""}
+          ${n.testo ? `<div class="txt">${esc(n.testo)}</div>` : ""}
           ${n.immagine ? `<img src="${esc(n.immagine)}" alt="" />` : ""}
-        </div>`).join("") : '<div class="empty">Nessuna news in questo canale.</div>';
-      view.innerHTML = `<span class="x" id="toCanali">‹ Tutti i canali</span>${list}`;
-      document.getElementById("toCanali").addEventListener("click", renderCanali);
+        </div>`).join("");
     }
 
-    async function load() {
-      if (!TG || !TG.initData) { view.innerHTML = '<div class="empty">Apri questa pagina dal bot.</div>'; return; }
+    async function load(){
+      if (!TG || !TG.initData) { feedEl.innerHTML = '<div class="empty">Apri questa pagina dal bot.</div>'; chipsEl.innerHTML=""; return; }
       try { const r = await fetch(EDGE + "/news", { headers: { "x-telegram-init-data": TG.initData } }); DATA = await r.json(); if (!r.ok) throw 0; }
-      catch { view.innerHTML = '<div class="empty">Errore. Riapri dal bot.</div>'; return; }
-      renderCanali();
+      catch { feedEl.innerHTML = '<div class="empty">Errore. Riapri dal bot.</div>'; chipsEl.innerHTML=""; return; }
+      if (DATA.canali && DATA.canali.length) cur = sidOf(DATA.canali[0]);
+      renderChips(); renderFeed();
     }
     document.getElementById("back").addEventListener("click", () => { if (TG) TG.close(); });
     load();
