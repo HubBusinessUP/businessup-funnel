@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Affiliazione — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:520px;margin:0 auto;}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px;}
+  .sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:20px 4px 8px;}
+  .lbl:first-of-type{margin-top:6px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;}
+  .hero{background:linear-gradient(180deg,#1d2f2b,#16211f);border:1px solid rgba(13,158,136,.3);border-radius:18px;padding:18px;}
+  .hero .t{font-size:17px;font-weight:800;} .hero .d{font-size:13.5px;color:#c7d0cd;margin-top:6px;line-height:1.55;}
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:12px;}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center;}
+  .stat .v{font-size:20px;font-weight:800;letter-spacing:-.4px;} .stat .v.a{color:var(--accent2);}
+  .stat .k{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-top:3px;}
+  .link{display:flex;align-items:center;gap:10px;background:#0e0f11;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--accent2);word-break:break-all;font-weight:600;}
+  .btn{display:block;width:100%;padding:14px;border:none;border-radius:13px;font-weight:800;font-size:15px;font-family:inherit;text-align:center;text-decoration:none;cursor:pointer;background:var(--accent);color:#04221c;margin-top:10px;}
+  .btn.g{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
+  .step{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--line);}
+  .step:first-child{border-top:none;}
+  .num{width:26px;height:26px;border-radius:50%;background:rgba(13,158,136,.16);color:var(--accent2);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+  .step .tx{font-size:14px;} .step .tx b{font-weight:700;}
+  .srv{display:flex;align-items:center;gap:11px;padding:13px 0;border-top:1px solid var(--line);}
+  .srv:first-child{border-top:none;} .srv .sn{flex:1;font-size:14px;font-weight:600;}
+  .req{padding:8px 13px;border-radius:10px;background:var(--accent);color:#04221c;border:none;font-weight:700;font-size:12.5px;font-family:inherit;cursor:pointer;}
+  .req.on{background:rgba(233,185,73,.14);color:var(--giallo);border:1px solid rgba(233,185,73,.35);}
+  .backbtn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:16px;}
+  .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
+</style></head>
+<body>
+<div class="wrap">
+  <h1>Affiliazione</h1>
+  <div class="sub">Condividi Business UP col tuo link. Chi entra da te e attiva un servizio, ti fa guadagnare.</div>
+
+  <div class="hero">
+    <div class="t">🤝 Invita e guadagna</div>
+    <div class="d">Ogni persona che entra dal tuo link e attiva un servizio su cui sei affiliato genera una quota per te. Niente promesse: paga solo quando qualcuno attiva davvero.</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">0</div><div class="k">Invitati</div></div>
+    <div class="stat"><div class="v">0</div><div class="k">Attivati</div></div>
+    <div class="stat"><div class="v a">0 €</div><div class="k">Guadagno</div></div>
+  </div>
+
+  <div class="lbl">Il tuo link</div>
+  <div class="card">
+    <div class="link" id="link">https://t.me/BotBusinessUP_bot?start=ref_334179105</div>
+    <button class="btn" id="copy">📋 Copia link</button>
+    <a class="btn g" id="share">📤 Condividi su Telegram</a>
+  </div>
+
+  <div class="lbl">Come funziona</div>
+  <div class="card">
+    <div class="step"><div class="num">1</div><div class="tx"><b>Condividi</b> il tuo link su WhatsApp, Instagram, ovunque.</div></div>
+    <div class="step"><div class="num">2</div><div class="tx">Chi entra da lì viene <b>collegato a te</b> in automatico.</div></div>
+    <div class="step"><div class="num">3</div><div class="tx">Quando <b>attiva un servizio</b> su cui sei affiliato, guadagni la tua quota.</div></div>
+  </div>
+
+  <div class="lbl">Richiedi affiliazione su un servizio</div>
+  <div class="card" id="servizi"></div>
+
+  <a class="backbtn" href="home.html">‹ Torna alla Home</a>
+  <div class="foot">PROTOTIPO · Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+</div>
+<script>
+  const REF="https://t.me/BotBusinessUP_bot?start=ref_334179105";
+  document.getElementById("copy").onclick=()=>{ navigator.clipboard?.writeText(REF).then(()=>{ const b=document.getElementById("copy"); b.textContent="✅ Copiato!"; setTimeout(()=>b.textContent="📋 Copia link",1500); }); };
+  const shareText="Entra in Business UP: metodi di trading testati, numeri alla mano. Niente guru, niente filtri.";
+  document.getElementById("share").href="https://t.me/share/url?url="+encodeURIComponent(REF)+"&text="+encodeURIComponent(shareText);
+
+  // Servizi su cui chiedere affiliazione
+  const SRV=[
+    {id:"swap", nome:"Broker VS Broker Swap"},
+    {id:"bonus", nome:"Broker VS Broker Bonus"},
+    {id:"prop", nome:"Prop VS Broker"},
+  ];
+  const richiesti={};
+  const box=document.getElementById("servizi");
+  function draw(){
+    box.innerHTML=SRV.map(s=>`<div class="srv"><span class="sn">${s.nome}</span>
+      <button class="req ${richiesti[s.id]?'on':''}" data-id="${s.id}">${richiesti[s.id]?'In attesa':'Richiedi'}</button></div>`).join("");
+    box.querySelectorAll(".req").forEach(b=>b.onclick=()=>{
+      const id=b.dataset.id;
+      if(richiesti[id]) return;
+      richiesti[id]=true; draw();
+      alert("Richiesta inviata all'admin ✅\nRiceverai il tuo link quando viene approvata.");
+    });
+  }
+  draw();
+</script>
+</body></html>
