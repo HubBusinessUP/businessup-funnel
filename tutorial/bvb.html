@@ -2,115 +2,250 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Broker vs Broker - Tutorial Business UP</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broker vs Broker - Business UP</title>
   <style>
-    :root { --bg:#0b0c0e; --surface:#15171a; --surface2:#1d2024; --line:rgba(255,255,255,.07); --text:#eceef0; --muted:#8b9096; --accent:#0d9e88; --accent2:#19cdac; }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body { font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; -webkit-font-smoothing:antialiased; padding:10px 14px calc(34px + env(safe-area-inset-bottom)); }
-    .wrap { max-width:520px; margin:0 auto; }
-    .appbar { display:flex; align-items:center; gap:12px; padding:8px 2px 16px; }
-    .nav { width:38px; height:38px; border-radius:11px; background:var(--surface2); border:1px solid var(--line); display:grid; place-items:center; font-size:20px; cursor:pointer; flex:none; }
-    .ic { width:42px; height:42px; border-radius:13px; background:rgba(13,158,136,.16); display:grid; place-items:center; font-size:20px; flex:none; }
-    .appbar .t { font-size:12px; color:var(--muted); font-weight:600; }
-    .appbar .n { font-size:18px; font-weight:700; letter-spacing:-.2px; line-height:1.2; }
-    .video { position:relative; width:100%; aspect-ratio:16/9; border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#000; margin-bottom:16px; }
-    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
-    .progress { height:6px; background:var(--surface2); border-radius:999px; overflow:hidden; margin-bottom:8px; }
-    .progress > i { display:block; height:100%; background:var(--accent); border-radius:999px; transition:width .25s ease; }
-    .pmeta { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:14px; }
-    .stepcard { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:22px 18px; min-height:200px; }
-    .stepcard .kicker { font-size:12px; color:var(--accent2); font-weight:700; letter-spacing:.4px; text-transform:uppercase; }
-    .stepcard .h { font-size:22px; font-weight:800; letter-spacing:-.3px; margin:8px 0 12px; }
-    .stepcard .b { font-size:15px; color:#cfd2d6; line-height:1.65; }
-    .navrow { display:flex; gap:10px; margin-top:16px; }
-    .btn { flex:1; padding:14px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; transition:transform .1s ease, filter .1s ease; }
-    .btn:active { transform:scale(.99); filter:brightness(.95); }
-    .btn:disabled { opacity:.4; }
-    .btn-accent { background:var(--accent); color:#04221c; }
-    .btn-ghost { background:var(--surface2); color:var(--text); border:1px solid var(--line); }
-    .done { text-align:center; padding:18px 6px; }
-    .done .big { font-size:42px; } .done b { display:block; font-size:18px; margin:10px 0 4px; } .done span { color:var(--muted); font-size:14px; }
-    .badge { display:inline-flex; align-items:center; gap:7px; color:var(--accent2); font-weight:700; background:rgba(13,158,136,.1); border:1px solid rgba(13,158,136,.28); padding:8px 14px; border-radius:999px; margin:10px 0 16px; }
-    .foot { text-align:center; font-size:11px; color:var(--muted); margin-top:22px; line-height:1.5; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      margin-bottom: 48px;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0d9e88;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #999999;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .section h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      margin-top: 24px;
+      color: #ffffff;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 14px;
+    }
+
+    .section ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    .section ul li {
+      font-size: 14px;
+      color: #cccccc;
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .section ul li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #0d9e88;
+      font-weight: bold;
+    }
+
+    .highlight {
+      color: #0d9e88;
+      font-weight: 500;
+    }
+
+    .callout {
+      background: #1a1a1a;
+      border-left: 3px solid #0d9e88;
+      padding: 20px;
+      margin: 24px 0;
+      border-radius: 4px;
+    }
+
+    .callout p {
+      margin: 0;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #0d9e88;
+      color: #0a0a0a;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-top: 24px;
+    }
+
+    .cta-button:hover {
+      background: #0cc084;
+    }
+
+    .footer {
+      border-top: 1px solid #2a2a2a;
+      margin-top: 60px;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: #666666;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="appbar">
-      <div class="nav" id="back">‹</div>
-      <div class="ic">🔁</div>
-      <div><div class="t">Tutorial</div><div class="n">Broker vs Broker</div></div>
+  <div class="container">
+    <div class="header">
+      <h1>Broker vs Broker</h1>
+      <p>Sfrutta le differenze tra broker per ridurre il rischio</p>
     </div>
 
-    <div class="video"><iframe src="https://www.youtube.com/embed/zqJSGq3JDd4" title="Video tutorial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-
-    <div id="stage">
-      <div class="progress"><i id="bar"></i></div>
-      <div class="pmeta"><span id="pnum"></span><span>Arbitraggio spread tra broker</span></div>
-      <div class="stepcard">
-        <div class="kicker" id="kick"></div>
-        <div class="h" id="sh"></div>
-        <div class="b" id="sb"></div>
-      </div>
-      <div class="navrow">
-        <button class="btn btn-ghost" id="prev">Indietro</button>
-        <button class="btn btn-accent" id="next">Avanti</button>
-      </div>
+    <div class="section">
+      <h2>Cos'è il Broker vs Broker?</h2>
+      <p>
+        Il Broker vs Broker (BvB) è una strategia di trading che sfrutta le differenze di
+        quotazione tra due broker diversi sullo stesso strumento finanziario.
+      </p>
+      <p>
+        Mentre un broker quoterà l'EUR/USD a 1.0850/1.0852, un altro potrebbe quotarlo a
+        1.0848/1.0851. Queste piccole discrepanze creano <span class="highlight">opportunità di
+        arbitraggio</span>.
+      </p>
     </div>
 
-    <div class="foot">Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+    <div class="section">
+      <h2>Come funziona</h2>
+      <ul>
+        <li>Apri un conto su due broker diversi</li>
+        <li>Compra su uno, vendi sull'altro, sullo stesso strumento, nello stesso momento</li>
+        <li>Lo spread differenziale è il tuo guadagno</li>
+        <li>Chiudi entrambe le posizioni quando lo spread favorisce il closing</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Importante:</span> Il BvB funziona solo se disponi di capitale
+        sufficiente (minimo €2.000) e se conosci bene il meccanismo. Non è "soldi facili".
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Vantaggi del BvB</h2>
+      <ul>
+        <li>Rischio teorico più basso rispetto al trading direzionale</li>
+        <li>Non dipende dalla direzione del mercato</li>
+        <li>Sfrutta inefficienze di mercato reali</li>
+        <li>Scalabile con capitale e esperienza</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Requisiti minimi</h2>
+      <ul>
+        <li>Capitale: almeno €2.000 distribuiti tra i broker</li>
+        <li>Connessione internet stabile</li>
+        <li>Conoscenza di come aprire e gestire conti broker</li>
+        <li>Disciplina nel seguire regole di risk management</li>
+        <li>Tempo: circa 1-2 ore al giorno per monitorare opportunità</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>I broker più utilizzati nel BvB</h2>
+      <p>Non tutti i broker permettono il BvB. Alcuni operano in modo da contrastarlo.</p>
+      <ul>
+        <li>Broker ECN/STP con spread bassi</li>
+        <li>Broker che permettono EA (per automatizzazione)</li>
+        <li>Broker senza limitazioni su strategie arbitrage</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Il fattore critico: la liquidità</h2>
+      <p>
+        Più è alta la liquidità dello strumento, più facile è entrare e uscire dalle posizioni
+        contemporaneamente. Le coppie forex major (EUR/USD, GBP/USD, etc.) sono le più liquide.
+      </p>
+    </div>
+
+    <div class="callout">
+      <p>
+        <span class="highlight">Reality check:</span> Il BvB non è un "metodo passivo". Richiede
+        attenzione costante, gestione attiva del rischio e aggiustamenti continui. Se cerchi
+        denaro passivo, questo non è il metodo.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Prossimi passi</h2>
+      <p>Se sei interessato al BvB:</p>
+      <ul>
+        <li>
+          Leggi la documentazione completa nel nostro hub privato (dopo l'approvazione)
+        </li>
+        <li>Guarda i backtest e i risultati reali dei nostri trader</li>
+        <li>Accedi al gruppo privato Telegram per confrontarti con chi lo pratica</li>
+        <li>Fai una demo su carta prima di mettere capitale vero</li>
+      </ul>
+    </div>
+
+    <div style="text-align: center">
+      <a href="https://t.me/BotBusinessUP_bot" class="cta-button">
+        Torna al Bot
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>
+        Business UP — Nessun guru. Nessun filtro.<br />
+        Disclaimer: Il trading comporta rischi. Consulta un consulente finanziario prima di
+        investire.
+      </p>
+    </div>
   </div>
-
-  <script>
-    const TG = window.Telegram ? window.Telegram.WebApp : null;
-    if (TG) { TG.ready(); TG.expand(); }
-    const UID = TG && TG.initDataUnsafe && TG.initDataUnsafe.user ? TG.initDataUnsafe.user.id : null;
-    const TRACK = "https://jwpbopkoscqooovfvwqn.supabase.co/functions/v1/businessup-bot/track";
-    const KEY = "bvb";
-    const STEPS = [["Cos'è", "Sfrutti le differenze di quotazione dello stesso strumento tra due broker diversi. Piccole discrepanze = opportunità."], ["Come funziona", "Compri su un broker e vendi sull'altro nello stesso momento, sullo stesso strumento. Lo spread differenziale è il guadagno."], ["Requisiti", "Almeno €2.000, due conti broker, connessione stabile, 1-2 ore al giorno per monitorare."], ["Broker giusti", "ECN/STP con spread bassi, che permettono EA e non vietano l'arbitraggio. Non tutti vanno bene."], ["Reality check", "Non è passivo. Serve gestione attiva e disciplina sul rischio. Se cerchi soldi facili, non è questo."]];
-
-    function track(event) {
-      if (!UID) return;
-      fetch(TRACK, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ telegram_id: UID, tutorial_key: KEY, event }) }).catch(() => {});
-    }
-    function goBack() { history.length > 1 ? history.back() : (location.href = "../dashboard.html"); }
-
-    let i = 0;
-    const bar = document.getElementById("bar"), pnum = document.getElementById("pnum");
-    const kick = document.getElementById("kick"), sh = document.getElementById("sh"), sb = document.getElementById("sb");
-    const prev = document.getElementById("prev"), next = document.getElementById("next");
-
-    function show() {
-      const s = STEPS[i];
-      kick.textContent = "Passo " + (i + 1);
-      sh.textContent = s[0];
-      sb.textContent = s[1];
-      bar.style.width = ((i + 1) / STEPS.length * 100) + "%";
-      pnum.textContent = (i + 1) + " / " + STEPS.length;
-      prev.disabled = i === 0;
-      next.textContent = i === STEPS.length - 1 ? "Fatto, ho capito" : "Avanti";
-      next.className = "btn btn-accent";
-    }
-    prev.addEventListener("click", () => { if (i > 0) { i--; show(); } });
-    next.addEventListener("click", () => {
-      if (i < STEPS.length - 1) { i++; show(); return; }
-      track("done");
-      if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
-      document.getElementById("stage").innerHTML =
-        '<div class="done"><div class="big">✅</div><span class="badge">✓ Tutorial completato</span><b>Hai finito Broker vs Broker</b><span>Ora sai come funziona. Quando sei pronto, attiva il servizio dalla tua dashboard.</span></div>' +
-        '<div class="navrow"><button class="btn btn-ghost" id="b1">Torna al servizio</button><button class="btn btn-accent" id="b2">Chiudi</button></div>';
-      document.getElementById("b1").addEventListener("click", goBack);
-      document.getElementById("b2").addEventListener("click", () => { if (TG) TG.close(); else goBack(); });
-    });
-
-    document.getElementById("back").addEventListener("click", goBack);
-    track("open");
-    show();
-  </script>
 </body>
 </html>
