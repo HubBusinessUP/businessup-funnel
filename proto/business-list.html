@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Business List — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--giallo:#e9b949;--rosso:#ff5d5d;--accent2:#19cdac;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.45;}
+  .wrap{max-width:520px;margin:0 auto;}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;}
+  .sub{font-size:13px;color:var(--muted);margin:3px 0 18px;}
+  .card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:11px;cursor:pointer;transition:transform .1s ease,border-color .1s ease;}
+  .card:active{transform:scale(.99);border-color:rgba(13,158,136,.4);}
+  .dot{width:11px;height:11px;border-radius:50%;flex:none;}
+  .dot.pausa{background:var(--giallo);animation:py 2.4s ease-out infinite;}
+  .dot.stop{background:var(--rosso);animation:pr 1.4s ease-out infinite;}
+  @keyframes py{0%{box-shadow:0 0 0 0 rgba(233,185,73,.5)}70%{box-shadow:0 0 0 7px rgba(233,185,73,0)}100%{box-shadow:0 0 0 0 rgba(233,185,73,0)}}
+  @keyframes pr{0%{box-shadow:0 0 0 0 rgba(255,93,93,.55);transform:scale(1)}70%{box-shadow:0 0 0 8px rgba(255,93,93,0);transform:scale(1.12)}100%{box-shadow:0 0 0 0 rgba(255,93,93,0);transform:scale(1)}}
+  .tx{flex:1;} .tx .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .tx b{font-size:16px;font-weight:700;}
+  .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:2px 7px;border-radius:999px;}
+  .tag.pausa{color:var(--giallo);background:rgba(233,185,73,.12);}
+  .tag.stop{color:var(--rosso);background:rgba(255,93,93,.12);}
+  .tx span.d{display:block;font-size:12.5px;color:var(--muted);margin-top:3px;}
+  .ch{color:var(--muted);font-size:20px;}
+  .backbtn{display:block;width:100%;padding:13px;border:none;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:16px;}
+</style></head>
+<body>
+<div class="wrap">
+  <h1>Business List</h1>
+  <div class="sub">Le opportunità e i servizi di Business UP</div>
+
+  <div class="card" onclick="location.href='servizio.html?id=swap'">
+    <span class="dot pausa"></span>
+    <div class="tx"><div class="row"><b>Broker VS Broker Swap</b><span class="tag pausa">In pausa</span></div>
+      <span class="d">Arbitraggio sugli swap overnight tra due broker. Split 30% a ciclo.</span></div>
+    <span class="ch">›</span>
+  </div>
+
+  <div class="card" onclick="location.href='servizio.html?id=prop'">
+    <span class="dot pausa"></span>
+    <div class="tx"><div class="row"><b>Prop VS Broker</b><span class="tag pausa">In pausa</span></div>
+      <span class="d">Conto finanziato tramite prop firm o capitale tuo su broker.</span></div>
+    <span class="ch">›</span>
+  </div>
+
+  <div class="card" onclick="location.href='servizio.html?id=bonus'">
+    <span class="dot stop"></span>
+    <div class="tx"><div class="row"><b>Broker VS Broker Bonus</b><span class="tag stop">Fermo</span></div>
+      <span class="d">Hedging tra due broker sfruttando il bonus. Split 50% a ciclo.</span></div>
+    <span class="ch">›</span>
+  </div>
+
+  <a class="backbtn" href="home.html">‹ Torna alla Home</a>
+</div>
+</body></html>
