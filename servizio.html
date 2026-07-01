@@ -51,6 +51,7 @@
     .feat { display:flex; gap:11px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line); font-size:14px; line-height:1.45; }
     .feat:first-child { border-top:none; }
     .feat .ck { color:var(--accent2); font-weight:800; flex:none; }
+    .fase-t { font-size:16px; font-weight:700; letter-spacing:-.2px; }
 
     .btn { width:100%; padding:15px; border:none; border-radius:13px; font-weight:700; font-size:15px; font-family:inherit; cursor:pointer; margin-top:10px; transition:transform .1s ease, filter .1s ease; }
     .btn:active { transform:scale(.99); filter:brightness(.95); }
@@ -80,13 +81,31 @@
     const CONTENT = {
       bvb: {
         caratteristiche: [
-          "Arbitraggio sullo stesso strumento tra due broker",
+          "Arbitraggio tra due broker (Monaxa + TotalFX)",
           "Rischio direzionale molto basso",
-          "Servono 2 conti broker (€1.000 ciascuno) + una VPS",
+          "2 conti broker (€1.000 ciascuno) + VPS dedicata",
           "Gestione attiva: 1-2 ore al giorno",
         ],
-        costi: [["Budget minimo", "€2.000 (€1.000 × 2 broker)"], ["VPS", "A parte — vedi tutorial"], ["Profit split", "50% a ciclo"], ["Impegno", "1-2 ore/giorno"]],
-        nota: "Lo split del 50% si salda a fine ciclo. Senza saldare, il ciclo successivo non parte.",
+        costi: [["Budget minimo", "€2.000 (€1.000 × 2 broker)"], ["Attivazione", "50 USDT + VPS (una tantum)"], ["Dal 2° mese", "25 USDT/mese"], ["Profit split", "50% a ciclo"]],
+        nota: "Commissione 50% sui profitti netti a fine ciclo, in USDT (rete BEP20). Senza saldare, il ciclo successivo non parte.",
+        attivazione: {
+          intro: "Procedura completa per attivare il sistema. Segui le fasi in ordine; alla fine ricapitoliamo tutto insieme prima di partire.",
+          fasi: [
+            { t: "Registrazione broker", b: "Registrati su entrambi i broker con i link ufficiali.",
+              links: [
+                { label: "Registrati su Monaxa", url: "https://account.monaxa.com/links/go/22304" },
+                { label: "Registrati su TotalFX", url: "https://secure.totalfx.com/Registration/Main/Account?dest=live&camp=460" },
+              ],
+              note: "Hai già un conto Monaxa? Non usare il link: scrivi dalla mail con cui sei iscritto a support@monaxa.com (o in live chat) chiedendo di essere collegato al nostro partner." },
+            { t: "Verifica identità (KYC)", b: "Completa la verifica dell'identità su entrambi i broker per abilitare i conti operativi." },
+            { t: "Apertura conti", b: "Monaxa: MT5 · ITA50 · Leva 1:500 · EUR\nTotalFX: MT5 · Leva 1:1000 · EUR" },
+            { t: "Capitale operativo", b: "Minimo €1.000 su Monaxa e €1.000 su TotalFX. Importi superiori danno più flessibilità operativa." },
+            { t: "VPS dedicata", b: "La VPS è fornita e gestita dal nostro team: continuità operativa, connessione stabile e corretto funzionamento del sistema." },
+            { t: "Attivazione operativa", b: "A conti aperti, inviaci: numero conto MT5, server del broker, password di accesso." },
+            { t: "Commissione", b: "A fine di ogni ciclo operativo: 50% dei profitti netti. Pagamento in USDT (rete BEP20)." },
+          ],
+          fee: "Attivazione: 50 USDT una tantum + VPS. Dal 2° mese: 25 USDT/mese. Prima di procedere ricapitoliamo ogni step insieme.",
+        },
       },
       prop: {
         caratteristiche: [
@@ -209,12 +228,19 @@
         : "";
 
       // CTA: tutorial di attivazione + (attiva / stato)
-      const tutCta = key ? `<button class="btn ${attivo ? "btn-accent" : "btn-ghost"}" id="tutAttiva">📺 Tutorial di attivazione</button>` : "";
-      const azioneCta = attivo
-        ? ""
-        : interessato
-          ? `<div class="group pad" style="margin-top:10px"><div class="ptext">Hai richiesto l'attivazione. Ti contattiamo a breve coi passi operativi.</div></div>`
+      const tutCta = key ? `<button class="btn btn-ghost" id="tutAttiva">📺 Tutorial di attivazione</button>` : "";
+      const hasAtt = !!content.attivazione;
+      let azioneCta;
+      if (attivo) {
+        azioneCta = hasAtt ? `<button class="btn btn-ghost" id="attivaProd">Procedura di attivazione</button>` : "";
+      } else if (interessato) {
+        azioneCta = `<div class="group pad" style="margin-top:10px"><div class="ptext">Hai richiesto l'attivazione. Ti contattiamo a breve coi passi operativi.</div></div>`
+          + (hasAtt ? `<button class="btn btn-ghost" id="attivaProd" style="margin-top:10px">Rivedi la procedura</button>` : "");
+      } else {
+        azioneCta = hasAtt
+          ? `<button class="btn btn-accent" id="attivaProd">Attiva prodotto</button>`
           : `<button class="btn btn-accent" id="attiva">Attiva questo servizio</button>`;
+      }
 
       app.innerHTML = `
         <div class="appbar">
@@ -260,25 +286,68 @@
       const tutAttiva = document.getElementById("tutAttiva");
       if (tutAttiva) tutAttiva.addEventListener("click", () => { if (key) location.href = "tutorial/" + key + ".html"; });
 
+      const attivaProd = document.getElementById("attivaProd");
+      if (attivaProd) attivaProd.addEventListener("click", () => renderAttivazione(svc, stato));
+
       const attivaBtn = document.getElementById("attiva");
-      if (attivaBtn) attivaBtn.addEventListener("click", async () => {
-        if (!TG || !TG.initData) { if (TG && TG.showAlert) TG.showAlert("Apri dal bot per attivare."); return; }
-        attivaBtn.disabled = true; attivaBtn.textContent = "Invio…";
-        try {
-          const r = await fetch(EDGE + "/attiva", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: svc.id }) });
-          const data = await r.json().catch(() => ({}));
-          if (!r.ok) throw 0;
-          const res = document.getElementById("result");
-          res.className = "group pad";
-          res.innerHTML = `<div class="okbox"><div class="big">✅</div><b>Attivazione richiesta</b><span>Ti contattiamo a breve coi passi operativi.${data.ref_link ? " Intanto iscriviti qui:" : ""}</span></div>${data.ref_link ? `<button class="btn btn-accent" id="goServ" style="margin-top:12px">Vai al servizio / Iscriviti</button>` : ""}`;
-          attivaBtn.classList.add("hidden");
-          if (data.ref_link) document.getElementById("goServ").addEventListener("click", () => openLink(data.ref_link));
-          if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
-        } catch {
-          attivaBtn.disabled = false; attivaBtn.textContent = "Attiva questo servizio";
-          if (TG && TG.showAlert) TG.showAlert("Errore. Riprova dal bot.");
-        }
-      });
+      if (attivaBtn) attivaBtn.addEventListener("click", () => richiediAttivazione(attivaBtn, svc, "Attiva questo servizio"));
+    }
+
+    // Vista procedura di attivazione (le fasi con link/dati)
+    function renderAttivazione(svc, stato) {
+      const key = tutKey(svc);
+      const content = (key && CONTENT[key]) || {};
+      const att = content.attivazione;
+      if (!att) return render(svc, stato);
+      const icon = ICONS[svc.nome] || "📊";
+
+      const fasiHtml = (att.fasi || []).map((f, i) => `
+        <div class="lbl">Fase ${i + 1}</div>
+        <div class="group pad">
+          <div class="fase-t">${f.t}</div>
+          <div class="ptext" style="margin-top:6px;color:#cfd2d6">${f.b}</div>
+          ${(f.links || []).map(l => `<button class="btn btn-accent" data-link="${l.url}" style="margin-top:10px">${l.label}</button>`).join("")}
+          ${f.note ? `<div class="ptext" style="margin-top:12px">ℹ️ ${f.note}</div>` : ""}
+        </div>`).join("");
+
+      app.innerHTML = `
+        <div class="appbar">
+          <div class="nav" id="back">‹</div>
+          <div class="ic">${icon}</div>
+          <div><div class="t">Attivazione</div><div class="n">${svc.nome}</div></div>
+        </div>
+        ${att.intro ? `<div class="group pad"><div class="ptext">${att.intro}</div></div>` : ""}
+        ${fasiHtml}
+        ${att.fee ? `<div class="lbl">Costi di attivazione</div><div class="group pad"><div class="ptext">💳 ${att.fee}</div></div>` : ""}
+        <button class="btn btn-accent" id="reqAtt" style="margin-top:18px">Ho capito, richiedi attivazione</button>
+        <button class="btn btn-ghost" id="backInfo" style="margin-top:10px">Torna alla scheda</button>
+        <div id="result" class="hidden" style="margin-top:14px"></div>`;
+
+      document.getElementById("back").addEventListener("click", () => render(svc, stato));
+      document.getElementById("backInfo").addEventListener("click", () => render(svc, stato));
+      document.querySelectorAll("[data-link]").forEach(el => el.addEventListener("click", () => openLink(el.getAttribute("data-link"))));
+      const reqAtt = document.getElementById("reqAtt");
+      reqAtt.addEventListener("click", () => richiediAttivazione(reqAtt, svc, "Ho capito, richiedi attivazione"));
+    }
+
+    // Chiamata /attiva condivisa (avvisa l'admin, mostra esito + eventuale ref link)
+    async function richiediAttivazione(btn, svc, label) {
+      if (!TG || !TG.initData) { if (TG && TG.showAlert) TG.showAlert("Apri dal bot per attivare."); return; }
+      btn.disabled = true; btn.textContent = "Invio…";
+      try {
+        const r = await fetch(EDGE + "/attiva", { method: "POST", headers: { "Content-Type": "application/json", "x-telegram-init-data": TG.initData }, body: JSON.stringify({ servizio_id: svc.id }) });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw 0;
+        const res = document.getElementById("result");
+        res.className = "group pad";
+        res.innerHTML = `<div class="okbox"><div class="big">✅</div><b>Attivazione richiesta</b><span>Ti contattiamo qui per ricapitolare ogni step e procedere.${data.ref_link ? " Intanto iscriviti qui:" : ""}</span></div>${data.ref_link ? `<button class="btn btn-accent" id="goServ" style="margin-top:12px">Vai al servizio / Iscriviti</button>` : ""}`;
+        btn.classList.add("hidden");
+        if (data.ref_link) document.getElementById("goServ").addEventListener("click", () => openLink(data.ref_link));
+        if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred("success");
+      } catch {
+        btn.disabled = false; btn.textContent = label;
+        if (TG && TG.showAlert) TG.showAlert("Errore. Riprova dal bot.");
+      }
     }
 
     load();
