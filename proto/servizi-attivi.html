@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Servizi Attivi — Business UP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root{--bg:#0b0c0e;--surface:#15171a;--surface2:#1d2024;--line:rgba(255,255,255,.07);--text:#eceef0;--muted:#8b9096;--accent:#0d9e88;--accent2:#19cdac;--giallo:#e9b949;--rosso:#ff5d5d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:16px 14px 34px;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  .wrap{max-width:520px;margin:0 auto;}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px;}
+  .sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+  .lbl{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin:20px 4px 8px;}
+  .lbl:first-of-type{margin-top:6px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .item{display:flex;align-items:center;gap:12px;padding:15px 16px;border-top:1px solid var(--line);cursor:pointer;}
+  .item:first-child{border-top:none;} .item:active{background:var(--surface2);}
+  .ic{width:40px;height:40px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;font-size:18px;flex:none;}
+  .it{flex:1;} .it b{display:block;font-size:15px;font-weight:600;} .it span{font-size:12.5px;color:var(--muted);}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:4px 9px;border-radius:999px;}
+  .dot{width:8px;height:8px;border-radius:50%;position:relative;}
+  .b-g{color:var(--accent2);background:rgba(25,205,172,.12);} .b-g .dot{background:var(--accent2);}
+  .b-y{color:var(--giallo);background:rgba(233,185,73,.12);} .b-y .dot{background:var(--giallo);}
+  .b-r{color:var(--rosso);background:rgba(255,93,93,.12);} .b-r .dot{background:var(--rosso);}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 currentColor;opacity:1}70%{box-shadow:0 0 0 6px transparent;opacity:.7}100%{box-shadow:0 0 0 0 transparent;opacity:1}}
+  .dot.live{animation:pulse 1.8s infinite;}
+  .empty{text-align:center;color:var(--muted);padding:26px 16px;font-size:14px;}
+  .cta{background:linear-gradient(180deg,#1d2f2b,#16211f);border:1px solid rgba(13,158,136,.3);border-radius:16px;padding:16px;margin-top:10px;}
+  .cta .t{font-weight:700;font-size:15px;} .cta .d{font-size:13px;color:var(--muted);margin:5px 0 12px;}
+  .btn{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-weight:700;font-size:14px;font-family:inherit;text-align:center;text-decoration:none;cursor:pointer;background:var(--accent);color:#04221c;}
+  .backbtn{display:block;width:100%;padding:13px;border-radius:12px;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-weight:700;font-size:14px;text-align:center;text-decoration:none;margin-top:16px;}
+  .foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px;}
+</style></head>
+<body>
+<div class="wrap">
+  <h1>I tuoi servizi</h1>
+  <div class="sub">Qui trovi lo stato dei servizi che hai attivato o che stai seguendo.</div>
+
+  <div class="lbl">Attivi</div>
+  <div id="attivi"></div>
+
+  <div class="lbl">In attesa di riattivazione</div>
+  <div id="attesa"></div>
+
+  <a class="backbtn" href="home.html">‹ Torna alla Home</a>
+  <div class="foot">PROTOTIPO · Business UP — Il trading comporta rischi. Non è consulenza finanziaria.</div>
+</div>
+<script>
+  // Demo: nessun servizio attivo, 1 servizio in attesa (hai premuto "Avvisami")
+  const ATTIVI = [];
+  const ATTESA = [
+    {id:"swap", nome:"Broker VS Broker Swap", stato:"y", nota:"In pausa — ti avviseremo appena riparte"},
+  ];
+  const badge = {g:['b-g','Attivo'], y:['b-y','In pausa'], r:['b-r','Fermo']};
+
+  function itemHtml(s){
+    const b=badge[s.stato];
+    return `<div class="item" onclick="location.href='servizio.html?id=${s.id}'">
+      <div class="ic">💼</div>
+      <div class="it"><b>${s.nome}</b><span>${s.nota||""}</span></div>
+      <span class="badge ${b[0]}"><span class="dot ${s.stato==='g'?'live':''}"></span>${b[1]}</span>
+    </div>`;
+  }
+
+  const attiviEl=document.getElementById("attivi"), attesaEl=document.getElementById("attesa");
+  attiviEl.innerHTML = ATTIVI.length
+    ? '<div class="card">'+ATTIVI.map(itemHtml).join("")+'</div>'
+    : '<div class="card"><div class="empty">Non hai ancora nessun servizio attivo.</div></div>'
+      +`<div class="cta"><div class="t">Trova il servizio giusto per te</div><div class="d">Guarda il catalogo e attiva quello adatto al tuo profilo.</div><a class="btn" href="business-list.html">Esplora i servizi →</a></div>`;
+
+  attesaEl.innerHTML = ATTESA.length
+    ? '<div class="card">'+ATTESA.map(itemHtml).join("")+'</div>'
+    : '<div class="card"><div class="empty">Nessun servizio in attesa.</div></div>';
+</script>
+</body></html>
